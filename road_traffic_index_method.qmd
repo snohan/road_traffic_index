@@ -1,0 +1,53 @@
+---
+title: "Road Traffic Index"
+format: 
+  html:
+    css: svv.css
+    number-sections: true
+    toc: true
+    toc-location: left
+editor: visual
+---
+
+
+# Motivation and purpose
+A Road Traffic Index has been defined to measure the change in traffic volume, or traffic work, on public roads in Norway.
+
+
+# Theory
+
+
+## Comparison with consumer price indices
+In economy, consumer price indices are used to measure change in price levels of products and services. The input data is the value and quantity of the products sold in a given time period. Similarly, the input to a road traffic index is the traffic links and their traffic volume in a given time period. The length of a the traffic link as the equivalent to the price of a product.
+
+As the length of the individual traffic links is constant, the road traffic index is a quantity index of the traffic volume.
+
+
+## Bilateral index for consecutive years
+A bilateral index compares just two periods.
+
+A traffic index for a registration point $j$ in month $s$ and year $t$ is defined as
+
+$$
+    Q_{j,s,t,t-1}^{\mathrm{i}} = \frac{Q_{j,s,t,t-1}}{Q_{j,s,t-1,t}}
+$$ {#eq-trpi}
+
+where the traffic volume $Q_{j,s,t,t-1}$ is dependent on which year it is compared to, due to the routines of keeping only registered data with high quality in both years (date-by-date, hour-by-hour). In @eq-trpi, the following notation is used:
+
+
+
+## Multilateral index
+In city areas, a multilateral road traffic index is used as an indicator for the level of traffic. A three year sliding window smoothes the "current" level before comparing it to the level in a given reference year.
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+
+# Chaining bilateral indices
+The indices are always calculated with values from a calculation year compared to a base year, where the base year is always the year before the calculation year. Thus, the indices are always bilateral, comparing just two years, as opposed to multilateral indices where more than two years are taken into account.
+
+
+## Index over several years and the chain drift problem
+A consecutive set of bilateral indices can be multiplied to obtain an index which spans several years, and this is called chaining. But chaining can be problematic because it doesn't handle relativly large changes very well. When the taffic level suddenly drops significantly for some time, and then later reestablishes itself at normal levels, the chained index doesn't necessarily shows no net change when the chain starts before the drop and ends after it. This is called chain drift, and is mentioned in many sources.
