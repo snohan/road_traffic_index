@@ -1,0 +1,365 @@
+---
+format: 
+  pdf:
+    toc: true
+    number-sections: true
+    toc-title: Innhold
+    mainfont: "Lucida Sans Unicode"
+    include-in-header:
+      text: |
+        \newfontfamily\sectionfont[Color=ed9300]{Lucida Sans Unicode}
+        \newfontfamily\subsectionfont[Color=444f55]{Lucida Sans Unicode}
+        \newfontfamily\subsubsectionfont[Color=ed9300]{Lucida Sans Unicode}
+        \addtokomafont{section}{\sectionfont}
+        \addtokomafont{subsection}{\subsectionfont}
+        \addtokomafont{subsubsection}{\subsubsectionfont}
+        \usepackage[font=small,textfont=it,labelsep=period]{caption}
+        \let\oldsection\section
+        \renewcommand\section{\clearpage\oldsection}
+crossref: 
+  tbl-title: "Tabell"
+  lot-title: "Tabeller"
+  tbl-prefix: ""
+  fig-title: "Figur"
+  lof-title: "Figurer"
+  fig-prefix: ""
+  title-delim: "."
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+# Packages ####
+base::Sys.setlocale(locale = "nb.utf8")
+library(tidyverse)
+#library(rmarkdown)
+#library(leaflet)
+library(knitr)
+library(flextable)
+#library(ghql)
+#library(jsonlite)
+#library(httr)
+#library(lubridate)
+#library(clock)
+#library(RColorBrewer)
+#library(webshot)
+library(officer) # fp_border color in flextable
+#library(officedown)
+#library(scales)
+
+# knitr options ####
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  cache = FALSE,
+  dpi = 150,
+  dev = "ragg_png",
+  tab.topcaption = TRUE
+  )
+
+# Flextable defaults
+flextable::set_flextable_defaults(
+  font.size = 8,
+  font.family = "Lucida Sans Unicode",
+  padding.bottom = .2,
+  padding.top = .4,
+  decimal.mark = ",",
+  big.mark = " ",
+  na_str = ""
+)
+
+borderline <- officer::fp_border(color = "black", style = "solid", width = 1)
+```
+
+
+# Formål
+Byindeks er en metode for å estimere endring i trafikkmengde på vegnettet i et byområde. Byindeksen brukes til oppfølging av byvekstavtaler og belønningsavtaler. Byvekstavtalene har mål om nullvekst i persontransport med bil: 
+
+> I byområdene skal klimagassutslipp, kø, luftforurensning og støy reduseres gjennom effektiv arealbruk og ved at veksten i persontransporten tas med kollektivtransport, sykling og gange. 
+
+Trafikkutviklingen for persontransport med bil, målt med byindeks og reisevaneundersøkelser, ligger til grunn for vurderingen av måloppnåelsen i avtalene.
+
+Nullvekstmålet skal måles ved at trafikkutviklingen vurderes på et treårs glidende gjennomsnitt, jf. brev fra Samferdselsdepartementet til de fire største byområdene datert 11.12.2019. Måloppnåelsen gjelder avtaleperioden sett under ett, som betyr at det er trafikknivået i referanseåret det skal sammenlignes med. Det skal være netto nullvekst i perioden.
+
+
+# Datagrunnlag
+Byindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkter, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med byindeks omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
+
+Indekspunktene skal være fordelt på riks- og fylkesveger, samt på enkelte, viktige kommunale veger, slik at byindeksen gir et representativt bilde av trafikkutviklingen i byområdet. 
+
+
+## Kjøretøyklassifisering
+Datagrunnlaget for byindeksen består av kjøretøy klassifisert som “lette” kjøretøy. Trafikkregistreringsutstyret måler kjøretøylengde og lengder kortere enn 5,6 m tilsvarer i stor grad kjøretøy med tillatt totalvekt under 3,5 tonn. Det er noen unntak fra denne tilnærmingen, og det er hovedsaklig lette kjøretøy som er lengre enn 5,6 m (større varebiler, bobiler) og lette kjøretøy med henger. Der hvor det er en del slike kjøretøy vil trafikkregistreringsutstyret derfor systematisk overestimere andelen tunge kjøretøy. Endringen i mengden av trafikk med slike kjøretøy fanges dermed ikke opp av en indeks for lette kjøretøy.
+
+
+### Næringstransport
+En del næringstransport foretas med kjøretøy som blir målt til kortere enn 5,6 m og vil dermed inngå i datagrunnlaget til byindeksen. Det er med andre ord ikke mulig å skille på lette kjøretøy som inngår i nullvekstmålet og lette kjøretøy som ikke inngår i målet. Trafikkarbeidet som innhentes ved hjelp av reisevaneundersøkelser, vil imidlertid kun gjelde reisene som er omfattet av nullvekstmålet (private personbilturer inkludert reiser til og fra møter). Dersom byindeksen gir en vekst i trafikken mens reisevanedataene gir nullvekst, kan det antas at vekst i byindeks skyldes trafikk med lette kjøretøy som ikke omfattes av nullvekstmålet.
+
+
+### Motorsykler
+Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre lette kjøretøy. Tidligere var ikke motorsykler en del av trafikkregistreringene, men dette ble gradvis innført (ulikt tidspunkt for hvert trafikkregistreringspunkt) i perioden 2015 - 2018. For indekser som ble beregnet til og med 2019 ble motorsykler holdt utenfor datagrunnlaget. Kriteriet for å filtrere ut motorsykler er at de klassifiseres som motorsykler eller har kjøretøylengde <= 1,8 m. Fra og med 2020 inngår motorsykler i datagrunnlaget, både i referanse- og beregningsår.
+
+
+## Gjennomgangstrafikk
+I trafikkregistreringene er det ikke mulig å skille ut gjennomgangstrafikk fra lokal trafikk. Plasseringen til byindekspunktene kan ha mye å si for hvor mye gjennomgangstrafikk som blir med i datagrunnlaget. Data fra reisevaneundersøkelsen kan også si noe om andelen gjennomgangstrafikk i området.
+
+
+## Datakvalitet
+Det tas hensyn til perioder hvor registreringsutstyret ikke har vært i drift, og perioder hvor trafikken i stor grad er påvirket av vegstenginger og omkjøringer. Registreringsutstyret skal ifølge kravspesifikasjonen få med seg minst 99 % av alle passerende kjøretøy når alt utstyr er i normal drift. Men av og til vil det være nedetid, og dermed blir det bortfall av deler av en måleserie. Et mål på datakvaliteten for et gitt tidsintervall er "dekningsgrad".
+
+
+### Dekningsgrad
+Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgrad angir hvor mye data av god nok kvalitet i et tidsintervall, sammenlignet med det det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
+
+Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad.
+
+Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
+
+Dekningsgraden beregnes basert på målestasjonens operasjonelle status og fulltallighet, samt eventuelle manuelle merkinger som gjelder for kjørefeltene på det aktuelle trafikkregistreringspunktet.
+
+
+#### Manuell merking
+Manuell merking brukes av de målestasjonsansvarlige til å legge inn informasjon om hendelser på vegen eller med registreringsutstyret som påvirker trafikkregistreringene. Perioder kan merkes per kjørefelt med:
+
+ - unormal trafikkmengde (påvirker trafikkindekser)
+ - stengt veg (påvirker trafikkmengdestørrelser og trafikkindekser)
+ - feil på utstyr (påvirker alle størrelser)
+
+
+#### Fulltallighet
+Registreringsutstyret legger på et løpenummer for hvert kjøretøy som registreres. Løpenummeret skal øke med 1 for hvert nye kjøretøy, og dersom noe går galt i lagring av registreringen, vil det oppdages at enkeltregistreringer mangler når det mangler løpenumre. «Fulltallighet» et mål på andel lagrede løpenumre, og beregner en prosentverdi for alle timer med data.
+
+
+### Stillestående kø
+Med dagens trafikkregistreringsutstyr er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i byindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt.
+
+
+### Spesielle trafikkforhold
+Trafikkregistreringspunktene som benyttes i byindeksen dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk i vegnettet som bare delvis fanges opp i datagrunnlaget. Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Da er det to ulike scenarioer:
+
+1. Den totale trafikkmengden i området er fortsatt den samme, siden omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, samt at omkjøringen ikke tar så mye lengre tid at turetterspørselen går ned.
+2. Den totale trafikkmengden i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og med det tidkrevende, som gjør turetterspørselen lavere.
+
+Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
+
+Er det et byindekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre byindekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av byindekspunktene der. Nedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
+
+Trafikkregistreringspunkter må derfor ses i sammenheng med langvarige hendelser på vegnettet som medfører omkjøringsruter.
+
+Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Trafikkregistreringspunkter som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+
+
+# Endring i glidende treårsperiode
+Beregningsmetoden tar et aritmetisk gjennomsnitt av trafikknivået de siste tre årene og sammenligner dette med trafikknivået i referanseåret. For hvert av trafikkregistreringspunktene som inngår i byindeksen benyttes gjennomsnittlig døgntrafikk. For at denne treårs glidende indeksen skal kunne oppdateres månedlig, benyttes gjennomsnittlig døgntrafikk per måned, kjent som månedsdøgntrafikk (MDT). 
+
+Det er i perioder bortfall av data som skyldes nedetid på registreringsutstyr eller ensidig påvirkning av større trafikkomlegginger. Et krav om at alle 36 måneder i treårsperioden skal ha data for et trafikkregistreringspunkt, er så strengt at få punkter oppfyller det. For å sikre at flere punkter bidrar med data til beregningen, er det derfor satt krav om at hvert punkt har minst 10 måneder i enhver 12-månedersperiode, samt minst 2 av hver kalendermåned i treårsperioden.
+
+Trafikkmengden som registreres på et trafikkregistreringspunkt representerer en vegstrekning i byområdet. Denne vegstrekningen er avgrenset av kryss i hver ende, og har langs hele sin lengde det samme antall passerende kjøretøy i løpet av et døgn. En slik vegstrekning kalles en trafikklenke. Vegnettet i et byområde består av et antall trafikklenker som alle har ulik trafikkmengde. For at en byindeks skal kunne sammenligne trafikken over tid, må de samme trafikkregistreringspunktene inngå i både treårsperioden og referanseåret.
+
+En ulempe med denne nye metodikken er at utvalget av trafikkregistreringspunkter begrenses til de som hadde gode nok data i referanseåret.
+
+En treårs glidende indeks er mulig å beregne fra og med det er gått tre år etter referanseåret. 
+
+
+# Endring per år
+Beregningsmetoden er den samme som for Vegtrafikkindeksens fylkesindeks, men det geografiske området avgrenses av de utvalgte trafikkregistreringspunktene i det aktuelle byområdet.
+
+For hvert trafikkregistreringspunkt sammenlignes registrert trafikk dato for dato og time for time mellom to påfølgende kalenderår. Indekstall som gjelder for lengre perioder enn to påfølgende år er beregnet som en kjedet indeks av indeksene for alle mellomliggende påfølgende års indekser. En kjedet indeks er en multiplikasjon av indekser på desimalform hvor en indeks på 1 tilsvarer ingen endring.
+
+
+## Datagrunnlag
+Datagrunnlaget for indeksen består av trafikkvolumet aggregert til timenivå. Alle data som inngår i beregningen av byindeksen skal bruke trafikkvolumet $Q$, fra trafikkregistreringspunkt $j$, aggregert til timenivå og summert over alle kjørefelt for begge kjøreretninger:
+
+$$Q_{j,h,d,s,t} \,,$$
+
+for time $h$, dag $d$, måned $s$ og år $t$. Indeksen sammenligner data fra beregningsåret $t$ og basisåret $t-1$.
+
+Alle data som skal brukes i indeksen skal være faktisk registrerte data for trafikkvolum som er registrert på et godkjent indekspunkt.
+
+
+### Ekskludering og matching
+Metoden anvender time for time- og dato for dato-prinsippet. Ulike ukedager kan variere med hensyn på trafikkvolum, men i løpet av et år vil dette utjevne seg.
+
+Prosessen for å lage en indeks er:
+
+1.	Velge ut godkjente trafikkregistreringspunkt.
+2.	Velge ut kvalitetssikrede data fra de godkjente trafikkregistreringspunktene.
+3.	Alle registrerte data for måned $s$ og trafikkregistreringspunkt $j$ sorteres etter dato og time for år $t$.
+4.	Alle registrerte data for måned $s$ og trafikkregistreringspunkt $j$ sorteres etter dato og time for år $t-1$.
+5.	Alle tilsvarende timer på samme dato som har registreringer i de to årene ($t$, $t-1$) velges. Dette betyr at timer som ikke har verdi i begge de to årene utelates.
+
+Data sammenlignes kjørefelt for kjørefelt, og det kreves at registreringene har vært utført på alle kjørefelt samtidig. Etter denne prosessen sitter en igjen med godkjente punkt som inneholder kvalitetssikrede data, med registrerte timer i begge årene på alle kjørefelt.
+
+
+####	Kriterier for ekskludering av glisne døgn og måneder
+Når bortfall av data forekommer, stilles følgende krav:
+
+1.	Et døgn må inneholde minimum 16 matchende, godkjente timeverdier.
+2.	En måned må inneholde minimum 16 matchende, godkjente døgn per punkt.
+
+
+#### Ekskludering av lengdeklasser
+Trafikkregistreringene omfatter lengdeklassifisering av alle kjøretøy, og tabell @tbl-lengdeklasser viser inndelingen i lengdeklasser. I byindeksen benyttes dette til å beregne indekser for lette og tunge kjøretøy, hvor skillet mellom lette og tunge er satt til kjøretøylengde på 5,6 m.
+
+```{r}
+#| label: tbl-lengdeklasser
+#| tbl-cap: "Lengdeklassifisering i byindeks."
+
+lengdegrupper <- c("L20", "L21", "L22", "L23", "L24", "L25")
+beskrivelse <- c("Alle lengder",
+                 "Lengde under 5,6 m",
+                 "Lengde mellom 5,6 m og 7,6 m",
+                 "Lengde mellom 7,6 m og 12,5 m",
+                 "Lengde mellom 12,5 m og 16 m",
+                 "Lengde over 16 m")
+
+lengdeklasser <- data.frame(lengdegrupper, beskrivelse)
+
+lengdeklasser %>% 
+  flextable::flextable() %>% 
+  set_header_labels(lengdegrupper = "Lengdegruppe",
+                    beskrivelse = "Beskrivelse") %>%
+  align(j = 1, align = "center", part = "all") %>% 
+  align(j = 2, align = "left", part = "all") %>% 
+  bold(part = "header") %>% 
+  #font(fontname = "Lucida Sans Unicode", part = "all") %>% 
+  bg(bg = "#ED9300", part = "header") %>% 
+  border_remove() %>% 
+  hline_top(part = "header", border = borderline) %>% 
+  hline_bottom(part = "all", border = borderline) %>% 
+  autofit() %>% 
+  height_all(height = .2) %>% 
+  padding(padding.top = .3,
+          padding.bottom = .3)
+```
+
+Erfaring har vist at lengdeklassifiseringen ikke alltid er komplett i rådatamaterialet. Derfor må det kontrolleres om lengdeklassifiseringen er tilnærmet komplett. Alle avvik per time mellom summen L21+L22+L23+L24+L25 og L20 summeres for hvert døgn. Dersom avviket er mer enn 5 % av totalsum for L20 i hele døgnet, strykes lengdeklassifiseringen for hele dette døgnet. Dersom avviket er 5 % eller mindre beholdes lengdeklassifiseringen som den er.
+
+Fra nytt registreringsutstyr med enkeltkjøretøy, filtreres dårlige lengdemålinger ut av grunnlagsdata. Følgende kriterier benyttes:
+
+*	Kjøretøyregistreringer med lengde under 1,0 m tas med i totaltrafikken, men ikke i lengdeklasseinndelingen.
+*	Kjøretøyregistreringer med lengde over 27 m tas med i totaltrafikken, men ikke i lengdeklasseinndelingen.
+*	Kjøretøyregistreringer med fart under 7 km/h tas med i totaltrafikken, men ikke i lengdeklasseinndelingen.
+*	Kjøretøyregistreringer med godkjent nøyaktighet på fartsmåling, det vil si at fartsmålingen ikke skal variere med mer enn 3 % over sensorene.
+
+Den samme kompletthetskontrollen som nevnt over, gjelder for disse registreringene. Kravet om minst 16 døgn i måneden med godkjent lengdeklassifisering gjelder for utregning av lengdeklasseindeks.
+
+
+### Indeksdata
+Etter at ekskludering og matching er gjennomført, gjenstår de dataene som danner grunnlaget for selve byindeksberegningene. Disse dataene kalles indeksdata $D^{\mathrm{i}}$, og utgjør et utvalg, hele eller deler av, de opprinnelige rådataene $D$, dvs. at $D^{\mathrm{i}} \subseteq D$. For byindeksen er da
+
+$$Q_{j,s,t} = \sum_{h,d} Q_{j,h,d,s,t} \quad \exists \, Q_{j,h,d,s,t-1} \,.$$
+
+Dette danner utgangspunktet for videre beregning av indeksene.
+
+
+### Gjeldende sifre
+I byindeksen benyttes trafikkvolum som er heltall for antall kjøretøy per time, summert over alle kjørefelt. Antall sifre vil her variere fra ett til fire, oftest to eller tre. Månedsvolum vil typisk summere seg til 5-7 sifre. Kravet til registreringsutstyret er at minst 99 % av trafikken skal registreres, noe som gir usikkerhet i tredje gjeldende siffer for trafikkvolumet. Når indekstall skal presenteres, skal det derfor benyttes to gjeldende sifre. Dersom indeksen blir 0,xx, må den oppgis med to desimaler, ellers med kun én desimal. I mellomregninger beholdes alle sifre som er tilgjengelig, og avrunding skjer til slutt ved å benytte Bankers metode (runde f.eks. xxx5 opp eller ned til nærmeste partall).
+
+
+## Beregningsmetode
+Det vaskede datagrunnlaget utgjør nå en database med verdier fra matchede timer. Først beregnes trafikkvolum og indeks for enkeltpunkt, som senere benyttes for å finne verdier for et byområde.
+
+
+### Indeks per trafikkregistreringspunkt
+Månedsindeksen benytter indeksdata og er definert som
+
+$$Q_{j,s,t}^{\mathrm{i}} = \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \,.$$
+
+Her er indeksen gitt på forholdsform. Når indeksen publiseres skal den gis på prosentform, 
+
+$$Q^{\mathrm{ip}} = 100 \cdot (Q^{\mathrm{i}}-1) \,,$$
+
+med to gjeldende sifre.
+
+En kan også regne ut indeks for en periode på flere måneder, hvor
+
+$$Q_{j,\Sigma s,t}^{\mathrm{i}} = \sum_{h,d,s} Q_{j,h,d,s,t} 
+\quad \exists \,  Q_{j,h,d,s,t-1} \,,$$
+
+som gir indeksen
+
+$$Q_{j,\Sigma s,t}^{\mathrm{i}} = \frac{Q_{j,\Sigma s,t}}{Q_{j,\Sigma s,t-1}} =
+\frac{\sum_{s} Q_{j,s,t}}{\sum_{s} Q_{j,s,t-1}} \,.$$
+
+
+### Indeks for et byområde
+En indeks for et byområde $b$, som inneholder registreringspunktene $j$, baseres på indeksdata
+
+$$Q_{b,s,t} = \sum_{j,h,d} Q_{j,h,d,s,t} \quad \exists \, Q_{j,h,d,s,t-1} \,.$$
+Månedsindeks for by $b$ er da
+
+$$Q_{b,s,t}^{\mathrm{i}} = \frac{Q_{b,s,t}}{Q_{b,s,t-1}} \,.$$
+
+Alternativt kan byindeksen ses på som et vektet gjennomsnitt av enkeltpunktindeksene, der de normaliserte vektene dannes av trafikkvolumene fra basisåret:
+
+$$Q_{b,s,t}^{\mathrm{i}} = \frac{1}{\sum_j Q_{j,s,t-1}} \sum_j Q_{j,s,t}^{\mathrm{i}} \,\cdot\, Q_{j,s,t-1} = \frac{1}{Q_{b,s,t-1}} \sum_j \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \,\cdot\, Q_{j,s,t-1} = \frac{Q_{b,s,t}}{Q_{b,s,t-1}} $$
+Byindeks for flere måneder er basert på
+
+$$Q_{b,\Sigma s, t} = \sum_{j,h,d,s} Q_{j,h,d,s,t}  \quad \exists \, Q_{j,h,d,s,t-1} \,,$$
+som gir
+
+$$Q_{b,\Sigma s,t}^{\mathrm{i}} = \frac{Q_{b,\Sigma s,t}}{Q_{b,\Sigma s,t-1}} \,.$$
+
+
+### Indeks over flere år
+For å beregne et estimat på en indeks over flere år, kan trafikkmengden fra de aktuelle årene benyttes eller alle mellomliggende års indekser multipliseres:
+
+$$\begin{aligned} 
+Q_{j,s,t,t-n}^{\mathrm{i}} &= \frac{Q_{j,s,t}}{Q_{j,s,t-n}} =
+\frac{Q_{j,s,t}}{Q_{j,s,t-1}} \cdot  \frac{Q_{j,s,t-1}}{Q_{j,s,t-2}}
+\cdots \frac{Q_{j,s,t-n+1}}{Q_{j,s,t-n}} \\ 
+&=
+Q_{j,s,t,t-1}^{\mathrm{i}} \cdot Q_{j,s,t-1,t-2}^{\mathrm{i}}
+\cdots Q_{j,s,t-n+1,t-n}^{\mathrm{i}}
+\end{aligned}$$
+
+Dette gjelder også for aggregerte indekser.
+
+## Usikkerhet i indekstallene
+Det er heftet usikkerhet ved flere ledd i kjeden fra datainnsamlingen til en aggregert indeks. Usikkerheten anslås ved hjelp av dekningsgrad og mål på statistisk variasjon.
+
+
+###	Dekningsgrad
+For indeksen som baserer seg på timeverdier, vil enkelte timer mangle på grunn av for dårlig datakvalitet. Dekningsgraden for en punktindeks $Q_{j,h,d,s,t}^{\mathrm{i}}$ er definert som
+
+$$G_j(Q_j) = \frac{
+\mathrm{antall \, timer \, med \, indeksdata}}{
+\mathrm{antall \, timer \, i \, perioden}} \cdot 100 \,\% 
+= \frac{h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t}} \cdot 100 \,\% \,.$$
+
+Dekningsgraden er altså den relative andelen i prosent av antall timer med indeksdata delt på antallet timer en skulle hatt. For aggregerte indekser er dekningsgraden den sammensatte dekningsgraden på alle punktindeksene:
+
+$$G_b(Q_b) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 \,\% \,. $$
+
+
+### Statistisk variasjon
+Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle veglenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg veglenker. Punktindeksene antas å være normalfordelte, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
+
+
+#### Standardavvik
+For byindeksen $Q^{\mathrm{i}}$ er et forventningsrett, vektet standardavvik 
+
+$$\sigma_{b,s,t} = \sqrt{\frac{1}{1- \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{b,s,t}^{\mathrm{ip}} \right)^2 \right) }$$
+Her er det brukt at trafikkvolumvektene er normaliserte, men ikke-stokastiske.
+
+
+#### Konfidensintervall
+Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
+
+$$K_{b,s,t} = \tau \frac{\sigma_{b,s,t}}{\sqrt{n_{b,s,t}}} \,,$$
+hvor $n$ er antall trafikkregistreringspunkter.
+
+
+#### Variansen til indeks over to år
+Indeks over to år beregnes ved å multiplisere de to indeksverdiene $Q^{\mathrm{i}}$. Variansen er da gitt ved 
+
+$$\mathrm{Var}(Q^{\mathrm{i}}_1 \cdot Q^{\mathrm{i}}_2) =  
+\frac{\mathrm{Var}(Q^{\mathrm{i}}_1) \cdot \mathrm{Var}(Q^{\mathrm{i}}_2)}{n_1 n_2} +
+\frac{\mathrm{Var}(Q^{\mathrm{i}}_1)}{n_1} \cdot Q^{\mathrm{i}2}_2 +
+\frac{\mathrm{Var}(Q^{\mathrm{i}}_2)}{n_2} \cdot Q^{\mathrm{i}2}_1 \,.$$
+

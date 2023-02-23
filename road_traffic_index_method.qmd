@@ -6,7 +6,11 @@ format:
     number-sections: true
     toc: true
     toc-location: left
-editor: visual
+    df-print: paged
+editor: source
+knitr: 
+  opts_chunk: 
+    echo: false
 ---
 
 
@@ -15,39 +19,136 @@ A Road Traffic Index has been defined to measure the change in traffic volume, o
 
 
 # Theory
-
-
-## Comparison with consumer price indices
-In economy, consumer price indices are used to measure change in price levels of products and services. The input data is the value and quantity of the products sold in a given time period. Similarly, the input to a road traffic index is the traffic links and their traffic volume in a given time period. The length of a the traffic link as the equivalent to the price of a product.
-
-As the length of the individual traffic links is constant, the road traffic index is a quantity index of the traffic volume.
-
-
-## Bilateral index for consecutive years
-A bilateral index compares just two periods.
-
-A traffic index for a registration point $j$ in month $s$ and year $t$ is defined as
+As of now, the road traffic index is a pure quantity index only taking into account the traffic volumes. A traffic index for a registration point $j$ in month $s$ and year $t$ is defined as
 
 $$
-    Q_{j,s,t,t-1}^{\mathrm{i}} = \frac{Q_{j,s,t,t-1}}{Q_{j,s,t-1,t}}
+Q_{j,s,t,t-1}^{\mathrm{i}} = \frac{Q_{j,s,t,t-1}}{Q_{j,s,t-1,t}}
 $$ {#eq-trpi}
 
-where the traffic volume $Q_{j,s,t,t-1}$ is dependent on which year it is compared to, due to the routines of keeping only registered data with high quality in both years (date-by-date, hour-by-hour). In @eq-trpi, the following notation is used:
+where the traffic volume $Q_{j,s,t,t-1}$ is dependent on which year it is compared to, due to the routines of keeping only registered data with high quality in both years (date-by-date, hour-by-hour).
+
+The index defined in @eq-trpi is a bilateral index, comparing just two periods which always is consecutive years.
+
+However, it is desirable to use traffic work as the unit of measure. This can be achieved by using the traffic link length. Then each index traffic registration point will be multiplied by the length of their traffic link. The index will then more closely resemble a comsumer price index as it is defined in economic terms.
+
+In economy, consumer price indices are used to measure change in price levels of products and services. The input data is the value and quantity of the products sold in a given time period. Similarly, the input to a road traffic index is the traffic links and their traffic volume in a given time period. The length of a traffic link is the equivalent to the price of a product. The quantity sold of a product is then the traffic volume of a traffic link.
+
+As the length of the individual traffic links is constant, the road traffic index is still a quantity index of the traffic volume, but now weighted by the amount of traffic work done on its link.
+
+
+### Grouping of traffic links
+In economic indices, the products may be grouped ba various specifications. One could possibly do the same with traffic links, perhaps using functional class, road category or other parameters, but it does not seem very obvious how this should be done. It would, however, lead to the calculation of a mean link length per group, that could possibly change over time as roads are being built or changed.
+
+Grouping of traffic links: the MARS method?
+
+
+### Rebuilt roads
+When a product is no longer sold, and them reintroduced as a new product with different quality and price, then the two could be linked so that it can be included in the index. In terms of traffic links, this could be the situation where a road is being rebuilt, typically expanded from two to four lanes, thereby creating a new traffic link which has the same position in the road net work, but now has a different length and traffic volume when reopened.
 
 
 
 ## Multilateral index
-In city areas, a multilateral road traffic index is used as an indicator for the level of traffic. A three year sliding window smoothes the "current" level before comparing it to the level in a given reference year.
+In city areas, a multilateral road traffic index could be used as an indicator for the level of traffic. 
+
+
+A three year, or equivalently 36-month, rolling window smoothes the "current" level before comparing it to the level in a given reference year.
+
 
 ```{r}
-#| echo: false
-2 * 2
 ```
 
 
-# Chaining bilateral indices
+## Chaining bilateral indices
 The indices are always calculated with values from a calculation year compared to a base year, where the base year is always the year before the calculation year. Thus, the indices are always bilateral, comparing just two years, as opposed to multilateral indices where more than two years are taken into account.
 
 
-## Index over several years and the chain drift problem
-A consecutive set of bilateral indices can be multiplied to obtain an index which spans several years, and this is called chaining. But chaining can be problematic because it doesn't handle relativly large changes very well. When the taffic level suddenly drops significantly for some time, and then later reestablishes itself at normal levels, the chained index doesn't necessarily shows no net change when the chain starts before the drop and ends after it. This is called chain drift, and is mentioned in many sources.
+### Index over several years and the chain drift problem
+A consecutive set of bilateral indices can be multiplied to obtain an index which spans several years, and this is called chaining. But chaining can be problematic because it doesn't handle relatively large changes very well. When the taffic level suddenly drops significantly for some time, and then later reestablishes itself at normal levels, the chained index doesn't necessarily show no net change when the chain starts before the drop and ends after it. This is called chain drift, and is mentioned in many sources.
+
+
+### The problem with asymmetric data cleansing routines
+When hourly traffic is compared date-by-date hour-by-hour, the requirement is that there exists a high quality value in both years. When there is some missing data, the index traffic volume for a given year depends on wether it is cleansed as a base or calculation year. This is not compatible with chaining.
+
+
+# Three year rolling index
+A three year rolling index is to be calculated such that a mean of the traffic volume for the most recent three year period is compared to a base year.
+
+## Simple approach
+A simple approach to a three year rolling index, is to compute the rolling mean of annual average daily traffic (AADT) for each of the traffic registration points (TRP) in the area. These AADTs must exist, with high coverage, in both the base year and the whole three year rolling period for a given TRP. This would lead to a yearly update of the rolling index. 
+
+If a monthly update is desirable, monthly average daily traffic (MADT) can be used instead of AADTs.
+
+In any way, this sets high requirement to the TRPs uptime and quality. No new TRPs can be added after the base year.
+
+
+## Multilateral index
+
+
+## Bergen city area example
+The base year AADTs for the TRPs used to calculate the Bergen city area index is given in the table below. 
+
+<br>
+
+```{r}
+#| label: read
+
+aadt <-
+  readRDS("aadt.rds")
+
+n_reference_year_trps <-
+  aadt |> 
+  dplyr::filter(
+    year == 2018
+  ) |> 
+  base::nrow()
+
+n_reference_year_trps_good <-
+  aadt |> 
+  dplyr::filter(
+    year == 2018,
+    coverage >= 90,
+    length_quality > 99
+  ) |> 
+  base::nrow()
+
+indices_brg <-
+  base::readRDS("indices.rds")
+```
+
+
+```{r}
+#| label: aadt_table
+#| tbl-cap: "Reference year AADTs"
+
+aadt |> 
+  dplyr::filter(
+    year == 2018
+  ) |> 
+  dplyr::select(
+    name,
+    road_reference,
+    aadt,
+    coverage,
+    length_quality
+  ) 
+  #|> 
+  # DT::datatable(
+  #   filter = "top",
+  #   options = list(
+  #     dom = "Blfrtip",
+  #     pageLength = 15,
+  #     lengthMenu = c(15, 50, 100),
+  #     autoWidth = TRUE))
+```
+
+<br>
+
+There are `r n_reference_year_trps` TRPs chosen for the area, but only `r n_reference_year_trps_good` of them satisfies the requirement of 90 % coverage or better and having at least 99 % length quality. Thus the maximum number of TRPs included in any of the subsequent index calculations is `r n_reference_year_trps_good`, and the rest will never be included.
+
+Bilateral indices are given below.
+
+```{r}
+indices_brg
+```
+
+
