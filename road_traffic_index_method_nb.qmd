@@ -65,18 +65,16 @@ borderline <- officer::fp_border(color = "black", style = "solid", width = 1)
 ```
 
 
-# Formål
+# Datagrunnlag
 Vegtrafikkindeksen er en metode for å estimere endring i trafikkmengde på det norske riks- og fylkesvegnettet. Indeksen beregnes for  fylkene, lansdelene samt for hele landet samlet. 
 
-
-# Datagrunnlag
 Vegtrafikkindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkter, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med Vegtrafikkindeksen omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
 
 Indekspunktene skal være fordelt på riks- og fylkesvegnettet slik at indeksen gir et representativt bilde av trafikkutviklingen i hvert fylke.
 
 
 ## Motorsykler
-Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre  kjøretøy. Tidligere var ikke motorsykler en del av trafikkregistreringene, men dette ble gradvis innført (ulikt tidspunkt for hvert trafikkregistreringspunkt) i perioden 2015 - 2018. For indekser som ble beregnet til og med 2019 ble motorsykler holdt utenfor datagrunnlaget. Kriteriet for å filtrere ut motorsykler er at de klassifiseres som motorsykler eller har kjøretøylengde <= 1,8 m. Fra og med 2020 inngår motorsykler i datagrunnlaget, både i referanse- og beregningsår.
+Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre  kjøretøy. Tidligere var ikke motorsykler en del av trafikkregistreringene, men dette ble gradvis innført (ulikt tidspunkt for hvert trafikkregistreringspunkt) i perioden 2015 - 2018. For indekser som ble beregnet til og med 2019 ble motorsykler holdt utenfor datagrunnlaget. Kriteriet for å filtrere ut motorsykler er at de klassifiseres som motorsykler eller har kjøretøylengde kortere enn 1,8 m. Fra og med 2020 inngår motorsykler i datagrunnlaget, både i referanse- og beregningsår.
 
 
 ## Datakvalitet
@@ -154,8 +152,8 @@ Data sammenlignes kjørefelt for kjørefelt, og det kreves at registreringene ha
 ####	Kriterier for ekskludering av glisne døgn og måneder
 Når bortfall av data forekommer, stilles følgende krav:
 
-1.	Et døgn må inneholde minimum 16 matchende, godkjente timeverdier.
-2.	En måned må inneholde minimum 16 matchende, godkjente døgn per punkt.
+ - Et døgn må inneholde minimum 16 matchende, godkjente timeverdier.
+ - En måned må inneholde minimum 16 matchende, godkjente døgn per punkt.
 
 
 #### Ekskludering av lengdeklasser
@@ -163,7 +161,7 @@ Trafikkregistreringene omfatter lengdeklassifisering av alle kjøretøy, og tabe
 
 ```{r}
 #| label: tbl-lengdeklasser
-#| tbl-cap: "Lengdeklassifisering i byindeks."
+#| tbl-cap: "Lengdeklassifisering i indeks."
 
 lengdegrupper <- c("L20", "L21", "L22", "L23", "L24", "L25")
 beskrivelse <- c("Alle lengder",
@@ -220,10 +218,10 @@ I indeksen benyttes trafikkvolum som er heltall for antall kjøretøy per time, 
 ###	Delindekser
 Vegtrafikkindeksen kan utarbeides for ulike delmengder av rådataene:
 
-1.	Vegkategori.
-2.	Geografiske inndelinger: fylker, landsdeler.
-3.	Døgninndelinger, f.eks. yrkedøgn og helgedøgn.
-4.	Kjøretøylengde, f.eks. lette (L21) og tunge (L22+L23+L24+L25) kjøretøy.
+ - Vegkategori.
+ - Geografiske inndelinger: fylker, landsdeler.
+ - Døgninndelinger, f.eks. yrkedøgn og helgedøgn.
+ - Kjøretøylengde, f.eks. lette (L21) og tunge (L22+L23+L24+L25) kjøretøy.
 
 Indekser for døgninndelinger og kjøretøylengder beregnes med data som er filtrert ut fra settet med gyldige indeksdata.
 
@@ -248,12 +246,12 @@ med to gjeldende sifre.
 
 En kan også regne ut indeks for en periode på flere måneder, hvor
 
-$$Q_{j,\Sigma s,t}^{\mathrm{i}} = \sum_{h,d,s} Q_{j,h,d,s,t} 
+$$Q_{j,\sum s,t}^{\mathrm{i}} = \sum_{h,d,s} Q_{j,h,d,s,t} 
 \quad \exists \,  Q_{j,h,d,s,t-1} \,,$$
 
 som gir indeksen
 
-$$Q_{j,\Sigma s,t}^{\mathrm{i}} = \frac{Q_{j,\Sigma s,t}}{Q_{j,\Sigma s,t-1}} =
+$$Q_{j,\sum s,t}^{\mathrm{i}} = \frac{Q_{j,\sum s,t}}{Q_{j,\sum s,t-1}} =
 \frac{\sum_{s} Q_{j,s,t}}{\sum_{s} Q_{j,s,t-1}} \,.$$
 
 Ethvert registreringspunkt $j$ ligger på en veg med vegkategori $y$ i fylke $f$. Dette betyr at det til hver $j$ knytter seg en verdi for $y$ og $f$, dvs. at i formlene må det legges til variablene $f$ og $y$:
@@ -274,13 +272,17 @@ $$Q_{f,y,s,t}^{\mathrm{i}} = \frac{Q_{f,y,s,t}}{Q_{f,y,s,t-1}} \,.$$
 
 Alternativt kan fylkesindeksen ses på som et vektet gjennomsnitt av enkeltpunktindeksene, der de normaliserte vektene dannes av trafikkvolumene fra basisåret:
 
-$$Q_{f,y,s,t}^{\mathrm{i}} = \frac{1}{\sum_j Q_{j,y,s,t-1}} \sum_j Q_{j,y,s,t}^{\mathrm{i}} \,\cdot\, Q_{j,y,s,t-1} = \frac{1}{Q_{f,y,s,t-1}} \sum_j \frac{Q_{j,y,s,t}}{Q_{j,y,s,t-1}} \,\cdot\, Q_{j,y,s,t-1} = \frac{Q_{f,y,s,t}}{Q_{f,y,s,t-1}} $$
+$$\begin{aligned}
+Q_{f,y,s,t}^{\mathrm{i}} &= \frac{1}{\sum_j Q_{j,y,s,t-1}} \sum_j Q_{j,y,s,t}^{\mathrm{i}} \,\cdot\, Q_{j,y,s,t-1} \\
+&=
+\frac{1}{Q_{f,y,s,t-1}} \sum_j \frac{Q_{j,y,s,t}}{Q_{j,y,s,t-1}} \,\cdot\, Q_{j,y,s,t-1} = \frac{Q_{f,y,s,t}}{Q_{f,y,s,t-1}}
+\end{aligned}$$
 Fylkesindeks for flere måneder er basert på
 
-$$Q_{f,y,\Sigma s, t} = \sum_{j,h,d,s} Q_{j,h,d,y,s,t}  \quad \exists \, Q_{j,h,d,y,s,t-1} \,,$$
+$$Q_{f,y,\sum s, t} = \sum_{j,h,d,s} Q_{j,h,d,y,s,t}  \quad \exists \, Q_{j,h,d,y,s,t-1} \,,$$
 som gir
 
-$$Q_{f,y,\Sigma s,t}^{\mathrm{i}} = \frac{Q_{f,y,\Sigma s,t}}{Q_{f,y,\Sigma s,t-1}} \,.$$
+$$Q_{f,y,\sum s,t}^{\mathrm{i}} = \frac{Q_{f,y,\sum s,t}}{Q_{f,y,\sum s,t-1}} \,.$$
 
 
 ## Indeks over flere år
@@ -299,17 +301,21 @@ Dette gjelder også for aggregerte indekser.
 
 
 ##	Aggregerte indekser
-Vegtrafikkindeksen på grunnivå, dvs. for hvert fylke og hver vegkategori, skal alltid være forholdet mellom de respektive trafikkvolumene. Aggregerte indekser skal alltid være et vektet gjennomsnitt av indeksen på grunnivå/lavere nivå.
+Vegtrafikkindeksen på grunnivå, dvs. for hvert fylke og hver vegkategori, skal alltid være forholdet mellom de respektive trafikkvolumene i beregningsår og basisår. Aggregerte indekser skal alltid være et vektet gjennomsnitt av indeksen på grunnivå/lavere nivå.
 
-Trafikkarbeidsvekter
+Vektene som benyttes er basert på trafikkarbeid per fylke og vegkategori. Trafikkarbeid er definert som totalt antall kjørte kilometer for alle kjøretøy innen et område. Trafikkarbeidet beregnes ut fra at alle strekninger på riks- og fylkesvegnettet er tilknyttet en verdi for årsdøgntrafikk (ÅDT). Hver ÅDT-verdi er knyttet til en strekning kalt trafikklenke, og trafikkarbeidet for en trafikklenke er lenkens lengde i kilometer multiplisert med ÅDT (antall kjøretøy per dag) multiplisert med antall dager i året (365). Trafikkarbeidet måles derfor i antall kjørte kilometer per år. Trafikkarbeidet kan deretter summeres opp per fylke og vegkategori.
 
-Sammenhengen mellom fylker og landsdeler
+Skal indekser for flere fylker $f$ slås sammen til en indeks for landsdel $l$, vektes de enkelte fylkene med sitt relative trafikkarbeid $T$. Relativ vekt $w$ er gitt ved
 
-Aggregeringsveger
+$$
+w_{f,t} = \frac{T_{f,t}}{\sum_{f} T_{f,t}}.
+$$
 
+Vektene som skal benyttes er ikke regnet ut for enkeltmåneder, men for et helt år, så det er ingen månedsavhengighet ($s$) i formelen. Dette betyr at de samme vektene benyttes for månedsindekser, som for indekser over flere måneder. Vektene beregnes med data fra basisåret $t-1$, og dette gir at indeksen for landsdel $l$ er
 
-
-
+$$
+Q_{l,s,t}^{\mathrm{i}} = \sum_{f} w_{f,t-1}  Q_{f,s,t}^{\mathrm{i}}.
+$$
 
 
 # Usikkerhet i indekstallene
@@ -326,7 +332,7 @@ $$G_j(Q_j) = \frac{
 
 Dekningsgraden er altså den relative andelen i prosent av antall timer med indeksdata delt på antallet timer en skulle hatt. For aggregerte indekser er dekningsgraden den sammensatte dekningsgraden på alle punktindeksene:
 
-$$G_b(Q_b) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 \,\% \,. $$
+$$G_f(Q_f) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 \,\% \,. $$
 
 
 ## Statistisk variasjon
@@ -334,16 +340,22 @@ Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg 
 
 
 ### Standardavvik
-For byindeksen $Q^{\mathrm{i}}$ er et forventningsrett, vektet standardavvik 
+For indeksen $Q^{\mathrm{i}}$ er et forventningsrett, vektet standardavvik 
 
-$$\sigma_{b,s,t} = \sqrt{\frac{1}{1- \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{b,s,t}^{\mathrm{ip}} \right)^2 \right) }$$
+$$
+\sigma_{f,s,t} = 
+\sqrt{\frac{1}{1- \sum_j 
+\left( \frac{Q_{j,s,t-1}}{Q_{f,s,t-1}} \right)^2} 
+\sum_j \left( \frac{Q_{j,s,t-1}}{Q_{f,s,t-1}} 
+\left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{f,s,t}^{\mathrm{ip}} \right)^2 \right) }
+$$
 Her er det brukt at trafikkvolumvektene er normaliserte, men ikke-stokastiske.
 
 
 ### Konfidensintervall
 Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
 
-$$K_{b,s,t} = \tau \frac{\sigma_{b,s,t}}{\sqrt{n_{b,s,t}}} \,,$$
+$$K_{f,s,t} = \tau \frac{\sigma_{f,s,t}}{\sqrt{n_{f,s,t}}} \,,$$
 hvor $n$ er antall trafikkregistreringspunkter.
 
 
