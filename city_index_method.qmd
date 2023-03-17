@@ -297,7 +297,12 @@ $$Q_{b,s,t}^{\mathrm{i}} = \frac{Q_{b,s,t}}{Q_{b,s,t-1}} \,.$$
 
 Alternativt kan byindeksen ses på som et vektet gjennomsnitt av enkeltpunktindeksene, der de normaliserte vektene dannes av trafikkvolumene fra basisåret:
 
-$$Q_{b,s,t}^{\mathrm{i}} = \frac{1}{\sum_j Q_{j,s,t-1}} \sum_j Q_{j,s,t}^{\mathrm{i}} \,\cdot\, Q_{j,s,t-1} = \frac{1}{Q_{b,s,t-1}} \sum_j \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \,\cdot\, Q_{j,s,t-1} = \frac{Q_{b,s,t}}{Q_{b,s,t-1}} $$
+$$\begin{aligned}
+Q_{b,s,t}^{\mathrm{i}} 
+&= \frac{1}{\sum_j Q_{j,s,t-1}} \sum_j Q_{j,s,t}^{\mathrm{i}} \,\cdot\, Q_{j,s,t-1} \\[0.9ex]
+&= \frac{1}{Q_{b,s,t-1}} \sum_j \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \,\cdot\, Q_{j,s,t-1} \\[0.9ex]
+&= \frac{Q_{b,s,t}}{Q_{b,s,t-1}} 
+\end{aligned}$$
 Byindeks for flere måneder er basert på
 
 $$Q_{b,\Sigma s, t} = \sum_{j,h,d,s} Q_{j,h,d,s,t}  \quad \exists \, Q_{j,h,d,s,t-1} \,,$$
@@ -310,15 +315,16 @@ $$Q_{b,\Sigma s,t}^{\mathrm{i}} = \frac{Q_{b,\Sigma s,t}}{Q_{b,\Sigma s,t-1}} \,
 For å beregne et estimat på en indeks over flere år, kan trafikkmengden fra de aktuelle årene benyttes eller alle mellomliggende års indekser multipliseres:
 
 $$\begin{aligned} 
-Q_{j,s,t,t-n}^{\mathrm{i}} &= \frac{Q_{j,s,t}}{Q_{j,s,t-n}} =
+Q_{j,s,t,t-n}^{\mathrm{i}} 
+&= \frac{Q_{j,s,t}}{Q_{j,s,t-n}} =
 \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \cdot  \frac{Q_{j,s,t-1}}{Q_{j,s,t-2}}
-\cdots \frac{Q_{j,s,t-n+1}}{Q_{j,s,t-n}} \\ 
-&=
-Q_{j,s,t,t-1}^{\mathrm{i}} \cdot Q_{j,s,t-1,t-2}^{\mathrm{i}}
+\cdots \frac{Q_{j,s,t-n+1}}{Q_{j,s,t-n}} \\[0.9ex]
+&= Q_{j,s,t,t-1}^{\mathrm{i}} \cdot Q_{j,s,t-1,t-2}^{\mathrm{i}}
 \cdots Q_{j,s,t-n+1,t-n}^{\mathrm{i}}
 \end{aligned}$$
 
 Dette gjelder også for aggregerte indekser.
+
 
 ## Usikkerhet i indekstallene
 Det er heftet usikkerhet ved flere ledd i kjeden fra datainnsamlingen til en aggregert indeks. Usikkerheten anslås ved hjelp av dekningsgrad og mål på statistisk variasjon.
@@ -341,25 +347,40 @@ $$G_b(Q_b) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 
 Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle veglenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg veglenker. Punktindeksene antas å være normalfordelte, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
 
 
-#### Standardavvik
-For byindeksen $Q^{\mathrm{i}}$ er et forventningsrett, vektet standardavvik 
+#### Varians
+For utvalget av punktindeksene er en forventningsrett estimator for variansen $\sigma^2_{s,t}$ gitt ut fra det vektede aritmetiske gjennomsnittet, som er selve byindeksen  $Q_{b,s,t}^{\mathrm{ip}}$, slik at
 
-$$\sigma_{b,s,t} = \sqrt{\frac{1}{1- \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{b,s,t}^{\mathrm{ip}} \right)^2 \right) }$$
+$$\begin{aligned}
+{{}\hat{\sigma}^\mathrm{p}_{s,t}}^{2} 
+&= \hat{\mathrm{Var}}(Q_{j,s,t}^{\mathrm{ip}}) \\[0.9ex]
+&= \frac{1}{1- \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{b,s,t}^{\mathrm{ip}} \right)^2 \right) \\[0.9ex]
+&= \frac{10^4}{1- \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \left(  Q_{j,s,t}^{\mathrm{i}} - Q_{b,s,t}^{\mathrm{i}} \right)^2 \right) \\[0.9ex]
+&= 10^4 {{}\hat{\sigma}^\mathrm{i}_{s,t}}^2 
+\end{aligned}$$
 Her er det brukt at trafikkvolumvektene er normaliserte, men ikke-stokastiske.
 
 
-#### Konfidensintervall
-Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
+#### Standardfeil
+For byindeksen er da standarfeilen gitt ved
 
-$$K_{b,s,t} = \tau \frac{\sigma_{b,s,t}}{\sqrt{n_{b,s,t}}} \,,$$
-hvor $n$ er antall trafikkregistreringspunkter.
+$$\hat{\sigma}_{b,s,t} = \sqrt{\sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2 \hat{\sigma}^2_{s,t} }$$
 
 
 #### Variansen til indeks over to år
 Indeks over to år beregnes ved å multiplisere de to indeksverdiene $Q^{\mathrm{i}}$. Variansen er da gitt ved 
 
-$$\mathrm{Var}(Q^{\mathrm{i}}_1 \cdot Q^{\mathrm{i}}_2) =  
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_1) \cdot \mathrm{Var}(Q^{\mathrm{i}}_2)}{n_1 n_2} +
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_1)}{n_1} \cdot Q^{\mathrm{i}2}_2 +
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_2)}{n_2} \cdot Q^{\mathrm{i}2}_1 \,.$$
+$$\begin{aligned}
+{{}\hat{\sigma}^\mathrm{i}_{t-1,t}}^2 
+&= \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1} \cdot Q^{\mathrm{i}}_{t}) \\[0.9ex]
+&= \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1}) \cdot \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t}) +
+\hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1}) \cdot {Q^{\mathrm{i}}_{t}}^2 +
+\hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t}) \cdot {Q^{\mathrm{i}}_{t-1}}^2 \,.
+\end{aligned}$$
 
+
+#### Konfidensintervall
+Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
+
+$$Q_{b,s,t}^{\mathrm{ip}} \pm \tau_{0.975, n-1} \hat{\sigma}^{\mathrm{p}}_{b,s,t} \,,$$
+
+hvor $n$ er antall trafikkregistreringspunkt som bidrar til den aktuelle byindeksen.
