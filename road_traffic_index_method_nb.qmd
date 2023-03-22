@@ -66,7 +66,7 @@ borderline <- officer::fp_border(color = "black", style = "solid", width = 1)
 
 
 # Datagrunnlag
-Vegtrafikkindeksen er en metode for å estimere endring i trafikkmengde på det norske riks- og fylkesvegnettet. Indeksen beregnes for  fylkene, lansdelene samt for hele landet samlet. 
+Vegtrafikkindeksen er en metode for å estimere endring i trafikkmengde på det norske riks- og fylkesvegnettet. Indeksen beregnes for  fylkene og lansdelene, samt for hele landet samlet. 
 
 Vegtrafikkindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkter, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med Vegtrafikkindeksen omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
 
@@ -291,7 +291,7 @@ For å beregne et estimat på en indeks over flere år, kan trafikkmengden fra d
 $$\begin{aligned} 
 Q_{j,s,t,t-n}^{\mathrm{i}} &= \frac{Q_{j,s,t}}{Q_{j,s,t-n}} =
 \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \cdot  \frac{Q_{j,s,t-1}}{Q_{j,s,t-2}}
-\cdots \frac{Q_{j,s,t-n+1}}{Q_{j,s,t-n}} \\ 
+\cdots \frac{Q_{j,s,t-n+1}}{Q_{j,s,t-n}} \\[0.9ex]
 &=
 Q_{j,s,t,t-1}^{\mathrm{i}} \cdot Q_{j,s,t-1,t-2}^{\mathrm{i}}
 \cdots Q_{j,s,t-n+1,t-n}^{\mathrm{i}}
@@ -301,7 +301,7 @@ Dette gjelder også for aggregerte indekser.
 
 
 ##	Aggregerte indekser
-Vegtrafikkindeksen på grunnivå, dvs. for hvert fylke og hver vegkategori, skal alltid være forholdet mellom de respektive trafikkvolumene i beregningsår og basisår. Aggregerte indekser skal alltid være et vektet gjennomsnitt av indeksen på grunnivå/lavere nivå.
+Vegtrafikkindeksen på grunnivå, dvs. for hvert fylke og hver vegkategori, skal alltid være forholdet mellom de respektive trafikkvolumene i beregningsår og basisår. Aggregerte indekser skal alltid være et vektet gjennomsnitt av indeksen på lavere nivå.
 
 Vektene som benyttes er basert på trafikkarbeid per fylke og vegkategori. Trafikkarbeid er definert som totalt antall kjørte kilometer for alle kjøretøy innen et område. Trafikkarbeidet beregnes ut fra at alle strekninger på riks- og fylkesvegnettet er tilknyttet en verdi for årsdøgntrafikk (ÅDT). Hver ÅDT-verdi er knyttet til en strekning kalt trafikklenke, og trafikkarbeidet for en trafikklenke er lenkens lengde i kilometer multiplisert med ÅDT (antall kjøretøy per dag) multiplisert med antall dager i året (365). Trafikkarbeidet måles derfor i antall kjørte kilometer per år. Trafikkarbeidet kan deretter summeres opp per fylke og vegkategori.
 
@@ -336,34 +336,50 @@ $$G_f(Q_f) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 
 
 
 ## Statistisk variasjon
-Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle veglenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg veglenker. Punktindeksene antas å være normalfordelte, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
+Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle trafikklenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg trafikklenker. Gjennomsnittet av punktindeksene antas å være normalfordelt, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
 
 
-### Standardavvik
-For indeksen $Q^{\mathrm{i}}$ er et forventningsrett, vektet standardavvik 
+#### Varians
+For utvalget av punktindeksene er en forventningsrett estimator for variansen $\sigma^2_{s,t}$ gitt ut fra det vektede aritmetiske gjennomsnittet, som er selve fylkesindeksen for en vegkategori  $Q_{f,y,s,t}^{\mathrm{ip}}$, slik at
 
-$$
-\sigma_{f,s,t} = 
-\sqrt{\frac{1}{1- \sum_j 
-\left( \frac{Q_{j,s,t-1}}{Q_{f,s,t-1}} \right)^2} 
-\sum_j \left( \frac{Q_{j,s,t-1}}{Q_{f,s,t-1}} 
-\left(  Q_{j,s,t}^{\mathrm{ip}} - Q_{f,s,t}^{\mathrm{ip}} \right)^2 \right) }
-$$
+$$\begin{aligned}
+{{}\hat{\sigma}^\mathrm{p}_{j \in (f,y),s,t}}^{2} 
+&= \hat{\mathrm{Var}}(Q_{j,y,s,t}^{\mathrm{ip}}) \\[0.9ex]
+&= \frac{1}{1- \sum_j \left( \frac{Q_{j,y,s,t-1}}{Q_{f,y,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,y,s,t-1}}{Q_{f,y,s,t-1}} \left(  Q_{j,y,s,t}^{\mathrm{ip}} - Q_{f,y,s,t}^{\mathrm{ip}} \right)^2 \right) \\[0.9ex]
+&= \frac{10^4}{1- \sum_j \left( \frac{Q_{j,y,s,t-1}}{Q_{f,y,s,t-1}} \right)^2} \sum_j \left( \frac{Q_{j,y,s,t-1}}{Q_{f,y,s,t-1}} \left(  Q_{j,y,s,t}^{\mathrm{i}} - Q_{f,y,s,t}^{\mathrm{i}} \right)^2 \right) \\[0.9ex]
+&= 10^4 {{}\hat{\sigma}^\mathrm{i}_{j \in (f,y),s,t}}^2 
+\end{aligned}$$
+
 Her er det brukt at trafikkvolumvektene er normaliserte, men ikke-stokastiske.
 
 
-### Konfidensintervall
-Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
+#### Standardfeil
+For fylkesindeksen for en vegkategori er da standardfeilen gitt ved
 
-$$K_{f,s,t} = \tau \frac{\sigma_{f,s,t}}{\sqrt{n_{f,s,t}}} \,,$$
-hvor $n$ er antall trafikkregistreringspunkter.
+$$\hat{\sigma}_{f,y,s,t} = \sqrt{\sum_j \left( \frac{Q_{j,y,s,t-1}}{Q_{f,y,s,t-1}} \right)^2 \hat{\sigma}^2_{j \in (f,y),s,t} }$$
+
+For fylkesindeksen for begge vegkategorier samlet er da standardfeilen gitt ved
+
+$$\hat{\sigma}_{f,s,t} = \sqrt{\sum_y w_{f,y,t-1}^{2} \hat{\sigma}^2_{f,y,s,t} }$$
 
 
-### Variansen til indeks over to år
+
+#### Variansen til indeks over to år
 Indeks over to år beregnes ved å multiplisere de to indeksverdiene $Q^{\mathrm{i}}$. Variansen er da gitt ved 
 
-$$\mathrm{Var}(Q^{\mathrm{i}}_1 \cdot Q^{\mathrm{i}}_2) =  
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_1) \cdot \mathrm{Var}(Q^{\mathrm{i}}_2)}{n_1 n_2} +
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_1)}{n_1} \cdot Q^{\mathrm{i}2}_2 +
-\frac{\mathrm{Var}(Q^{\mathrm{i}}_2)}{n_2} \cdot Q^{\mathrm{i}2}_1 \,.$$
+$$\begin{aligned}
+{{}\hat{\sigma}^\mathrm{i}_{t-1,t}}^2 
+&= \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1} \cdot Q^{\mathrm{i}}_{t}) \\[0.9ex]
+&= \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1}) \cdot \hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t}) +
+\hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t-1}) \cdot {Q^{\mathrm{i}}_{t}}^2 +
+\hat{\mathrm{Var}}(Q^{\mathrm{i}}_{t}) \cdot {Q^{\mathrm{i}}_{t-1}}^2 \,.
+\end{aligned}$$
+
+
+#### Konfidensintervall
+Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
+
+$$Q_{t}^{\mathrm{ip}} \pm \tau_{0.975, n-1} \hat{\sigma}^{\mathrm{p}}_{t} \,,$$
+
+hvor $n$ er antall trafikkregistreringspunkt som bidrar til den aktuelle områdeindeksen.
 

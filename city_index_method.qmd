@@ -34,20 +34,9 @@ crossref:
 # Packages ####
 base::Sys.setlocale(locale = "nb.utf8")
 library(tidyverse)
-#library(rmarkdown)
-#library(leaflet)
 library(knitr)
 library(flextable)
-#library(ghql)
-#library(jsonlite)
-#library(httr)
-#library(lubridate)
-#library(clock)
-#library(RColorBrewer)
-#library(webshot)
 library(officer) # fp_border color in flextable
-#library(officedown)
-#library(scales)
 
 # knitr options ####
 knitr::opts_chunk$set(
@@ -344,7 +333,7 @@ $$G_b(Q_b) = \frac{\sum_j h_{j,s,t}^{\mathrm{i}}}{h_{j,s,t} \sum_j 1} \cdot 100 
 
 
 ### Statistisk variasjon
-Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle veglenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg veglenker. Punktindeksene antas å være normalfordelte, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
+Trafikkregistreringspunktene som bidrar med data til indeksen utgjør et utvalg av alle trafikklenker i et område. Selv om plasseringen av registreringspunktene er valgt med omhu med tanke på datakvalitet og spredning på vegnettet, antas det at de likevel representerer et tilnærmet tilfeldig og representativt utvalg trafikklenker. Gjennomsnittet av punktindeksene antas å være normalfordelt, men standardavviket er ikke kjent, og må estimeres for hvert tilfelle.
 
 
 #### Varians
@@ -361,7 +350,7 @@ Her er det brukt at trafikkvolumvektene er normaliserte, men ikke-stokastiske.
 
 
 #### Standardfeil
-For byindeksen er da standarfeilen gitt ved
+For byindeksen er da standardfeilen gitt ved
 
 $$\hat{\sigma}_{b,s,t} = \sqrt{\sum_j \left( \frac{Q_{j,s,t-1}}{Q_{b,s,t-1}} \right)^2 \hat{\sigma}^2_{s,t} }$$
 
@@ -381,6 +370,6 @@ $$\begin{aligned}
 #### Konfidensintervall
 Alle indekstall skal oppgis med et tosidig konfidensintervall på 95 %-nivå. Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling. Med konfidensfaktor $\tau$ gitt av $t$-fordeling, er konfidensintervallet
 
-$$Q_{b,s,t}^{\mathrm{ip}} \pm \tau_{0.975, n-1} \hat{\sigma}^{\mathrm{p}}_{b,s,t} \,,$$
+$$Q_{t}^{\mathrm{ip}} \pm \tau_{0.975, n-1} \hat{\sigma}^{\mathrm{p}}_{t} \,,$$
 
 hvor $n$ er antall trafikkregistreringspunkt som bidrar til den aktuelle byindeksen.
