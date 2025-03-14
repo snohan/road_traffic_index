@@ -1,0 +1,354 @@
+---
+format: 
+  pdf:
+    toc: true
+    number-sections: true
+    toc-title: Innhold
+    mainfont: "Arial"
+    include-in-header:
+      text: |
+        \newfontfamily\sectionfont[Color=ed9300]{Arial}
+        \newfontfamily\subsectionfont[Color=444f55]{Arial}
+        \newfontfamily\subsubsectionfont[Color=ed9300]{Arial}
+        \addtokomafont{section}{\sectionfont}
+        \addtokomafont{subsection}{\subsectionfont}
+        \addtokomafont{subsubsection}{\subsubsectionfont}
+        \usepackage[font=small,textfont=it,labelsep=period]{caption}
+        \let\oldsection\section
+        \renewcommand\section{\clearpage\oldsection}
+crossref: 
+  tbl-title: "Tabell"
+  lot-title: "Tabeller"
+  tbl-prefix: ""
+  fig-title: "Figur"
+  lof-title: "Figurer"
+  fig-prefix: ""
+  title-delim: "."
+  eq-prefix: ""
+  sec-prefix: "kapittel"
+---
+
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+# Packages ####
+base::Sys.setlocale(locale = "nb.utf8")
+library(tidyverse)
+library(knitr)
+library(flextable)
+library(officer) # fp_border color in flextable
+
+# knitr options ####
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  cache = FALSE,
+  dpi = 150,
+  dev = "ragg_png",
+  tab.topcaption = TRUE
+  )
+
+# Flextable defaults
+flextable::set_flextable_defaults(
+  font.size = 8,
+  font.family = "Arial",
+  padding.bottom = .2,
+  padding.top = .4,
+  decimal.mark = ",",
+  big.mark = " ",
+  na_str = ""
+)
+
+borderline <- officer::fp_border(color = "black", style = "solid", width = 1)
+```
+
+
+# Et mål på endring
+En trafikkindeks skal estimere endringen i trafikkens omfang mellom to tidsperioder for et gitt område.
+
+
+## Ulike indeksmetoder
+Det er tre ulike metoder å beregne indeks på som skiller seg ut fra hvilke metadata som er tilgjengelig:
+
+- *sykkelindeks*: basert på registrert trafikkmengde i et utvalg punkt fra en populasjon av ukjent størrelse
+- *byindeks*: basert på registrert trafikkmengde i et utvalg punkt, samt trafikkarbeidet disse representerer i en populasjon av kjent størrelse
+- *vegtrafikkindeks*: basert på samme som byindeks, men med stratifiseringsvekter for vegkategori og fylke
+
+
+## Datagrunnlag
+Beskrivelsene i dette notatet baserer seg på antakelsen om at vi har et kvalitetssikret datagrunnlag fra et representativt utvalg indekspunkt.
+
+
+## Kjøretøyklassifisering
+Hvordan sørge for at indekserper kjøretøyklasse henger sammen med indeks for ingen klasseinndeling?
+
+
+## Manglende data
+Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgraden angir hvor mye data av god nok kvalitet det er i et tidsintervall, sammenlignet med det det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
+
+Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad.
+
+Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
+
+Dekningsgraden beregnes basert på registreringspunktets operasjonelle status og eventuelle manuelle merkinger.
+
+Hvordan hensynta manglende data i usikkerhetsestimeringen?
+
+
+## Endringer i vegnettet
+Byindekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
+
+Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Det er da tre ulike scenarioer:
+
+1. Det totale trafikkarbeidet i området er fortsatt det samme. Omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, og de nye rutevalgene medfører ikke økt kjørelengde eller kostnad slik at turetterspørselen er den samme.
+2. Det totale trafikkarbeidet i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og har økt kostnad som gjør turetterspørselen lavere.
+3. Det totale trafikkarbeidet i området går opp som følge av at omkjøringsruter blir lengre uten at turetterspørselen synker tilsvarende.
+
+Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2 og 3. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
+
+Er det et byindekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre byindekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av byindekspunktene der. Nedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
+
+Når en stengt veg blir gjenåpnet, vil det bli en ny omfordeling av trafikken. Situasjonen kan da være tilbake til slik den var opprinnelig, eller den kan ha blitt endret permanent som følge av endringer i vegens egenskaper.
+
+Et annet eksempel er når helt nye veganlegg åpnes og avlaster eksisterende veger. Dette er gjerne med på å øke turetterspørselen. Da indeksen sammeligner trafikken for hvert punkt, vil ikke nye veger kunne tas inn i datagrunnlaget det første året. Punkt på omkringliggende vegnett som blir avlastet må tas ut av datagrunnlaget for et år etter åpning.
+
+Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Indekspunkt som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+
+
+# Indeksteori
+Formålet med en konsumprisindeks er å måle endringen i prisnivået på produktene (varer og tjenester) som husholdningene kjøper. Formålet med en trafikkindeks er å måle endringen i trafikknivået på et utvalg veger.
+
+Definisjoner av sentrale størrelser er definert i tabell @tbl-quantities.
+
+::: {#tbl-quantities}
+| Symbol          | Betydning i konsumprisindeks     | Betydning i trafikkindeks                     |
+|-----------------|----------------------------------|-----------------------------------------------|
+| $n$             | produkt                          | indekspunkt                                   |
+| $N$             | antall ulike produkter           | antall indekspunkter                          |
+| $t$             | periode                          | periode                                       |
+| $q_{tn}$        | mengde av produkt                | kjørelengden representert ved indekspunkt     |
+| $p_{tn}$        | gjennomsnittlig pris for produkt | gjennomsnittlig trafikkmengde ved indekspunkt |
+| $p_{tn} q_{tn}$ | forbruk av produkt               | trafikkarbeid ved indekspunkt                 |
+
+Sammenhengen mellom størrelser i konsumpris- og trafikkindeks.
+
+:::
+
+Her er kjørelengden som et indekspunkt representerer lik lengden av trafikklenken som indekspunktet befinner seg på.
+
+Alle gjennomsnittspriser og produktmengder kan benevnes på vektorform med henholdsvis $p^t$ og $q^t$.
+
+Det er mange måter å beregne en indeks på. For konsumprisindeks er det i hovedsak fire ulike måter å utlede indeksformler på:
+
+- fast handlekurv
+- aksiomatisk
+- stokastisk
+- økonomisk
+
+Andre relevante problemstillinger for analogien:
+
+- prisindekser når kun prisinformasjon er tilgjengelig (mengden varer er ukjent)
+- sesongprodukter
+- endret kvalitet på produkter
+- avvik i kjedet indeks
+
+
+## Fast handlekurv
+For å sammenligne prisnivået i to perioder benyttes en fast og representativ "handlekurv", altså et utvalg produkter. En enkel indeks er da
+
+$$
+\text{Lowe-indeks} = \frac{\text{samlet pris for handlekurv nå}}{\text{samlet pris for handlekurv da}} = 
+P_{\text{L}}(p^0,p^1,q^0,q^1) = \frac{\sum_n p_{1n} q_{1n}}{\sum_n p_{0n} q_{0n}}.
+$$ {#eq-lowe}
+
+En tilsvarende trafikkindeks vil da gjelde for et fast utvalg indekspunkter og er forholdet mellom summen av trafikkarbeidet i de to periodene.
+
+Ett mulig valg er å benytte kun produktmengdene slik de var i et basisår $q^0$. Da har vi
+
+$$
+\text{Laspeyre-indeks} = P_{\text{L}}(p^0,p^1,q^0) = \frac{\sum_n p_{1n} q_{0n}}{\sum_n p_{0n} q_{0n}}.
+$$ {#eq-laspeyre}
+
+Tilsvarende for trafikkindeks er å benytte kjørelengdene fra basisåret.
+
+Om vi i stedet velger å sammenligne med produktmengdene (kjørelengdene) i beregningsåret, får vi
+
+$$
+\text{Paasche-indeks} = P_{\text{P}}(p^0,p^1,q^1) = \frac{\sum_n p_{1n} q_{1n}}{\sum_n p_{0n} q_{1n}}.
+$$ {#eq-paasche}
+
+Både (@eq-laspeyre) og (@eq-paasche) er like representative når det gjelder å måle endringen mellom periodene, men de vil gi litt ulikt resultat. Det kan derfor være nyttig med et symmetrisk gjennomsnitt av disse to, og et geometrisk gjennomsnitt er 
+
+$$
+\text{Fisher-indeks} = P_{\text{F}}(p^0,p^1,q^0,q^1) = ( P_{\text{L}} P_{\text{P}} )^{1/2}.
+$$ {#eq-fisher}
+
+Et annet alternativ er å vekte prisene med det geometriske gjennomsnittet av produktmengdene produkt for produkt i de to periodene:
+
+$$
+\text{Walsh-indeks} = P_{\text{W}}(p^0,p^1,q^0,q^1) = \frac{ \sum_n p_{1n} (q_{0n}q_{1n})^{1/2} }{ \sum_n p_{0n} (q_{0n}q_{1n})^{1/2}}.
+$$ {#eq-walsh}
+
+En mulighet for Walsh-indeksen (@eq-walsh) er å bytte om på definisjonen av $p$ og $q$, og beregne en indeks som tar det geometriske gjennomsnittet av trafikkmengdene indekspunkt for indekspunkt i de to periodene.
+
+En felles betegnelse for alle indeksene omtalt i dette avsnittet er *bilaterale* indekser, altså at de sammenligner *to* perioder. Fisher-indeksen anses som den beste varianten for sammenligning av prisnivå.
+
+
+## Fast utvalg indekspunkter
+Fast handlekurv betyr det samme i økonomisk sammenheng som et fast utvalg indekspunkter i trafikksammenheng. Med fast menes her at det er det samme utvalget i begge periodene som inngår i den bilaterale indeksen. Utvalget kan endre seg til neste periode, så lenge det kan sies å være representativt.
+
+Slik $q$ er definert for trafikkindeks, vil denne ikke være tidsavhengig og vi har at $q_{0n} = q_{1n}$ og det vil ikke være noen forskjell på noen av de ovenfor nevnte indeksene. Vi har da en generell indeksformel gitt som
+
+$$
+\text{trafikkarbeidsindeks} = P_{\text{tw}}(p^0,p^1,q) = \frac{\sum_n p_{1n} q_{n}}{\sum_n p_{0n} q_{n}}.
+$$ {#eq-w_indeks}
+
+Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Ved å multiplisere både teller og nevner med $1/N$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er denne indeksformelen som er benyttet i Danmark.
+
+Hvis vi definerer trafikkarbeidet
+
+$$
+W_{tn} = p_{tn}q_{n}
+$$
+har vi at 
+
+$$
+\frac{W_{tn}}{p_{tn}} = q_{n}.
+$$
+Definerer vi videre den normaliserte andelen trafikkarbeid som
+
+$$
+w_{tn} = \frac{W_{tn}}{\sum_n W_{tn}},
+$$
+så har vi at
+
+$$
+\begin{aligned}
+P_{\text{tw}}(p^0,p^1,q) &= \frac{\sum_n p_{1n} q_{n}}{\sum_n p_{0n} q_{n}} \\
+&= \frac{\sum_n p_{1n} \frac{W_{0n}}{p_{0n}}}{\sum_n W_{0n}} =
+\frac{\sum_n \frac{p_{1n}}{p_{0n}} W_{0n}}{\sum_n W_{0n}} \\
+&= \sum_n w_{0n} \frac{p_{1n}}{p_{0n}}.
+\end{aligned}
+$$ {#eq-w_indeks_2}
+Altså kan denne indeksen ses på som et vektet gjennomsnitt av trafikkmengdeindeksen med trafikkarbeidsvekter fra basisåret.
+
+
+
+
+## Aksiomatisk metode
+Denne metoden starter med en ukjent formel for en bilateral indeks, og prøver å finne funksjonens form ved at den må oppfylle visse regler. En slik regel kan være en såkalt svak identitetstest, som sier at dersom det ikke er endring i hverken pris eller mengde, så skal indeksen være lik 1. En tilsvarende sterk identitetstest vil si at indeksen er lik dersom kun prisen er uendret. 
+
+Også her anses Fisher-indeksen som den beste for sammenligning av prisnivå.
+
+
+## Stokastisk metode
+Utgangspunktet for denne metoden er prisendringen $p_{1n}/p_{0n}$ for produkt $n$. En statistisk modell kan da være
+
+$$
+\frac{p_{1n}}{p_{0n}}= \alpha + \epsilon_{tn}, \quad n \in (1,N)
+$$
+hvor $\alpha$ er den generelle endringen fra periode 0 til 1, og $\epsilon$ er en uavhengig fordelt feil med null i gjennomsnitt og konstant varians. Ved å velge $\alpha$ som løsningen på en regresjon med minste kvadraters metode finner vi
+
+$$
+\text{Carli-indeks} = P_{\text{C}}(p^0,p^1) = \frac{1}{N}\sum_n \frac{p_{1n}}{p_{0n}}
+$$ {#eq-carli}
+som er det aritmetiske gjennomsnittet av alle prisendringene. Denne er altså uavhengig av produktmengdene.
+
+Hvis utgangspunktet i stedet er $\ln (p_{1n}/p_{0n})$ får vi
+
+$$
+\text{Jevons-indeks} = P_{\text{J}}(p^0,p^1) = \prod_n \left( \frac{p_{1n}}{p_{0n}} \right)^{(1/N)}
+$$
+som er det geometriske gjennomsnittet av prisendringene per produkt.
+
+Både Carli- og Jevons-indeksene er uten vekter. Men for å kunne vektlegge ulike produkters viktighet kan man i stedet benytte en vektet minste kvadraters metode i utledningen. Et mål på et produkts viktighet er dets andel av det totale forbruket av $N$ produkter:
+
+$$
+s_{tn} = \frac{p_{tn} q_{tn}}{\sum_n p_{tn} q_{tn}}.
+$$ {#eq-st}
+Det aritmetiske gjennomsnittet av denne andelen over to perioder er da 
+
+$$
+s_n = \frac{1}{2} s_{0n} + \frac{1}{2} s_{1n}
+$$ {#eq-s}
+Dette gir oss dermed
+
+$$
+\text{Törnqvist-indeks} = P_{\text{T}}(p^0,p^1,q^0,q^1) = \prod_n \left( \frac{p_{1n}}{p_{0n}} \right)^{s_n},
+$$ {#eq-tornqvist}
+som er et andelsvektet geometrisk gjennomsnitt av forbruksendringene. Dette anses som den beste indeksen i en stokastisk og deskriptiv tilnærming.
+
+For en trafikkindeks på Törnqvist-metoden vil $s$ være andelen trafikkarbeid ved indekspunktet sammenlignet med det totale trafikkarbeidet som måles i alle indekspunktene til sammen.
+
+Tilsvarende vil en vektet versjon av Carli-indeksen være det vektede aritmetiske gjennomsnittet:
+
+$$
+\text{vektet Carli-indeks} = P_{\text{wC}}(p^0,p^1) = \sum_n s_n \frac{p_{1n}}{p_{0n}}
+$$ {#eq-carli_w}
+
+
+## Økonomisk tilnærming
+Den økonomiske tilnærmingsmåten er den mest kompliserte av de fire hovedtilnæringsmåtene. Det tas utgangspunkt i at forbrukerne velger sitt forbruk slik at det maksimerer velferd og nytte, gitt de økonomiske rammene de har til disposisjon. Denne tilnærmingsmåten tar hensyn til at når et produkt har relativt lav pris vil det få større omsetning. Denne indeksmetoden vil ikke bare gi en indikasjon på endringen i prisnivået, men også endringen i selve forbruket. Den økonomiske tilnærmingsmåten er nødvendig for å måle effektene av kvalitetsendringer i produkter, samt velferdseffekten av nye og utgåtte produkter.
+
+En forbruker ønsker å oppnå et visst nivå av nytte $u = f(q)$ med en minst mulig kostnad $C(u,p) = pq$. Derfor vil forbrukeren velge ut et sett produkter $N$ med tilhørende priser $p$ og mengder $q$. Da får vi 
+
+$$
+\text{Konüs-indeks} = P_{\text{K}}(u,p^0,p^1) = \frac{C(u,p^1)}{C(u,p^0)}.
+$$
+Her er det mulig å velge mellom nytten i periode 0 eller 1. Disse variantene vil da kunne sies å være av henholdsvis Laspeyre- og Paasche-type. Hvis det antas at $f(q)$ er en lineær, homogen funksjon kan kostfunksjonen skrives som $C(u,p) = uc(p)$ hvor $c$ er en enhetskostfunksjon. Hvis det videre antas at $c$ er lineær, gjenskapes Laspeyre-indeksen helt eksakt. Laspeyre-indeksen er altså et eksempel på en såkalt eksakt indeksformel.
+
+Dersom vi finner en formel for en bilateral indeks som er eksakt for en enhetskostfunksjon som også har en andre ordens Taylorrekke-tilnærming til en vilkårlig, kontinuerlig og to ganger deriverbar kostfunksjon, kalles den for superlativ. Fisher-, Törnqvist- og Walsh-indeksene er superlative.
+
+
+## Elementære indekser
+En elementær indeks er en indeks uten informasjon om $q$. Både Carli- og Jevons-indeksen er elementære. I tillegg finnes 
+
+$$
+\text{Dutot-indeks} = P_{\text{D}}(p^0,p^1) = \frac{ \frac{1}{N} \sum_n p_{1n} }{ \frac{1}{N} \sum_n p_{0n} } =
+\frac{ \sum_n p_{1n} }{ \sum_n p_{0n} },
+$$ {#eq-dutot}
+som altså er forholdet mellom gjennomsnittsprisene i de to periodene. Det er denne indeksformelen som er benyttet i dagens trafikkindekser, hvor forholdet er mellom trafikkmengdene i de to periodene.
+
+Jevons-indeksen er den beste elementære indeksen dersom det benyttes en aksiomatisk tilnærming.
+
+## Nye produkter
+Når nye produkter er introdusert i markedet, finnes det til å begynne ingen pris å sammenligne med, og derfor er produktet utelatt fra indeksen i den første perioden. 
+
+## Bortfall av data
+En svakhet ved bilaterale indekser er at over tid vil det oppstå manglende data. Se kap 7-10 i CPI manual.
+
+## Fast basisår
+Bilaterale indekser kan beregnes med et fast basisår. Men over tid vil gamle produkter utgå og nye produkter introduseres. Til slutt er ikke en indeks med fast basisår lenger representativ for dagens økonomiske markedsstruktur. Det samme vil oppstå i en trafikkindeks, hvor hvilke indekspunkter som er tilgjengelige vil endre seg over i tid i takt med endringer i vegnettet.
+
+Alternativet til et fast basisår, er å kjede årlige indekser.
+
+## Mulilaterale indekser
+Problemet med manglende data for et gitt produkt er større for en lengre tidsperiode.
+SPQ similarity linked index - les mer i CPI manual.
+
+
+# Valg av indeksmetode
+Vi ønsker en vektet trafikkindeks slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det måler. Blant indeksene nevnt ovenfor, er det da tre mulige valg: generell indeks, vektet Carli-indeks og Törnqvist-indeks.
+
+Hvordan takler metodene:
+
+- indekstester
+- bortfall av data
+- endringer i vegnettet
+- glidende indeks
+
+T og wC har begge ulempen at de ikke takler å dele på null. Altså kan de ikke eksplisitt ta inn i analysen en punkt som var stengt eller ikke-eksisterende i sammenligningsåret.
+
+## Indekstester
+Til hjelp i utvelgelsen av den best egnede metoden, kan vi se på hvilke indekstester som kan oppfylles.
+
+
+
+## Endring i glidende treårsperiode
+Indeksen kan sammenligne MDT for en gitt kalendermåned mellom to år, men vi kan benytte samme formel for å sammenlign gjennomsnittlig MDT for en vilkårlige perioder. For å sammenligne siste tre år med et gitt referanseår, vil p_1 være gjennomsnittlig MDT for siste 36 måneder, sammenlignet med gjennomsnittlig MDT for de 12 månedene i referanseåret (samme som ÅDT i dette tilfellet). For at bortfall av data ikke skal påvirke skjevt, må alle MDT-verdier være sesongjusterte.
+
+

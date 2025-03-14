@@ -4,12 +4,12 @@ format:
     toc: true
     number-sections: true
     toc-title: Innhold
-    mainfont: "Lucida Sans Unicode"
+    mainfont: "Arial"
     include-in-header:
       text: |
-        \newfontfamily\sectionfont[Color=ed9300]{Lucida Sans Unicode}
-        \newfontfamily\subsectionfont[Color=444f55]{Lucida Sans Unicode}
-        \newfontfamily\subsubsectionfont[Color=ed9300]{Lucida Sans Unicode}
+        \newfontfamily\sectionfont[Color=ed9300]{Arial}
+        \newfontfamily\subsectionfont[Color=444f55]{Arial}
+        \newfontfamily\subsubsectionfont[Color=ed9300]{Arial}
         \addtokomafont{section}{\sectionfont}
         \addtokomafont{subsection}{\subsectionfont}
         \addtokomafont{subsubsection}{\subsubsectionfont}
@@ -24,6 +24,7 @@ crossref:
   lof-title: "Figurer"
   fig-prefix: ""
   title-delim: "."
+  sec-prefix: "kapittel"
 ---
 
 ```{r}
@@ -53,7 +54,7 @@ knitr::opts_chunk$set(
 # Flextable defaults
 flextable::set_flextable_defaults(
   font.size = 8,
-  font.family = "Lucida Sans Unicode",
+  font.family = "Arial",
   padding.bottom = .2,
   padding.top = .4,
   decimal.mark = ",",
@@ -66,7 +67,7 @@ borderline <- officer::fp_border(color = "black", style = "solid", width = 1)
 
 
 # Formål
-Byindeks er en metode for å estimere endring i trafikkmengde på vegnettet i et byområde. Byindeksen brukes til oppfølging av byvekstavtaler og belønningsavtaler. Byvekstavtalene har mål om nullvekst i persontransport med bil: 
+Byindeks er en metode for å estimere endring i trafikkarbeid på vegnettet i et byområde. Byindeksen brukes til oppfølging av byvekstavtaler og belønningsavtaler. Byvekstavtalene har mål om nullvekst i persontransport med bil: 
 
 > I byområdene skal klimagassutslipp, kø, luftforurensning og støy reduseres gjennom effektiv arealbruk og ved at veksten i persontransporten tas med kollektivtransport, sykling og gange. 
 
@@ -74,72 +75,112 @@ Trafikkutviklingen for persontransport med bil, målt med byindeks og reisevaneu
 
 Nullvekstmålet skal måles ved at trafikkutviklingen vurderes på et treårs glidende gjennomsnitt, jf. brev fra Samferdselsdepartementet til de fire største byområdene datert 11.12.2019. Måloppnåelsen gjelder avtaleperioden sett under ett, som betyr at det er trafikknivået i referanseåret det skal sammenlignes med. Det skal være netto nullvekst i perioden.
 
+# Definisjon av begreper
+Med _avtaleområde_ menes hele arealet som inngår i de kommunene som er part i byvekstavtalen. De enkelte avtalene kan likevel beskrive eventuelle delområder som utenfor avtalen.
+
+Med _byområde_ menes den delen av avtaleområdet som er av bymessig karakter. Her inngår prioriterte vekstområder som ligger utenfor den mest sentrale delen, samt viktige ferdselsårer mellom disse. Det er dette området som byindeksen skal være representativ for.
+
+Med _randsone_ menes den mer landlige og spredtbygde delen av et avtaleområde. Her vil det ikke plasseres byindekspunkt.
+
+Med _byindekspunkt_ menes de trafikkregistreringspunktene som inngår i datagrunnlaget for beregning av en byindeks.
+
+
 
 # Datagrunnlag
-Byindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkter, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med byindeks omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
+Byindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkt og bomstasjoner. Disse omtales gjerne som "indekspunkt" og er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen.
 
-Indekspunktene skal være fordelt på riks- og fylkesveger, samt på enkelte, viktige kommunale veger, slik at byindeksen gir et representativt bilde av trafikkutviklingen i byområdet. 
+Indekspunktene skal være fordelt på riks- og fylkesveger, samt på enkelte, viktige kommunale veger, slik at byindeksen gir et representativt bilde av trafikkutviklingen i byområdet. Byindeksen skal måle nullvekst i de mest sentrale delene i avtaleområdet og dette omfatter de største tettstedene og sentrale veger mellom disse. Det er derfor ikke behov for byindekspunkt i de mest spredtbygde randsonene. 
+
+
+## Sesongjustering
+Alle indeksberegninger er basert på gjennsnittlig trafikkmengde per døgn for en kalendermåned.
 
 
 ## Kjøretøyklassifisering
-Datagrunnlaget for byindeksen består av kjøretøy klassifisert som “lette” kjøretøy. Trafikkregistreringsutstyret måler kjøretøylengde og lengder kortere enn 5,6 m tilsvarer i stor grad kjøretøy med tillatt totalvekt under 3,5 tonn. Det er noen unntak fra denne tilnærmingen, og det er hovedsaklig lette kjøretøy som er lengre enn 5,6 m (større varebiler, bobiler) og lette kjøretøy med henger. Der hvor det er en del slike kjøretøy vil trafikkregistreringsutstyret derfor systematisk overestimere andelen tunge kjøretøy. Endringen i mengden av trafikk med slike kjøretøy fanges dermed ikke opp av en indeks for lette kjøretøy.
-
-
-### Næringstransport
-En del næringstransport foretas med kjøretøy som blir målt til kortere enn 5,6 m og vil dermed inngå i datagrunnlaget til byindeksen. Det er med andre ord ikke mulig å skille på lette kjøretøy som inngår i nullvekstmålet og lette kjøretøy som ikke inngår i målet. Trafikkarbeidet som innhentes ved hjelp av reisevaneundersøkelser, vil imidlertid kun gjelde reisene som er omfattet av nullvekstmålet (private personbilturer inkludert reiser til og fra møter). Dersom byindeksen gir en vekst i trafikken mens reisevanedataene gir nullvekst, kan det antas at vekst i byindeks skyldes trafikk med lette kjøretøy som ikke omfattes av nullvekstmålet.
+Datagrunnlaget for byindeksen består av kjøretøy klassifisert som lette kjøretøy, det vil si kjøretøy med tillatt totalvekt under 3,5 tonn.
 
 
 ### Motorsykler
-Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre lette kjøretøy. Tidligere var ikke motorsykler en del av trafikkregistreringene, men dette ble gradvis innført (ulikt tidspunkt for hvert trafikkregistreringspunkt) i perioden 2015 - 2018. For indekser som ble beregnet til og med 2019 ble motorsykler holdt utenfor datagrunnlaget. Kriteriet for å filtrere ut motorsykler er at de klassifiseres som motorsykler eller har kjøretøylengde <= 1,8 m. Fra og med 2020 inngår motorsykler i datagrunnlaget, både i referanse- og beregningsår.
+Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre lette kjøretøy.
+
+
+## Næringstransport
+En del næringstransport foretas med lette kjøretøy og denne skal ikke omfattes av nullvekstmålet. I den registrerte trafikken er det ikke mulig å skille på reisens formål. Undersøkelser (REFERANSE TIL TØI-RAPPORT) viser at næringstransport utgjør omkring 12 % av trafikkarbeidet med lette kjøretøy i by. Dette er en relativt liten andel, og den antas å ha mindre enn eller lik vekst som den private trafikken. Byindeksen er derfor en god indikator på utviklingen i trafikkarbeid for privat trafikk med lette kjøretøy.
+
+Trafikkarbeidet som innhentes ved hjelp av reisevaneundersøkelser vil kun gjelde reiser som er omfattet av nullvekstmålet (private personbilturer inkludert reiser til og fra møter). Dersom byindeksen gir en vekst i trafikken mens reisevanedataene gir nullvekst, kan det antas at vekst i byindeks skyldes trafikk med lette kjøretøy som ikke omfattes av nullvekstmålet.
 
 
 ## Gjennomgangstrafikk
-I trafikkregistreringene er det ikke mulig å skille ut gjennomgangstrafikk fra lokal trafikk. Plasseringen til byindekspunktene kan ha mye å si for hvor mye gjennomgangstrafikk som blir med i datagrunnlaget. Data fra reisevaneundersøkelsen kan også si noe om andelen gjennomgangstrafikk i området.
+I trafikkregistreringene er det ikke mulig å skille ut gjennomgangstrafikk fra lokal trafikk. Hvilke veger byindekspunktene er plassert på er avgjørende for hvor mye gjennomgangstrafikk som blir med i datagrunnlaget. Basert på data fra TomTom er det gjort analyser på kjøreturer med opphav og destinasjon i og rundt de enkelte byområdene. Ut fra dette er det anslått en andel gjennomgangstrafikk for de ulike vegene. De vegene som har høy andel gjennomgangstrafikk bør ikke ha byindekspunkt. Likevel vil andelen gjennomgangstrafikk som er med i datagrunnlaget bli veldig lite dersom det kun er et fåtall punkt som fanger opp gjennomgangstrafikk når disse sammenstilles med all lokal trafikk som fanges opp av de øvrige byindekspunktene.
 
 
-## Datakvalitet
+# Datakvalitet
 Det tas hensyn til perioder hvor registreringsutstyret ikke har vært i drift, og perioder hvor trafikken i stor grad er påvirket av vegstenginger og omkjøringer. Registreringsutstyret skal ifølge kravspesifikasjonen få med seg minst 99 % av alle passerende kjøretøy når alt utstyr er i normal drift. Men av og til vil det være nedetid, og dermed blir det bortfall av deler av en måleserie. Et mål på datakvaliteten for et gitt tidsintervall er "dekningsgrad".
 
 
-### Dekningsgrad
-Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgrad angir hvor mye data av god nok kvalitet i et tidsintervall, sammenlignet med det det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
+## Dekningsgrad
+Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgraden angir hvor mye data av god nok kvalitet det er i et tidsintervall, sammenlignet med det det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
 
 Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad.
 
 Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
 
-Dekningsgraden beregnes basert på målestasjonens operasjonelle status og fulltallighet, samt eventuelle manuelle merkinger som gjelder for kjørefeltene på det aktuelle trafikkregistreringspunktet.
+Dekningsgraden beregnes basert på registreringspunktets operasjonelle status og eventuelle manuelle merkinger.
 
 
-#### Manuell merking
-Manuell merking brukes av de målestasjonsansvarlige til å legge inn informasjon om hendelser på vegen eller med registreringsutstyret som påvirker trafikkregistreringene. Perioder kan merkes per kjørefelt med:
+### Manuell merking
+Manuell merking brukes til å legge inn informasjon om hendelser på vegen eller med registreringsutstyret som påvirker trafikkregistreringene. Perioder kan merkes per kjørefelt med:
 
  - unormal trafikkmengde (påvirker trafikkindekser)
  - stengt veg (påvirker trafikkmengdestørrelser og trafikkindekser)
  - feil på utstyr (påvirker alle størrelser)
 
 
-#### Fulltallighet
-Registreringsutstyret legger på et løpenummer for hvert kjøretøy som registreres. Løpenummeret skal øke med 1 for hvert nye kjøretøy, og dersom noe går galt i lagring av registreringen, vil det oppdages at enkeltregistreringer mangler når det mangler løpenumre. «Fulltallighet» et mål på andel lagrede løpenumre, og beregner en prosentverdi for alle timer med data.
+## Stillestående kø
+Enkelte steder er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i byindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt.
 
 
-### Stillestående kø
-Med dagens trafikkregistreringsutstyr er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i byindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt.
+# Endringer i vegnettet
+Byindekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
 
+Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Det er da tre ulike scenarioer:
 
-### Spesielle trafikkforhold
-Trafikkregistreringspunktene som benyttes i byindeksen dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk i vegnettet som bare delvis fanges opp i datagrunnlaget. Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Da er det to ulike scenarioer:
+1. Det totale trafikkarbeidet i området er fortsatt det samme. Omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, og de nye rutevalgene medfører ikke økt kjørelengde eller kostnad slik at turetterspørselen er den samme.
+2. Det totale trafikkarbeidet i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og har økt kostnad som gjør turetterspørselen lavere.
+3. Det totale trafikkarbeidet i området går opp som følge av at omkjøringsruter blir lengre uten at turetterspørselen synker tilsvarende.
 
-1. Den totale trafikkmengden i området er fortsatt den samme, siden omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, samt at omkjøringen ikke tar så mye lengre tid at turetterspørselen går ned.
-2. Den totale trafikkmengden i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og med det tidkrevende, som gjør turetterspørselen lavere.
-
-Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
+Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2 og 3. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
 
 Er det et byindekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre byindekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av byindekspunktene der. Nedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
 
-Trafikkregistreringspunkter må derfor ses i sammenheng med langvarige hendelser på vegnettet som medfører omkjøringsruter.
+Når en stengt veg blir gjenåpnet, vil det bli en ny omfordeling av trafikken. Situasjonen kan da være tilbake til slik den var opprinnelig, eller den kan ha blitt endret permanent som følge av endringer i vegens egenskaper.
 
-Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Trafikkregistreringspunkter som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+Et annet eksempel er når helt nye veganlegg åpnes og avlaster eksisterende veger. Dette er gjerne med på å øke turetterspørselen. Da indeksen sammeligner trafikken for hvert punkt, vil ikke nye veger kunne tas inn i datagrunnlaget det første året. Punkt på omkringliggende vegnett som blir avlastet må tas ut av datagrunnlaget for et år etter åpning.
+
+Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Indekspunkt som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+
+
+
+
+
+
+# Områdeavgrensing
+Hvilket område byindeksen skal være representativ for danner utgangspunktet for å definere en populasjon med trafikklenker. Dette kan gjøres på følgende måte:
+
+1. Hent polygoner for kommunene som inngår i avtaleområdet, og slå sammen disse.
+2. I avtalen kan det være nevnt noen delområder i kommunene som likevel ikke inngår. Ta vekk disse delområdene. Polygonet vil nå dekke det som er definert som avtaleområdet.
+3. Hent alle polygoner for tettsteder beliggende innenfor avtaleområdet. Behold kun tettsteder med minst 1 000 innbyggere. Slå sammen disse polygonene. Resultatet kan bestå av flere polygoner som ikke henger sammen. Dette utgjør byområdet.
+4. Tilsvarende som for tettsteder, kan polygoner eller rutenett for ansatte og besøkende hentes, filtreres og slås sammen. Dette kan så benyttes for å utvide byområdet definert i forrige punkt for å fange opp steder utenfor tettbygd strøk som genererer mye trafikk som er relevant for byindeksen.
+5. Hent alle trafikklenker som ligger innenfor eller overlapper med byområdet definert i punkt 4.
+6. Ta vekk trafikklenker som ikke er på Europa-, riks- eller fylkesveg. Enkelte kommunale veger kan likevel tas med dersom de er viktige nok.
+7. Ta vekk trafikklenker med funksjonsklasse E.
+8. Ta vekk trafikklenker som har stor andel gjennomgangstrafikk.
+9. Om nødvendig, inkluder trafikklenker som gjør at vegnettet nå blir sammenhengende.
+
+Tettstedspolygonene lages av Statistisk sentralbyrå (SSB) og oppdateres årlig.
+
+
+# Representativitet
 
 
 # Endring i glidende treårsperiode

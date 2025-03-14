@@ -229,11 +229,11 @@ Indekser for døgninndelinger og kjøretøylengder beregnes med data som er filt
 Når det skal beregnes yrke- og helgedøgnindeks, vil indeksdata bli filtrert på type dag. Siden timesdata sammenlignes dato for dato, vil dette som regel medføre at ulike ukedager sammenlignes. Dette utjevnes ved å summere indeksdata for henholdsvis helgedager og yrkedager per måned og dele beregningsår på basisår, uavhengig av om antall talte timer er forskjellig i de to årene.
 
 
-# Beregningsmetode
+## Beregningsmetode
 Det vaskede datagrunnlaget utgjør nå en database med verdier fra matchede timer. Først beregnes trafikkvolum og indeks for enkeltpunkt, som senere benyttes for å finne verdier for et fylke.
 
 
-## Indeks per trafikkregistreringspunkt
+### Indeks per trafikkregistreringspunkt
 Månedsindeksen benytter indeksdata og er definert som
 
 $$Q_{j,s,t}^{\mathrm{i}} = \frac{Q_{j,s,t}}{Q_{j,s,t-1}} \,.$$
@@ -261,7 +261,7 @@ $$Q_{j,f,y,s,t}^{\mathrm{i}}.$$
 Det opereres her med to vegkategorier: Europa- og riksveger (ER) og fylkesveger (F).
 
 
-##	Fylkesindeks for hver vegkategori
+###	Fylkesindeks for hver vegkategori
 For vegtrafikkindeksen er det fylket som er det minste området det skal publiseres indekstall for. En indeks for fylke $f$, som inneholder registreringspunktene $j$, baseres på indeksdata
 
 
@@ -285,7 +285,7 @@ som gir
 $$Q_{f,y,\sum s,t}^{\mathrm{i}} = \frac{Q_{f,y,\sum s,t}}{Q_{f,y,\sum s,t-1}} \,.$$
 
 
-## Indeks over flere år
+### Indeks over flere år
 For å beregne et estimat på en indeks over flere år, kan trafikkmengden fra de aktuelle årene benyttes eller alle mellomliggende års indekser multipliseres:
 
 $$\begin{aligned} 
@@ -300,7 +300,7 @@ Q_{j,s,t,t-1}^{\mathrm{i}} \cdot Q_{j,s,t-1,t-2}^{\mathrm{i}}
 Dette gjelder også for aggregerte indekser.
 
 
-##	Aggregerte indekser
+###	Aggregerte indekser
 Vegtrafikkindeksen på grunnivå, dvs. for hvert fylke og hver vegkategori, skal alltid være forholdet mellom de respektive trafikkvolumene i beregningsår og basisår. Aggregerte indekser skal alltid være et vektet gjennomsnitt av indeksen på lavere nivå.
 
 Vektene som benyttes er basert på trafikkarbeid per fylke og vegkategori. Trafikkarbeid er definert som totalt antall kjørte kilometer for alle kjøretøy innen et område. Trafikkarbeidet beregnes ut fra at alle strekninger på riks- og fylkesvegnettet er tilknyttet en verdi for årsdøgntrafikk (ÅDT). Hver ÅDT-verdi er knyttet til en strekning kalt trafikklenke, og trafikkarbeidet for en trafikklenke er lenkens lengde i kilometer multiplisert med ÅDT (antall kjøretøy per dag) multiplisert med antall dager i året (365). Trafikkarbeidet måles derfor i antall kjørte kilometer per år. Trafikkarbeidet kan deretter summeres opp per fylke og vegkategori.
