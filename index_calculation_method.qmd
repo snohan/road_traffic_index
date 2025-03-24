@@ -87,8 +87,6 @@ En av forutsetningene for å kunne beregne en trafikkindeks er at det finnes et 
 ### Kjøretøyklassifisering
 En trafikkindeks kan beregnes for kjøretøyklasser dersom datagrunnlaget har gode nok data for en slik klassifisering. Det vil være tilfeller hvor det er gode data om trafikken, men at klassifiseringen mangler. 
 
-BESKRIV: Hvordan sørge for at indekser for kjøretøyklasser henger sammen med indeks for totaltrafikk?
-
 
 ### Manglende data
 Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgraden angir hvor mye data av god nok kvalitet det er i et tidsintervall, sammenlignet med hva det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
@@ -96,8 +94,6 @@ Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden t
 Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad. Dekningsgraden beregnes basert på registreringspunktets operasjonelle status og eventuelle manuelle merkinger av avvik i data. Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
 
 Med 100 % dekningsgrad er standardfeilen lik null, mens den er større enn null ved lavere dekningsgrad.
-
-BESKRIV: Hvordan hensynta manglende data i den totale usikkerhetsestimeringen for en indeks? Standardfeilen i MDT vil gi sitt bidrag.
 
 
 ## Endringer i vegnettet
@@ -121,9 +117,11 @@ Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjo
 
 
 # Indeksteori
-I dette kapittelet ser vi på relevant teori for konsumprisindeks og sammenligner med de egenskapene en trafikkindeks har. Formålet med en konsumprisindeks er å måle endringen i prisnivået på produktene (varer og tjenester) som husholdningene kjøper, mens formålet med en trafikkindeks er å måle endringen i trafikknivået for et geografisk område.
+I dette kapittelet ser vi på relevant teori for konsumprisindeks og sammenligner med de egenskapene en trafikkindeks har. 
 
-For å sammenligne indeksteori for disse to fagområdene, er det nødvendig med definisjoner av sentrale størrelser. Disse er angitt i tabell @tbl-quantities.
+Formålet med en konsumprisindeks er å måle endringen i prisnivået på produktene (varer og tjenester) som husholdningene kjøper, mens formålet med en trafikkindeks er å måle endringen i trafikknivået for et geografisk område.
+
+Sammenligningen av indeksteori for de to fagområdene tar utgangspunkt i hvordan sentrale størrelser blir definert. Disse er angitt i tabell @tbl-quantities.
 
 ::: {#tbl-quantities}
 | Symbol          | Betydning i konsumprisindeks      | Betydning i trafikkindeks                     |
@@ -139,11 +137,16 @@ Sammenheng mellom størrelser i konsumpris- og trafikkindeks.
 
 :::
 
-En konsumprisindeks er typisk beregnet ved å aggregere elementære indekser. En elementær indeks angir endringen for en gitt produkttype. En produkttype kan være en samling produktvarianter som har ganske like egenskaper. For en trafikkindeks vil en elementær indeks være forholdet mellom trafikkmengdene i de to periodene for en gitt trafikklenke.
+Et utvalg $p_{tn}$ hvor $n \in (0, N)$ kan skrives kompakt på vektorform $p^t = (p_0, p_1, \dots p_N)$, og tilsvarende for $q^t$.
+
+En konsumprisindeks er typisk beregnet ved å aggregere elementære indekser. En elementær indeks angir prisendringen for en gitt produkttype. En produkttype kan være en samling produktvarianter som har ganske like egenskaper. Over en periode på for eksempel en kalendermåned vil prisen for en produkttype variere noe. Den elementære indeksen sammenligner da gjennomsnittsprisene.
+
+Tilsvarende for en trafikkindeks vil en elementær indeks være endringen i trafikkmengde for en gitt trafikklenke. På en trafikklenke vil døgntrafikken variere i løpet av en kalendermåned. Den elementære indeksen sammenligner gjennomsnittstrafikken, som er månedsdøgntrafikken.
 
 
 ## Konsumprisindeks
 Dette delkapittelet er i stor grad basert på teorien beskrevet i [@ilo_cpi], [@diewert_cpi_theory] og [@diewert_ch7].
+
 Det er mange måter å beregne en indeks på. For konsumprisindeks er det i hovedsak fire ulike måter å utlede indeksformler på:
 
 - fast handlekurv
@@ -160,13 +163,13 @@ $$
 P_{\text{L}}(p^0,p^1,q^0,q^1) = \frac{\sum_n p_{1n} q_{1n}}{\sum_n p_{0n} q_{0n}}.
 $$ {#eq-lowe}
 
-Det er i stedet mulig å velge å benytte produktmengdene slik de var i et basisår $q^0$. Da har vi
+Det er i stedet mulig å velge å benytte produktmengdene slik de var i en basisperiode $q^0$. Da har vi
 
 $$
 \text{Laspeyre-indeks} = P_{\text{L}}(p^0,p^1,q^0) = \frac{\sum_n p_{1n} q_{0n}}{\sum_n p_{0n} q_{0n}}.
 $$ {#eq-laspeyre}
 
-Om vi i stedet velger å sammenligne med produktmengdene i beregningsåret, får vi
+Om vi i stedet velger å sammenligne med produktmengdene i beregningsperioden, får vi
 
 $$
 \text{Paasche-indeks} = P_{\text{P}}(p^0,p^1,q^1) = \frac{\sum_n p_{1n} q_{1n}}{\sum_n p_{0n} q_{1n}}.
@@ -184,11 +187,11 @@ $$
 \text{Walsh-indeks} = P_{\text{W}}(p^0,p^1,q^0,q^1) = \frac{ \sum_n p_{1n} (q_{0n}q_{1n})^{1/2} }{ \sum_n p_{0n} (q_{0n}q_{1n})^{1/2}}.
 $$ {#eq-walsh}
 
-En felles betegnelse for alle indeksene omtalt i dette avsnittet er *bilaterale* indekser, altså at de sammenligner *to* perioder. Fisher-indeksen anses som den beste varianten for sammenligning av prisnivå på denne måten.
+En felles betegnelse for alle indeksene omtalt i dette avsnittet er *bilaterale* indekser, altså at de sammenligner data fra *to* perioder. Fisher-indeksen anses som den beste varianten for sammenligning av prisnivå på denne måten.
 
 
 ### Aksiomatisk tilnærming
-Denne tilnærmingen starter med en ukjent formel for en bilateral indeks, og prøver å finne funksjonens form ved at den må oppfylle visse regler. En slik regel kan være en såkalt svak identitetstest, som sier at dersom det ikke er endring i hverken pris eller mengde, så skal indeksen være lik 1. En tilsvarende sterk identitetstest vil si at indeksen er lik 1 dersom kun prisen er uendret. 
+En aksiomatisk tilnærming baseres på et sett med regler som indeksen skal oppfylle. Til å begynne med har vi en ukjent formel for en bilateral indeks, og prøver å finne funksjonens form ved at den må oppfylle reglene. En regel kan være en såkalt svak identitetstest, som sier at dersom det ikke er endring i hverken pris eller mengde, så skal indeksen være lik 1. En tilsvarende sterk identitetstest vil si at indeksen er lik 1 dersom kun prisen er uendret.
 
 Også her anses Fisher-indeksen som den beste for sammenligning av prisnivå.
 
@@ -269,7 +272,7 @@ Når nye produkttyper introduseres i markedet, finnes det til å begynne med ing
 
 Bilaterale indekser som beregnes med en fast basisperiode vil over tid få mindre representativitet. Gamle produkter utgår og nye produkter introduseres i markedet, og til slutt vil ikke indeksen lenger gjenspeile den økonomiske markedsstrukturen. Alternativet til en fast basisperiode er å kjede sammen indekser. Da kan produktutvalget oppdateres fortløpende. Men under visse forutsetninger kan kjeding av indekser føre til avvik fra det forventede resultatet, det vil si at dersom prisnivået senere kommer tilbake til samme nivå som i basisperioden, så vil likevel ikke indeksen vise det.
 
-Det er ønskelig å benytte en indeks med egenskaper som tar hensyn til et stadig endret produktutvalg. En slik indeks må kunne hensynta produktutvalget både slik det er nå og slik det var i basisperioden. En type indeks som gjør nettopp dette er såkalte multilaterale indekser. I stedet for en sammenligne en periode med en fast basisperiode kan en multilateral indeks ta hensyn til situasjonen i flere perioder samtidig.
+Det er ønskelig å benytte en indeks med egenskaper som tar hensyn til et stadig endret produktutvalg. En slik indeks må kunne hensynta produktutvalget både slik det er nå og slik det var i basisperioden. En type indeks som gjør nettopp dette er såkalte multilaterale indekser. I stedet for å sammenligne en periode med en fast basisperiode kan en multilateral indeks ta hensyn til situasjonen i flere perioder samtidig, derav betegnelsen multilateral.
 
 En mulighet er å ta utgangspunkt i en serie bilaterale Fisher-indekser
 
@@ -311,7 +314,7 @@ Gjennomsnittsprisen $p_n$ for en produkttype er definert som en enhetspris ved �
 
 
 ### Fast basisperiode
-For to perioder $0, t$ som skal sammenlignes, har vi tilgjengelig et utvalg $N_0, N_t$. Indeksen kan da kun nyttigjøre seg data fra de individene som finne i begge periodene, altså i $N_0 \cap N_t$.
+For to perioder $0, t$ som skal sammenlignes, har vi tilgjengelig et utvalg $N_0, N_t$. Indeksen kan da kun nyttigjøre seg data fra de individene som finnes i begge periodene, altså i $N_0 \cap N_t$.
 
 
 ### Endring i produktkvalitet
@@ -332,120 +335,209 @@ En mulig imputeringsteknikk er å sette den manglene prisen til den sist kjente 
 
 
 ## Trafikkindeks
-*Fast handlekurv* betyr det samme i økonomisk sammenheng som et fast utvalg indekspunkter i trafikksammenheng. Med *fast* menes her at det er det samme utvalget i begge periodene som inngår i den bilaterale indeksen. Utvalget kan endre seg til neste sammenligningsperiode, så lenge det kan sies å være representativt.
+"Fast handlekurv" betyr det samme i økonomisk sammenheng som et fast utvalg indekspunkter i trafikksammenheng. Med "fast" menes her at det er det samme utvalget i begge periodene som inngår i den bilaterale indeksen. Utvalget kan endre seg til neste sammenligningsperiode, så lenge det kan sies å være representativt.
 
-I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hvert indekspunkt. Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{0n} = q_{1n}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi har da en generell indeksformel gitt som
+Videre i dette notatet vil to perioder som skal sammenlignes typisk betegnes med $t \in (a, b)$. I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hvert indekspunkt. Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{an} = q_{bn}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi har da en generell indeksformel gitt som
 
 $$
-\text{trafikkarbeidsindeks} = P_{\text{tw}}(p^0,p^1,q) = \frac{\sum_n p_{1n} q_{n}}{\sum_n p_{0n} q_{n}}.
+\text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_n p_{bn} q_{n}}{\sum_n p_{an} q_{n}}.
 $$ {#eq-w_indeks}
 
-Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Ved å multiplisere både teller og nevner med $1/N$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er denne indeksformelen som er benyttet i Danmark.
+Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Ved å multiplisere både teller og nevner med $1/N$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er denne indeksformelen Danmark benytter.
 
 For sykkeltrafikk har vi ikke et sammenhengende vegnett inndelt i trafikklenker. Da kan vi ikke si noe om det sykkeltrafikkarbeidet som et indekspunkt representerer. I dette tilfellet kan ikke $q$ inngå i formelen, og vi får en ren
 
 $$
-\text{trafikkmengdeindeks} = P_{\text{t}}(p^0,p^1) = \frac{\sum_n p_{1n}}{\sum_n p_{0n}},
+\text{trafikkmengdeindeks} = P_{\text{tv}}(p^a,p^b) = P_{\text{tv},ab} = \frac{\sum_n p_{bn}}{\sum_n p_{an}},
 $$ {#eq-t_indeks}
-som er det samme som Dutot-indeksen gitt i ligning (@eq-dutot). Det er denne indeksformelen som er benyttet i dagens trafikkindekser, hvor forholdet er mellom trafikkmengdene i de to periodene.
+som er det samme som Dutot-indeksen gitt i ligning (@eq-dutot). Det er denne indeksformelen som er benyttet i dagens trafikkindekser.
 
 Hvis vi definerer trafikkarbeidet
 
 $$
-S_{tn} = p_{tn}q_{n}
+W_{tn} = p_{tn}q_{n}
 $$
 har vi at 
 
 $$
-\frac{S_{tn}}{p_{tn}} = q_{n}.
+\frac{W_{tn}}{p_{tn}} = q_{n}.
 $$
 Definerer vi videre den normaliserte andelen trafikkarbeid som
 
 $$
-s_{tn} = \frac{S_{tn}}{\sum_n S_{tn}},
+w_{tn} = \frac{W_{tn}}{\sum_n W_{tn}},
 $$
 som er analogt med ligning (@eq-st). Videre har vi, med utgangspunkt i ligning (@eq-w_indeks), at
 
 $$
 \begin{aligned}
-P_{\text{tw}}(p^0,p^1,q) &= \frac{\sum_n p_{1n} q_{n}}{\sum_n p_{0n} q_{n}} \\
-&= \frac{\sum_n p_{1n} \frac{S_{0n}}{p_{0n}}}{\sum_n S_{0n}} =
-\frac{\sum_n \frac{p_{1n}}{p_{0n}} S_{0n}}{\sum_n S_{0n}} \\
-&= \sum_n s_{0n} \frac{p_{1n}}{p_{0n}}.
+P_{\text{tw},ab} &= \frac{\sum_n p_{bn} q_{n}}{\sum_n p_{an} q_{n}} \\
+&= \frac{\sum_n p_{bn} \frac{W_{an}}{p_{an}}}{\sum_n W_{an}} =
+\frac{\sum_n \frac{p_{bn}}{p_{an}} W_{an}}{\sum_n W_{an}} \\
+&= \sum_n w_{an} \frac{p_{bn}}{p_{an}} = \sum_n w_{an} p_{abn}.
 \end{aligned}
 $$ {#eq-w_indeks_2}
-Altså kan denne indeksen også ses på som et vektet gjennomsnitt av trafikkmengdeindeksene med trafikkarbeidsvekter fra perioden $t = 0$. 
+Altså kan denne indeksen også ses på som et vektet gjennomsnitt av trafikkmengdeindeksene $p_{abn} = p_{bn} / p_{an}$ med trafikkarbeidsvekter fra perioden $t = a$. 
 
-Ligning (@eq-w_indeks_2) ligner veldig på den vektede Carli-indeksen i ligning (@eq-carli_w), men forskjellen er at sistnevntes vekter er symmetriske i tid. Dette kan synes som en god egenskap, men dette gjør at ligning (@eq-carli_w) ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i ligning (@eq-w_indeks).
+Ligning (@eq-w_indeks_2) ligner veldig på den vektede Carli-indeksen i ligning (@eq-carli_w), men forskjellen er at sistnevntes vekter er symmetriske i tid. Denne symmetrien kan synes som en god egenskap, men dette gjør at ligning (@eq-carli_w) ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i ligning (@eq-w_indeks).
 
+En trafikkmengdeindeks kan ses på som et vektet gjennomsnitt av elementære indekser hvor vektene er trafikkmengdene i basisperioden:
+
+$$
+\begin{aligned}
+P_{\text{tv},ab} &= \frac{\sum_n p_{bn}}{\sum_n p_{an}} \\
+&= \frac{1}{\sum_n p_{an}} \sum_n p_{bn} \frac{p_{an}}{p_{an}} \\
+&= \sum_n \frac{p_{an}}{\sum_n p_{an}} \frac{p_{bn}}{p_{an}} = \sum_n v_{an} p_{abn},
+\end{aligned}
+$$ {#eq-t_indeks_2}
+hvor trafikkmengdevektene er definert som
+
+$$
+v_{an} = \frac{p_{an}}{\sum_n p_{an}}.
+$$
 
 
 # Valg av byindeksmetode
-Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er dermed ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det måler på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
+Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er sånn sett ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det måler på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
 
 - trafikkarbeidsindeks
 - vektet Carli-indeks
 - Törnqvist-indeks
 
-Av disse er nok Törnqvist-indeksen, som er et geometrisk gjennomsnitt, litt vanskeligere å forklare enn de to øvrige, som er artimetiske gjennomsnitt. Generelt er det slik at et aritmetisk gjennomsnitt alltid er større enn eller lik det geometriske gjennomsnittet, og forskjellen blir større jo større variasjon det er i verdiene det skal beregnes gjennomsnitt av. Indekspunktene kan oppvise stor variasjon, som da er e argument i favør Törnqvist-indeksen.
+Av disse er nok Törnqvist-indeksen, som er et geometrisk gjennomsnitt, litt vanskeligere å forklare enn de to øvrige, som er artimetiske gjennomsnitt. Generelt er det slik at et aritmetisk gjennomsnitt alltid er større enn eller lik det geometriske gjennomsnittet, og forskjellen blir større jo større variasjon det er i verdiene det skal beregnes gjennomsnitt av. Indekspunktene kan oppvise stor variasjon, som da er et argument i favør Törnqvist-indeksen.
 
 Både Törnqvist- og vektet Carli-indeks har begge den ulempen at de ikke takler å dele på null. Altså kan de ikke eksplisitt ta inn i analysen et punkt som var stengt eller ikke-eksisterende i sammenligningsåret. Dette er uansett bare aktuelt i de tilfellene hvor indekspunktene i sin helhet fanger opp endringene i rutevalgene på en balansert måte, noe som uansett vil forekomme veldig sjelden.
 
-Til hjelp i utvelgelsen av den best egnede metoden, kan vi se på hvilke indekstester som kan oppfylles. Det er ønskelig at indeksene oppfyller en eller flere av disse kravene:
+Til hjelp i utvelgelsen av den best egnede metoden, kan vi se på hvilke indekstester som vi mener bør oppfylles. Det er ønskelig at indeksene oppfyller en eller flere av disse kravene:
 
 - **Identitet**: dersom trafikkmengden i hvert indekspunkt er nøyaktig den samme som i basisåret må indeksen vise null endring.
 - **Transitivitet**: en indeks som går indirekte fra $a$ til $b$ via en periode $c$, skal vise det samme som en direkte indeks fra $a$ til $b$.
 - **Tidsreversibilitet**: indeksen fra periode $a$ til $b$ må være lik den resiproke indeksen fra $b$ til $a$.
 
-Alle de tre foreslåtte indeksen oppfyller regelen om identitet.
+Alle de tre foreslåtte indeksene oppfyller regelen om identitet.
 
 En indeks som er definert som forholdet mellom gjennomsnittsverdier vil oppfylle kravet om transitivitet, det vil si at vi får samme resultat om indeksen beregnes som en kjedet indeks eller en direkte indeks. Dette forutsetter riktignok at utvalget holdes fast i alle perioder som inngår i kjedingen, noe som sjelden kommer til å være tilfelle. Transitivitet er likevel en ettertraktet egenskap. Den vektede Carli-indeksen oppfyller ikke denne regelen.
 
 Indekser som oppfyller både regelen om identitet og transitivitet, oppfyller også regelen om tidsreversibilitet.
 
-Når disse fordelene og ulempene veies opp er det den generelle trafikkarbeidsindeksen som peker seg ut som den best egnede. Likevel må en sykkelindeks bli en ren trafikkmengdeindeks.
+Når disse fordelene og ulempene veies opp mot hverandre er det den generelle trafikkarbeidsindeksen som peker seg ut som den best egnede. Likevel, som beskrevet tidligere, må en sykkelindeks bli en ren trafikkmengdeindeks.
 
 
-
-
-
-## Fast basisår eller kjeding
+# Fast basisår eller kjeding
 Hvilke indekspunkter som er tilgjengelige vil endre seg over i tid i takt med endringer i vegnettet. Et fast basisår kan ikke være fast for lenge, men må byttes ut med et senere år når endringene i tilgjengelig indekspunktutvalg blir store. Det kan skje så hyppig som hvert år, men helst så sjelden som mulig. Når utvalget oppdateres, må indeksene kjedes sammen for å vise en samlet utvikling fra det opprinnelige basisåret.
 
-BESKRIV: Vil kjeding føre til avvik? Gjør utleding som i Diewert ch7 7. Finner vi igjen forutsetningene for at avvik ikke oppstår? De er:
+Kjeding kan over tid føre til avvik fra forventet resultat. Forutsetningene for at avvik ikke oppstår er:
 
-- andelene endrer seg ikke (urealistisk for priser, vil gjelde kun når utvalget indekspunkt ikke endres, kan altså ikke ha bortfall)
-- alle priser endrer seg med samme proporsjon (aldri realistisk)
-- alle prisene er helt uten korrelasjon med andelene i alle øvrige perioder (helt urealistisk for priser, men vil inntreffe for indekspunkter dersom utvalget alltid er helt likt)
-- andeler og logaritmen til prisene har lineær utvikling (neppe realistisk)
+- trafikkarbeidsandelene endrer seg ikke: i så fall må utvalget indekspunkt ikke endres.
+- alle trafikkmengder endrer seg med samme proporsjon: aldri realistisk.
+- alle trafikkmengder er helt uten korrelasjon med trafikkarbeidsandelene i alle øvrige perioder: gjelder dersom indekspunktutvalget alltid er helt likt.
+- trafikkarbeidsandeler og logaritmen til trafikkmengdene har lineær utvikling: neppe realistisk.
 
 En annen ulempe som kommer med hyppig oppdatering av indekspunktutvalget, med påfølgende hyppig kjeding av indekser, er at usikkerheten akkumuleres for hvert ledd.
 
-Kjeding:
-
-- utvalget og dermed vektene kan oppdateres
-- en overlappende periode knytter kjeden sammen
-
-
-## Endring i vegnettet
-Kan være analogi til endring i produktkvalitet. En veg med redusert kapasitet har sånn sett lavere kvalitet.
-
-
-## Vekting
-Hvert indekspunkt blir vektet med sitt trafikkarbeid. Det sier noe om hvor mye trafikken på dens trafikklenke bidrar til områdets totale trafikkarbeid.
-
-Datagrunnlaget er i første steg registrerte data om enkeltkjøretøy. Disse aggregeres så til timetrafikk med en dekningsgrad som et mål på datakvaliteten. Disse aggregeres så videre til døgntrafikk, igjen med en dekningsgrad. En MDT er da gjennomsnittlig døgntrafikk for en kalendermåned.
-
-
-## Usikkerhet
-Indeksverdien er beregnet på bakgrunn av et utvalg og er et estimat for den sanne, ukjente verdien i hele populasjonen. Hvor mye feil dette estimatet er kan beskrives ved hjelp av skjevheten og variansen i utvalget. Med skjevhet menes hvor mye estimatet i gjennomsnitt vil avvike fra den sanne verdien dersom tilfeldige utvalg trekkes ut gjentatte ganger, men andre ord hvor mye utvalget "ligner" på populasjonen. Nøyaktigheten til estimatet er summen av variansen og kavdratet av skjevheten, og kalles gjennomsnittlig kvadratfeil.
-
-Variansen er ikke kjent og må estimeres. Hvordan dette gjøres er avhengig av hvilken utvalgsmetode som er benyttet. 
-
-Hvor mye bidrar hver enkelt punktindeks til byindeksen? Kan vi beregne en effektiv vekt? Denne er avhengig av punktets endring og trafikkarbeid.Hvor mye forskjellig er fordelingen av punktene etter trafikkarbeid fra fordelingen av bidrag til indeksen? Denne er avhengig av hvordan punktindeksen er regnet ut.
+Fordeler med kjeding er at utvalget og dermed vektene kan oppdateres. Det må være en overlappende periode knytter kjeden sammen. 
 
 ## Endring i glidende treårsperiode
 Indeksen kan sammenligne MDT for en gitt kalendermåned mellom to år, men vi kan benytte samme formel for å sammenlign gjennomsnittlig MDT for vilkårlige perioder. For å sammenligne siste tre år med et gitt referanseår, vil $p_1$ være gjennomsnittlig MDT for siste 36 måneder, sammenlignet med gjennomsnittlig MDT for de 12 månedene i referanseåret (samme som ÅDT i dette tilfellet). For at bortfall av data ikke skal påvirke skjevt, må alle MDT-verdier være sesongjusterte.
+
+
+# Usikkerhet
+Indeksverdien er beregnet på bakgrunn av et utvalg og er et estimat for den sanne, ukjente verdien i hele populasjonen. Hvor mye feil dette estimatet er kan beskrives ved hjelp av skjevheten og variansen i utvalget. Med skjevhet menes hvor mye estimatet i gjennomsnitt vil avvike fra den sanne verdien dersom tilfeldige utvalg trekkes ut gjentatte ganger, men andre ord hvor mye utvalget "ligner" på populasjonen. Nøyaktigheten til estimatet er summen av variansen og kvadratet av skjevheten, og kalles gjennomsnittlig kvadratfeil.
+
+Variansen er ikke kjent og må estimeres. Hvordan dette gjøres er avhengig av hvilken utvalgsmetode som er benyttet. 
+
+Hvor mye bidrar hver enkelt punktindeks til byindeksen? Kan vi beregne en effektiv vekt? Denne er avhengig av punktets endring og trafikkarbeid. Hvor mye forskjellig er fordelingen av punktene etter trafikkarbeid fra fordelingen av bidrag til indeksen? Denne er avhengig av hvordan punktindeksen er regnet ut.
+
+
+## Utvalgsusikkerhet
+Hvis vi hadde kunnet måle all trafikk på alle trafikklenker til enhver tid, hadde vi kjent det fulle trafikkarbeidet i hele populasjonen. For å finne endringen i trafikkarbeid, ville vi da ha regnet ut forholdet mellom det totale trafikkarbeidet i de to periodene. Ligning (@eq-w_indeks_2) forteller oss at vi får det samme svaret dersom vi beregner et vektet gjennomsnitt av hver trafikklenkes endring i trafikkmengde. Når vi vet trafikkmengden på alle trafikklenker i hele populasjonen får vi et resultat som er helt uten utvalgsusikkerhet. 
+
+Men vi måler ikke trafikken på alle trafikklenker, og kjenner dermed ikke den sanne endringen i trafikkarbeid i populasjonen. Derfor kan vi bare estimere denne. 
+
+
+### Trafikkarbeidsindeks
+For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i ligning (@eq-w_indeks_2). Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
+
+En estimator for variansen $\sigma_{\text{tw}}^2$ til en trafikkarbeidsindeks er ???
+
+
+### Trafikkmengdeindeks
+I dette tilfellet er populasjonen av "trafikklenker" uendelig stor, og vi trenger ikke tenke på at punktene i utvalget er avhengig av hverandre. En estimator for variansen $\sigma_{\text{tv}}^2$ til et utvalg elementære trafikkmengdeindekser er da
+
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tv},ab,p}^2 &= \widehat{\text{Var}}(p_{ab}) \\
+&= \frac{1}{1 - \sum_n v_{an}^2} \sum_n \left[ v_{an} (p_{abn} - P_{\text{tv}}^{ab})^2  \right].
+\end{aligned}
+$$ {#eq-tv_variance}
+Her er vektene $v_{an}$ ikke-stokastiske "pålitelighetsvekter" som reflekterer hvor viktige de enkelte punktindeksene er i beregningen. 
+
+Standardfeilen til trafikkmengdeindeksen er 
+$$
+\hat{\sigma}_{\text{tv},ab,P} = \sqrt{ \sum_n v_{an}^2 \hat{\sigma}_{\text{tv},ab,p}}.
+$$ {#eq-tv_se}
+
+Da populasjonens standardavvik er ukjent, benyttes $t$-fordeling til å danne et konfidensintervall. Med konfidensfaktor $\tau$ gitt av $t$-fordelingen, er et 95 % konfidensintervall
+
+$$P_{\text{tv}} \pm \tau_{0.975, n-1} \hat{\sigma}_{\text{tv},P}.$$
+
+Den effektive utvalgsstørrelsen er
+
+$$
+N_{\text{effektiv}} = \frac{1}{\sum_n v_{an}^2}.
+$$
+
+Dersom alle punktene har lik trafikkmengde, slik at alle vektene $v_{an} = 1/N$, vil vi få at
+
+$$
+N_{\text{effektiv}} = \frac{1}{\sum_n 1/N^2} = \frac{1}{N/N^2} = N.
+$$
+Da vil den første faktoren i ligning (@eq-tv_variance) bli
+
+$$
+\frac{1}{1 - \sum_n v_{an}^2} = \frac{1}{1 - 1/N} = \frac{N}{N - 1},
+$$
+som vil nærme seg 1 når $N$ blir stor.
+
+Men i praksis vil punktene ha ulik trafikkmengde, og dersom ett av punktene har mye større trafikkmengde enn alle andre, altså at $v_{ab} \approx 1$ og $v_{an} \approx 0 \ \forall \ n \neq 1$ vil vi få at
+
+$$
+N_{\text{effektiv}} \approx \frac{1}{1/1^2} = 1.
+$$
+
+Da vil den første faktoren i ligning (@eq-tv_variance) i stedet bli
+
+$$
+\frac{1}{1 - \sum_n v_{an}^2} \approx \lim_{x \to 1} \frac{1}{1 - 1/x} = \infty,
+$$
+altså vil variansen bli veldig stor. Samme situasjon vil oppstå dersom utvalget kun har ett punkt, hvor variansen ikke er definert.
+
+
+
+
+## Kjedet indeks
+Indeks mellom periodene $a$ og $c$ kan beregnes ved å multiplisere to indeksverdier via en mellomperiode:
+
+$$
+P_{ac} = P_{ab} P_{bc}.
+$$ 
+
+Dette gjelder både for trafikkarbeidsindeks og trafikkmengdeindeks. Det kan være et vilkårlig antall ledd i kjeden, men variansen for hele kjeden bygges opp ved å se på to ledd om gangen. Variansen er gitt ved 
+
+$$\begin{aligned}
+\hat{\sigma}_{ac,P}^2 
+&= \widehat{\text{Var}}(P_{ab} P_{bc}) \\
+&= \widehat{\text{Var}}(P_{ab}) \cdot \widehat{\text{Var}}(P_{bc}) + 
+\widehat{\text{Var}}(P_{ab}) \cdot P_{bc}^2 + \widehat{\text{Var}}(P_{bc}) \cdot P_{ab}^2.
+\end{aligned}
+$$
+
+En kjedet indeks er en multiplikasjon av indekser på forholdsform. Indekser på forholdsform vil ha verdier nær 1 med relativt små standardavvik, og dermed kan det antas at den kjedete indeksen har tilnærmet normalfordeling. Dermed kan produktet av to indekser få et 95 % konfidensintervall gitt av 
+
+$$P_{ac} \pm 1,96 \cdot \hat{\sigma}_{ac,P}^2.$$
+
+
+
 
 
 # Referanser
