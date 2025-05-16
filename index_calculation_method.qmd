@@ -640,7 +640,7 @@ Hvis vi kan anta at gjennomsnittet er tilnærmet normalfordelt, vil vi kunne byg
 
 
 ### Parametrisk bootstrap
-Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta utgangspunkt i en angitt fordelingsfunksjon for populasjonen. Denne fordelingen blir beskrevet av estimerte verdier for forventningsverdi og varians basert på det opprinnelige utvalget. Det vil så være mulig å bygge et konfidensintervall ved å simulere gjentatte stikkprøver fra denne fordelingen.
+Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta utgangspunkt i en angitt fordelingsfunksjon for populasjonen. Denne fordelingen blir beskrevet av estimerte parameterverdier basert på det opprinnelige utvalget. Det vil så være mulig å bygge et konfidensintervall ved å simulere gjentatte stikkprøver fra denne fordelingen.
 
 
 ## Usikkerhet i trafikkarbeidsindeks
@@ -648,7 +648,7 @@ Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkar
 
 
 ### Utvalgsbasert varians
-For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i @eq-w_indeks_2. Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
+For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i @eq-w_indeks_2. Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. SJEKK om utvalgsstørrelsen må være bestemt! Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
 
 En estimator for variansen $\sigma_{\text{tw}}^2$ til et utvalg elementære trafikkmengdeindekser er da [@bevington_2003]
 
@@ -678,34 +678,36 @@ I [@chambers_2012] finner vi en tilsvarende utledning av en modellbasert varians
 $$
 A = \sum_i^N a_iy_i.
 $$
-Denne har samme form som en et vektet, aritmetisk gjennomsnitt. For en trafikkindeks kan $a_i$ her spille rollen som trafikkarbeidsvekter. Den beste lineære, forventingsrette prediktoren for denne er
+Denne har samme form som en et vektet, aritmetisk gjennomsnitt. For en trafikkindeks kan $a_i$ her spille rollen som trafikkarbeidsvekter. Hvis populasjonen kan antas å være homogen, det vil si at $y_i$ ikke kan stratifiseres ved hjelp andre variabler, så er den beste lineære, forventingsrette prediktoren for denne slik at 
 
 $$
 \hat{A} = \sum_s a_iy_i + \bar{y}_s \sum_r a_i,
 $$
 hvor den endelige populasjonen er oppdelt i den delen som er med i utvalget, $s$, og den delen som ikke er med i utvalget, $r$. Gjennomsnittet til den delen av populasjonen som ikke er med i utvalget er her estimert ved hjelp av utvalgsgjennomsnittet $\bar{y}_s$. Om vi skal kunne benytte denne tilnærmingen i en trafikkindeks, må vi kjenne trafikkarbeidsvektene til alle trafikklenker som ikke er med i utvalget. Dette er kjent gjennom ÅDT-beleggingen og oppdateres hvert år. Men ÅDT-beleggingen viser reell ÅDT, og ikke hva som er normale verdier for ÅDT slik de ville vært uten midlertidige vegnettsendringer. Som vekter er kanskje dette likevel ikke et stort problem.
 
-En forventingsrett estimtator for variansen er da
+En forventingsrett estimator for variansen er da
 
 $$
-\widehat{\text{Var}}(\hat{A}) = \left[ \frac{1}{n} \left(\sum_r a_i \right)^2 + \sum_r a_i^2  \right] \hat{\sigma_s}.
+\widehat{\text{Var}}(\hat{A}) = \left[ \frac{1}{n} \left(\sum_r a_i \right)^2 + \sum_r a_i^2  \right] \hat{\sigma_s}^2.
 $$
-I en homogen populasjon der alle $a_i = 1/N$, reduseres dette til
+Dersom utvalget inkluderer hele populasjonen slik at $f = 1$, så vil $r = \emptyset$ og variansen blir null.
+
+I en populasjon hvor alle $a_i = 1/N$, reduseres dette til
 
 $$
-\widehat{\text{Var}}(\hat{A}) = \hat{\sigma_s} \frac{1-f}{n}.
+\widehat{\text{Var}}(\hat{A}) = \hat{\sigma_s}^2 \frac{1-f}{n}.
 $$
-Denne har samme form som en uvektet utgave av @eq-tw_variance_P.
+Denne har samme form som en uvektet utgave av @eq-tw_variance_P. 
 
 En alternativ tilnærming er å ta utgangspunkt i trafikkarbeidsindeksen på formen gitt av @eq-w_indeks_3, og så modellere trafikkmengden i år $b$ som en normalfordeling gitt som funksjon av trafikkmengden i år $a$, altså at
 $$
 p_{bi} \sim N(\alpha p_{ai}, \sigma^2),
 $$
-med en ukjent, konstant parameter $\alpha$. Variansen $\sigma^2$ er også ukjent. Her antar vi at $p_ai$ er kjent. En forventingsrett estimator for variansen er i dette tilfellet
+med en ukjent, konstant parameter $\alpha$. Variansen $\sigma^2$ er også ukjent. Her antar vi at $p_{ai}$ er kjent. En forventingsrett estimator for variansen er i dette tilfellet
 $$
-\hat{\sigma}^2 = \frac{1}{n-1} \sum_i (p_{bi} - \hat{\alpha}p_{ai}).
+\hat{\sigma}^2 = \frac{1}{n-1} \sum_i (p_{bi} - \hat{\alpha}p_{ai})^2.
 $$
-Vi må finne et tuttrykk for $\hat{\alpha}$. Vi benytter maximum likelihood estimation (MLE) for en normalfordeling, og har da at vi skal minimere uttrykket 
+Vi må finne et uttrykk for $\hat{\alpha}$. Vi benytter maximum likelihood estimation (MLE) for en normalfordeling, og har da at vi skal minimere uttrykket 
 $$
 \sum_i^n (p_{bi} - \alpha p_{ai})^2.
 $$
@@ -735,34 +737,28 @@ $$
 \end{aligned}
 $$
 
-Dette gir til slutt et uttrykk for en forventningsrett estimator for variansen til $p_{bi}$ gitt av
+Dette gir til slutt et uttrykk for en forventningsrett estimator for variansen til utvalget $p_{bi} = p^b$ gitt av
 
 $$
-\hat{\sigma}^2 = \widehat{\text{Var}}(p_{bi}) = \frac{1}{n-1} \sum_i \left(p_{bi} - \frac{\sum_j p_{bj} q_j}{\sum_j p_{aj} q_j} p_{ai}\right)^2.
+\hat{\sigma}^2 = \widehat{\text{Var}}(p^b) = \frac{1}{n-1} \sum_i \left(p_{bi} - \frac{\sum_j p_{aj} p_{bj}}{\sum_j p_{aj}^2} p_{ai}\right)^2.
 $$ {#eq-var_p_w_model}
 
 Videre vil en estimator for variansen til områdeindeksen da bli
 
 $$
-\widehat{\text{Var}}(P_{\text{tw},ab}) = \sum_i w_{ai}'^2 \widehat{\text{Var}}(p_{bi}).
+\widehat{\text{Var}}(P_{\text{tw},ab}) = \sum_i w_{ai}'^2 \cdot \widehat{\text{Var}}(p^b).
 $$ {#eq-var_P_w_model}
+Her er altså vektene $w'$ som gitt i @eq-w_indeks_3.
 
 
 ### Ikke-parametrisk bootstrap
-1. Ordinær ikke-parametrisk varians, normal ki, t-ki
-2. Pseudo-populasjon varians og normal ki, t-ki
-3. Reskalert bs varians, normal ki, t-ki
-4. Persentiler av bs-fordeling og ki direkte
-
-Mashreghi 4.1.1 og 4.1.2
-
 En ikke-parametrisk bootstrap gjøres som følger:
 
 1. Vi har et opprinnelig utvalg $s$ av $n$ observasjoner.
 2. Fra dette har vi kun én observasjon $\hat{\theta}$ for den aktuelle statistiske størrelsen $\theta$.
 3. Trekk tilfeldig $n$ observasjoner fra $s$ med tilbakelegging. Da har vi et utvalg $s^*$.
 4. Beregn et estimat $\hat{\theta}^*$.
-5. Gjenta punkt 2 og 3 $B$ ganger.
+5. Gjenta punkt 2-4 $B$ ganger.
 6. Da kan variansen til $\hat{\theta}$ estimeres ved
 
 $$
@@ -777,8 +773,16 @@ Et konfidensintervall kan da være
 $$
 [\hat{\theta} - z_{1-\alpha/2}\sqrt{\hat{V}_B^*}, \hat{\theta} - z_{\alpha/2}\sqrt{\hat{V}_B^*}]
 $$
-Alternativt en form for t-intervall...
+Alternativt kan et $t$-intervall estimeres ved å bytte ut standard normalfordelingens $z$-verdier med de tilsvarende $\tau$-verdiene for $t$-fordeling med det aktuelle antallet frihetsgrader.
 
+Når en har generert opp et anselig antall bootstrap-estimater for den aktuelle statistiske størrelsen, kan et konfidensintervall estimeres direkte ved å hente ut (97,5, 2,5)-persentilene i denne fordelingen.
+
+Eller:
+1. Pseudo-populasjon, varians
+1. Reskalert bs, varians
+1. Persentiler av bs-fordeling
+
+Mashreghi 4.1.1 og 4.1.2
 
 
 ## Usikkerhet i trafikkmengdeindeks
