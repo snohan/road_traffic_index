@@ -4,6 +4,7 @@ format:
   pdf:
     toc: true
     number-sections: true
+    df-print: kable
     toc-title: Innhold
     mainfont: "Arial"
     include-in-header:
@@ -70,6 +71,10 @@ today_string <-
     " ",
     today_year
   )
+
+# Calendar weights
+period_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/periods.rds")
+day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/day_type_weights.rds")
 ```
 
 
@@ -858,6 +863,82 @@ $$
 En kjedet indeks er en multiplikasjon av indekser på forholdsform. Indekser på forholdsform vil ha verdier nær 1 med relativt små standardavvik, og dermed kan det antas at den kjedete indeksen har tilnærmet normalfordeling. Dermed kan produktet av to indekser få et 95 % konfidensintervall gitt av 
 
 $$P_{ac} \pm 1,96 \cdot \hat{\sigma}_{ac,P}^2.$$
+
+
+# Datagrunnlag
+Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT). Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
+
+
+## Kalendereffekter
+Mange steder er trafikkmengden ganske ulik i yrke- og helgedøgn. Når indeksen skal beregnes for kalendermåneder, vil det faktum at antall yrkedøgn kan variere mellom år gi et bidrag til indekstallet som kan være betydelig sammenlignet med den generelle trenden. Det er derfor nødvendig å ta hensyn til dette når datagrunnlaget beregnes.
+
+
+### Yrke- og helgedøgn
+Helgedøgn defineres her som alle lørdager og søndager, samt alle øvrige røde dager i den norske kalenderen. I tillegg anses jul- og nyttårsaften som helgedøgn.
+Fordelingen av antall yrke- og helgedøgn i en måned påvirkes også av skuddårsdagen.
+
+Når døgn så skal aggregeres opp til YDT og HDT, blir det beregnet en dekningsgrad også for disse. En januar som har 22 yrkedøgn, vil da få en YDT med 100 % dekningsgrad dersom det er godkjent døgntrafikk for alle disse dagene.
+
+
+### Bevegelige høytider
+Mange steder er det i påsken og pinsen annerledes trafikk enn ellers. Begge disse høytidene bytter på sin plassering mellom to kalendermåneder, og dette vil derfor påvirke indekstallene når enkeltmåneder sammenlignes.
+
+I indekssammenheng er det derfor lurt å operere med en egen størrelse for gjennomsnittlig døgntrafikk i henholdsvis påsken og pinsen. Dette kan vi kalle for påskedøgntrafikk (EDT, fra engelsk "Easter") og pinsedøgntrafikk (PDT, fra engelsk "Pentecost"). Påsken defineres her som dagene fra og med fredag før palmesøndag til og med andre påskedag. Tilsvarende er pinsen fra og med fredag før pinseaften til og med andre pinsedag.
+
+Kristi himmelfartsdag er alltid en torsdag og med påfølgende inneklemte fredag skaper dette en langhelg som mange benytter. Dermed er det noe annerledes trafikk i denne helgen også, men den forekommer nesten alltid i sin helhet i mai. Men hvis påsken er så sen som den kan få blitt, med første påskedag på 25. april, faller Kristi himmelfartsdag på 3. juni. Det er kun en gang i perioden 2021-2050 at dette skjer, og det er i 2038. Det er tre endre år hvor enten bare påfølgende søndag eller både lørdag og søndag faller i juni. Dette er så få ganger at vi velger å ikke ta hensyn til dette i indeksberegningene.
+
+
+### Vekting
+For et punkt skal først godkjent døgn benyttes til å beregne YDT og HDT. Disse skal så vektes sammen med vektene gitt i tabell @tbl-day_type_weights. Disse vektene er beregnet ut fra det gjennomsnittlig antall yrke- og helgedøgn per måned i årene 2016-2100. For mars og april er påsken tatt ut, og fra mai og juni er pinsen tatt ut.
+
+```{r}
+#| label: tbl-day_type_weights
+#| tbl-cap: "Vekting av YDT og HDT per måned."
+
+day_type_weights
+```
+
+
+Når enkeltperiodene skal vektes sammen til en indeks for "hittil i år" og "hele år", skal vektene gitt i tabell @tbl-periods benyttes. Legg merke til at påsken og pinsen er egne perioder her.
+
+```{r}
+#| label: tbl-periods
+#| tbl-cap: "Vekting av periodene i et år."
+
+period_weights
+```
+
+
+## Dekningsgrad
+Dersom hele døgnet er dekket med en fullstendig registrering av alle kjøretøy og datakvaliteten er godkjent, så har den 100 % dekningsgrad. Det kan oppstå bortfall av data, og da vil dekningsgraden bli lavere. Et døgn må minst ha 99 % dekningsgrad for å kunne inngå i indeksens datagrunnlag.
+
+Tilsvarende må et døgn ha minst 99 % kjøretøyklassifiseringsdekningsgrad for å kunne inngå i indeksens datagrunnlag.
+
+For at en YDT og HDT skal være godkjent, bør disse være basert på minst fire dager som er representative for sin kategori. Påsken og pinsen må være komplette.
+
+For at en årsindeks skal være godkjent bør følgende være med:
+
+- minst en av januar og februar
+- minst en av mars og april
+- påsken
+- minst en av mai og juni
+- juli
+- minst en av august og september
+- minst en av oktober og november
+
+Det er ikke påkrevd med pinsen og desember.
+
+
+Det som skiller trafikklenkenes trafikkmengde fra hverandre er:
+
+- selve størrelsen
+- relativ fordeling over året, spesielt for påsken, pinsen og juli sammenlignet med øvrige måneder.
+
+TRP-er bør klassifiseres etter den relative fordelingen, og disse bør utgjøre strata i en områdeindeks. Disse skal vektes sammen etter relativ trafikkarbeidsfordeling i området.
+
+
+
+
 
 # Referanser
 
