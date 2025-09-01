@@ -370,7 +370,7 @@ Hvordan en trafikkindeks beregnes er avhengig av om trafikkarbeidet kan tas hens
 ## Trafikkarbeidsindeks
 Den totale trafikkendringen i et område består av summen av alle endringer som finner sted på hver av trafikklenkene. Endringen mellom trafikklenkene kan variere ganske mye.
 
-For et byområde kan det totale trafikkarbeidet i periode $t$ benevnes med $W_t$, som da er summen av trafikkarbeidet $W_{ti}$ på alle trafikklenker,
+For et byområde kan det totale trafikkarbeidet i periode $t$ benevnes med $W_t$, som da er summen av trafikkarbeidet $W_{ti}$ på alle trafikklenker $i \in \{1, N\}$,
 
 $$
 W_t = \sum_i^N W_{ti}.
@@ -383,8 +383,8 @@ $$
 Siden vi ikke kjenner trafikkarbeidet på alle trafikklenker, må størrelsen $P$ estimeres:
 
 $$
-\hat{P}_{t,t+1} = \frac{\widehat{W}_{t+1}}{\widehat{W}_t} = \frac{\widehat{\bar{W}}_{t+1}}{\widehat{\bar{W}}_t}.
-$$
+\widehat{P}_{t,t+1} = \frac{\widehat{W}_{t+1}}{\widehat{W}_t} = \frac{\widehat{\bar{W}}_{t+1}}{\widehat{\bar{W}}_t}.
+$$ {#eq-p_est}
 Gjennomsnittlig trafikkarbeid per trafikklenke kan estimeres ved hjelp av et utvalg av $n$ trafikklenker:
 
 $$
@@ -396,11 +396,11 @@ I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hver
 $$
 \text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}},
 $$ {#eq-w_indeks}
-hvor tw står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. 
+hvor "tw" står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
 
 Hvis vi definerer trafikkarbeidet
 $$
-W_{ti} = p_{ti}q_{i}
+W_{ti} = p_{ti}q_{i},
 $$
 har vi at 
 $$
@@ -413,15 +413,15 @@ $$
 som er analogt med @eq-st. Videre har vi, med utgangspunkt i @eq-w_indeks, at
 $$
 \begin{aligned}
-P_{\text{tw},ab} &= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}} \\
-&= \frac{\sum_i p_{bi} \frac{W_{ai}}{p_{ai}}}{\sum_i W_{ai}} =
+P_{\text{tw},ab} &= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}}
+= \frac{\sum_i p_{bi} \frac{W_{ai}}{p_{ai}}}{\sum_i W_{ai}} =
 \frac{\sum_i \frac{p_{bi}}{p_{ai}} W_{ai}}{\sum_i W_{ai}} \\
 &= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} = \sum_i w_{ai} P_{abi}.
 \end{aligned}
 $$ {#eq-w_indeks_2}
 Altså kan denne indeksen også ses på som et vektet gjennomsnitt av de elementære trafikkmengdeindeksene $P_{abi} = p_{bi} / p_{ai}$ med trafikkarbeidsvekter fra perioden $t = a$. 
 
-Vi ser at @eq-w_indeks_2 ligner veldig på den vektede Carli-indeksen i @eq-carli_w, men forskjellen er at sistnevntes vekter er symmetriske i tid. Denne symmetrien kan synes som en god egenskap, men dette gjør at @eq-carli_w ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i @eq-w_indeks.
+Vi ser at @eq-w_indeks_2 ligner veldig på den vektede Carli-indeksen i @eq-carli_w, men forskjellen er at sistnevntes vekter er symmetriske i tid. Denne symmetrien kan synes som en god egenskap, men det gjør at @eq-carli_w ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i @eq-w_indeks.
 
 Alternativt kan områdeindeksen uttrykkes som 
 $$
@@ -439,55 +439,84 @@ altså en vektet sum av trafikkmengdene i beregningsåret.
 Hver trafikklenke tilhører en funksjonsklasse $h$, og en trafikkarbeidsindeks $P_{\text{tw},abh}$ kan beregnes for hver funksjonsklasse. Da vil en samlet indeks over alle funksjonsklasser være
 
 $$
-P_{\text{tw},ab} = \sum_{h} w_{h} P_{\text{tw},abh},
+P_{\text{tw},ab} = \sum_{h} w_{ah} P_{\text{tw},abh},
 $$
 hvor
 
 $$
-w_{h} = \frac{W_{h}}{\sum_h W_{h}},
+\begin{aligned}
+w_{ah} &= \frac{W_{ah}}{\sum_h W_{ah}} \\
+P_{abh} &= \sum_i w_{ahi} P_{abi} \\
+w_{ahi} &= \frac{W_{ai}}{\sum_i W_{ahi}}.
+\end{aligned}
 $$
-er andelen trafikkarbeid per funksjonsklasse.
+Det forutsettes her at trafikkarbeidet er kjent for hele populasjonen i et referanseår $a$.
 
 
 ### Forholdsestimator
-Ved å multiplisere både teller og nevner i ligning @eq-w_indeks med $1/n$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Den har da formen til en forholdsestimator. Indeksen i stratum $h$ er da
+Ved å multiplisere både teller og nevner i @eq-w_indeks med $1/n$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er samme form som i @eq-p_est. Størrelsen har da formen til en forholdsestimator. Indeksen i stratum $h$ er dermed
 
 $$
-P_h = \frac{ \bar{ W_{bh} } } { \bar{ W_{ah} } }. 
+P_{abh} = \frac{ \bar{W}_{bh} } { \bar{W}_{ah} }. 
 $$
-Dersom trafikkarbeidet i referanseåret $W_{ah} \forall h$ antas kjent, så kan det totale trafikkarbeidet estimeres ved
+Dersom trafikkarbeidet i referanseåret $W_{ah} \forall h$ antas kjent for hele populasjonen, så kan det totale trafikkarbeidet estimeres ved
 
 $$
-\widehat{W_b} = \sum_h \widehat{P_{abh}} W_{ah}.
+\widehat{W}_b = \sum_h \widehat{P}_{abh} W_{ah}.
 $$
 Indeksen blir da
 
 $$
-\widehat{P_{ab}} = \frac{\widehat{W_b}}{W_{a}} 
-= \frac{1}{W_{a}} \sum_h \widehat{P_{abh}} W_{ah}
-= \frac{1}{W_{a}} \sum_h \frac{ \bar{ W_{bh} } } { \bar{ W_{ah} } } W_{ah}
+\widehat{P}_{ab} = \frac{\widehat{W}_b}{W_{a}} 
+= \frac{1}{W_{a}} \sum_h \widehat{P}_{abh} W_{ah}
+= \frac{1}{W_{a}} \sum_h \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } W_{ah}
 $$ {#eq-ratio_index}
 hvor
 
 $$
 W_a = \sum_h W_{ah}.
 $$
-Gjennomsnittlig trafikkarbeid per lenke estimeres da som i ligning @eq-W_bar_hat.
+Gjennomsnittlig trafikkarbeid per lenke estimeres da som i @eq-W_bar_hat.
 
-Ved små utvalg i ett eller flere strata, vil estimatoren kunne ha betydelig skjevhet. Det er derfor foreslått ulike måter å korrigere en forholdsestimator på for å redusere skjevhet. Beales estimator er god i så måte [@srivastva_1983], og er mye brukt.
-
-Per stratum er en indeks med Beales korreksjon da
+Med 
 
 $$
-\widehat{P_{abh}}_{,\text{Beale}} = 
-\widehat{P_{abh}} \frac{1 + \left( \frac{1 - f_h}{n_h} \right) c_{abh} } { 1 + \left( \frac{1 - f_h}{n_h} \right) c_{aah} },
+w_{ah} = \frac{W_{ah}}{W_a}
+$$
+kan @eq-ratio_index skrives som 
+
+$$
+\begin{aligned}
+\widehat{P}_{ab} &= \sum_h w_{ah} \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } \\
+&= \sum_h w_{ah} \widehat{P}_{abh} \\
+&= \sum_{h}^H w_{ah} \sum_i^{n_h} w_{ahi} P_{abi} \\
+&= \sum_{h}^H \sum_i^{n_h} w_{ah} w_{ahi} P_{abi},
+\end{aligned}
+$$
+hvor den kombinerte vekten er
+
+$$
+\begin{aligned}
+w_{ah} w_{ahi} 
+&= \frac{W_{ah}}{\sum_h^H W_{ah}} \frac{W_{ai}}{\sum_i^{n_h} W_{ahi}} \\
+&= \frac{W_{ah}}{W_a} \frac{W_{ai}}{W_{ahi,n_h}} \\
+&= \frac{W_{ai}}{W_a} \frac{W_{ah}}{W_{ahi,n_h}},
+\end{aligned}
+$$
+hvor den første faktoren er andelen trafikkarbeid på trafikklenke $i$ i populasjonen, og den andre faktoren er forholdet mellom populasjonens og utvalgets trafikkarbeid i stratum $h$. Sistnevnte forhold blir veldig stort dersom utvalget er lite. At små utvalg i ett eller flere strata gir store bidrag til en forholdsestimator er et kjent problem, og kan gi estimatoren betydelig skjevhet. Det er derfor foreslått ulike måter å korrigere en forholdsestimator på for å redusere skjevhet. Beales estimator er god i så måte (se for eksempel [@srivastva_1983]), og er mye brukt.
+
+Per stratum er en indeks med Beales korreksjon gitt som
+
+$$
+\widehat{P}_{abh,\text{Beale}} = 
+\widehat{P}_{abh} \frac{1 + \left( \frac{1 - f_h}{n_h} \right) c_{abh} } { 1 + \left( \frac{1 - f_h}{n_h} \right) c_{aah} },
 $$ {#eq-beale}
 hvor
 
 $$
 \begin{aligned}
-c_{abh} &= \frac{\rho_{abh} s_{ah} s_{bh}}{\bar{W_{ah}} \bar{W_{bh}}} \\
-c_{aah} &= \frac{s_{ah}^2}{\bar{W_{ah}^2}}
+c_{abh} &= \frac{\rho_{abh} s_{ah} s_{bh}}{\widehat{\bar{W}}_{ah} \widehat{\bar{W}}_{bh}} \\
+c_{aah} &= \frac{s_{ah}^2}{\widehat{\bar{W}}_{ah}^2}
 \end{aligned}
 $$
 der $\rho$ er korrelasjonskoeffisienten og $s$ er observert standardavvik i utvalget. Det er denne indeksformelen Danmark benytter i sin Vejtrafikindeks.
@@ -516,7 +545,7 @@ v_{ai} = \frac{p_{ai}}{\sum_i^n p_{ai}}.
 $$
 
 
-## Valg av byindeksmetode
+## Valg av byindeksmetode {#sec-index_choice}
 Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er sånn sett ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det representerer på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
 
 - trafikkarbeidsindeks
@@ -554,7 +583,7 @@ Når disse fordelene og ulempene veies opp mot hverandre er det den generelle tr
 
 
 # Usikkerhet {#sec-uncertainty}
-En indeks har flere feilkilder som i ulik grad bidrar til en samlet usikkerhet. Hverken indeksverdien eller dens sanne usikkerhet er kjent, og begge størrelsen må derfor estimeres.
+En indeks har flere feilkilder som i ulik grad bidrar til en samlet usikkerhet. Hverken indeksverdien eller dens sanne usikkerhet er kjent, og begge størrelsene må derfor estimeres.
 
 Den totale nøyaktigheten til estimatet er summen av estimatorens varians og kvadratet av utvalgsskjevheten, og kalles gjennomsnittlig kvadratfeil [@cochran_1977]. Hvis vi har en populasjon hvor $\mu$ er det sanne, ukjente gjennomsnittet, og vi har en estimator $\hat{\mu}$ som er normalfordelt med et gjennomsnitt $\mathbb{E}(\hat{\mu}) = m$, vil et gjennomsnittlig kvadratavvik være
 
@@ -583,7 +612,7 @@ De mest relevante feilkildene for en trafikkindeks er:
 - skjevhet i tidsaggregeringen av grunnlagsdata
   - data mangler for deler av året
 
-Data med målefeil må lukes ut, men dette vil potensielt føre til enda større utvalgsskjevhet. Det samme gjelder trafikklenker som er påvirket av endringer i vegnettet. Komplett bortfall av trafikklenker fra utvalget, vil også kunne bidra til utvalgsskjevhet.
+Data med målefeil må lukes ut, men dette vil potensielt føre til enda større utvalgsskjevhet. Det samme gjelder trafikklenker som er påvirket av endringer i vegnettet. Komplett bortfall av trafikklenker fra utvalget vil også kunne bidra til utvalgsskjevhet.
 
 En mer detaljert gjennomgang av ulike feilkilder i en konsumprisindeks er gitt i [@smith_2021].
 
@@ -657,7 +686,7 @@ Utvelgelsen skal ikke være direkte påvirket av hva som er den reelle trafikken
 Uten å måtte argumentere for at utvalget er tilfeldig, kan vi i stedet ganske enkelt anta at utvalget ikke er tilfeldig, altså at det er basert på et beleilighets- og ekspertutvalg uten at det resulterende utvalget framstår som tilfeldig. Dette har noe å si for hvordan utvalgsusikkerheten bestemmes.
 
 
-## Varians basert på utvalgsmetode
+## Utvalgsdesign
 En utvalgsbasert metode, gjerne kalt design-basert, antar at populasjonen har bestemte, faste verdier. Det er selve utvalgsprosessen som er gjenstand for tilfeldigheter, og som tilordner hvert utvalg en viss sannsynlighet for å bli valgt ut. Selv om den underliggende sannsylighetsfordelingen til populasjonen er ukjent kan utvalgsgjennomsnitt ofte tilnærmes med normalfordeling. Ordinære konfidensintervall kan dermed beregnes ut fra en estimert varians.
 
 En varians kan utledes med utgangspunkt i indeksformelens form og uttrykkene kan bli ganske kompliserte. Det er derfor vanlig å forenkle disse ved bruk av Taylor-utvikling. En utfordring med denne metoden er at den ikke eksplisitt tar hensyn til betydningen av eventuelle  manglende data eller imputeringen av disse. 
@@ -683,7 +712,7 @@ Selv om slutninger kan justeres til å bli bedre, vil det alltid være litt skje
 Om vi har et tilfeldig utvalg kan dette ses på som det primære utvalget, hvor alle verdier for målvariabelen mangler. I tillegg har vi et, muligens større, ikke-tilfeldig utvalg med verdier for målvariabelen, som da kan benyttes til å fylle inn de manglende verdiene for målvariabelen i det tilfeldige utvalget.
 
 
-## Varians basert på populasjonsmodell
+## Populasjonsmodellering
 Vi kan sette opp en modell for å predikere målvariabelen på alle lenker som ikke er med i utvalget. I motsetning til den design-baserte tilnærmingen, vil den modellbaserte se på populasjonen som et tilfeldig utfall av en stokastisk prosess. En gitt realisasjon av en populasjon er sånn sett et tilfeldig utfall fra en større, tenkt superpopulasjon. Utvalget trenger ikke være basert på tilfeldige prosesser. Modellen skal predikere den ønskede populasjonsstørrelsen, for eksempel et gjennomsnitt. Det kan beregnes prediksjonsintervall.
 
 [@zhang_2010] beskriver en metode for å estimere variansen til en indeks med utgangspunkt i en modellert konsumprisindeks. Denne modellen estimerer indeksen basert på de observerte prisene. Variansen er da estimert ut fra hvordan den modellerte målvariabelen varierer som følge av variasjonen i prisene. En viktig forutsetning her er at variansen er den samme for alle produkttypenes priser. 
@@ -731,7 +760,7 @@ Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta ut
 Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkarbeidsindeksen.
 
 
-## Utvalgsbasert varians
+## Utvalgsdesign
 For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i @eq-w_indeks_2. Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
 
 En estimator for variansen $\sigma_{\text{tw}}^2$ til et utvalg elementære trafikkarbeidsindekser $\{P_{abi}\} = \{i\}$ er da [@bevington_2003]
@@ -743,7 +772,7 @@ $$
 \end{aligned}
 $$ {#eq-tw_variance_p}
 
-Her er vektene $w_{ai}$ ikke-stokastiske "pålitelighetsvekter" som reflekterer hvor viktige de enkelte punktindeksene er i beregningen.
+Her opptrer vektene $w_{ai}$ som ikke-stokastiske "pålitelighetsvekter" og de reflekterer hvor viktige de enkelte punktindeksene er i beregningen.
 
 Dersom vi kan anta at utvalget er tilfeldig trukket ut, er en estimator for variansen til trafikkarbeidsindeksen som tar hensyn til endelig populasjonsstørrelse da [@cochran_1977]
 $$
@@ -757,7 +786,7 @@ $$ {#eq-tw_variance_P}
 Her er $f = n/N$ utvalgsandelen.
 
 
-## Populasjonsmodellert varians
+## Populasjonsmodellering
 I [@chambers_2012] finner vi en tilsvarende utledning av en modellbasert varians for en lineær populasjonsparameter på formen
 
 $$
@@ -841,24 +870,24 @@ Her er altså vektene $w'$ som gitt i @eq-w_indeks_3.
 En tilnærmet forventningsrett robust estimator for variansen til en Dutot-type indeks er vist i [@zhang_2010]. La $W_{hi} = p_{hi} q_{hi}$ være trafikkarbeidet observert på trafikklenke $i$ i funksjonsklasse $h$. Da er
 
 $$
-\widehat{\text{Var}}(P_{\text{tw},abh}) = 
-\frac{1}{(\sum_k W_{akh})^2} \sum_i \frac{1}{1 - \frac{W_{aih} }{\sum_k W_{akh} } }
-\left( W_{bih} - \frac{\sum_k W_{bkh} }{\sum_k W_{akh} } W_{aih}  \right)^2.
+\widehat{\text{Var}}(P_{abh}) = 
+\frac{1}{W_{ah}^2} \sum_i \frac{1}{1 - \frac{W_{ahi} }{W_{ah} } }
+\left( W_{bhi} - \frac{\widehat{\bar{W}}_{bh} }{\widehat{\bar{W}}_{ah} } W_{ahi}  \right)^2.
 $$ {#eq-var_P_w_robust}
 
 Variansen for samlet indeks over alle funksjonsklasser er da
 
 $$
-\widehat{\text{Var}}(P_{\text{tw},ab}) = \sum_h w_{ah}^2 \cdot \widehat{\text{Var}}(P_{\text{tw},abh}).
+\widehat{\text{Var}}(P_{ab}) = \sum_h w_{ah}^2 \cdot \widehat{\text{Var}}(P_{abh}).
 $$ {#eq-var_P_w_robust_total}
 
 
 ## Ikke-parametrisk bootstrap
 En ikke-parametrisk bootstrap gjøres som følger:
 
-1. Vi har et opprinnelig utvalg $s$ av $n$ observasjoner.
+1. Vi har et opprinnelig utvalg $u$ av $n$ observasjoner.
 2. Fra dette har vi kun én observasjon $\hat{\theta}$ for den aktuelle statistiske størrelsen $\theta$.
-3. Trekk tilfeldig $n$ observasjoner fra $s$ med tilbakelegging. Da har vi et utvalg $s^*$.
+3. Trekk tilfeldig $n$ observasjoner fra $u$ med tilbakelegging. Da har vi et utvalg $u^*$.
 4. Beregn et estimat $\hat{\theta}^*$.
 5. Gjenta punkt 2-4 $B$ ganger.
 6. Da kan variansen til $\hat{\theta}$ estimeres ved
@@ -879,40 +908,47 @@ Alternativt kan et $t$-intervall estimeres ved å bytte ut standard normalfordel
 
 Når en har generert opp et anselig antall bootstrap-estimater for den aktuelle statistiske størrelsen, kan et konfidensintervall estimeres direkte ved å hente ut (97,5, 2,5)-persentilene i denne fordelingen.
 
+Dersom utvalget har skjevheter, vil bootstrapping gjenskape skjevhetene i stikkprøvegjentakingen. 
+
+Ved bruk av pakken *survey* i R kan vi estimere konfidensintervallet til en forholdsestimator ved å ta hensyn til både etterstratifiseringsvekter og endelig populasjonsstørrelse.
+
 
 ## Forholdsestimator
-Ligning @eq-beale gir oss en skjevhetskorrigert indeks. Den samlede variansen til denne indeksen består av et bidrag fra variansen til ukorrigert form i ligning @eq-ratio_index og et bidrag fra en systematisk feil fra små utvalg
+I @eq-beale har vi en skjevhetskorrigert indeks. Den samlede variansen til denne indeksen består av et bidrag fra variansen til ukorrigert form i @eq-ratio_index og et bidrag fra en systematisk feil fra små utvalg:
 
 $$
-\text{MSE}(\widehat{P_{ab}}) = 
-\frac{1}{W_a^2} \sum_h \left( \text{Var}(\bar{W_b}) + W_{ah}^2 (\mathbb{E}(\widehat{P_{abh}} - P_{abh}))^2 \right)
+\text{MSE}(\widehat{P}_{ab}) = 
+\frac{1}{W_a^2} \sum_h \left( \text{Var}(\widehat{W}_{bh}) + W_{ah}^2 (\mathbb{E}(\widehat{P}_{abh} - P_{abh}))^2 \right).
 $$
 Her er 
 
 $$
-\text{Var}(\bar{W_b}) = \sum_h \frac{N_h^2(1 - f_h)}{n_h} S_{dh}^2
+\text{Var}(\widehat{W}_{bh}) = \frac{N_h^2(1 - f_h)}{n_h} S_{dh}^2
 $$
 med
 
 $$
-S_{dh}^2 = \frac{1}{N-1} \sum_i (W_{bi} - P_{ab} W_{ai})^2 =
-s_a^2 + P_{ab}^2 s_x^2 - 2 \rho_{ab} s_a s_b.
+\begin{aligned}
+S_{dh}^2 &= \frac{1}{N-1} \sum_i (W_{bhi} - P_{abh} W_{ahi})^2 \\
+&= s_{bh}^2 + \widehat{P}_{abh}^2 s_{ah}^2 - 2 \rho_{abh} s_{ah} s_{bh}.
+\end{aligned}
 $$
 
 Den systematiske feilen kan tilnærmes med
 
 $$
 \mathbb{E}(\hat{P}_{abh} - P_{abh}) \approx
-\frac{1 - f_h}{n_h \bar{W_a^2}} \left(
-P_h s_{ah}^2 - \rho_{ab} s_{ah} s_{bh}
+\frac{1 - f_h}{n_h \bar{W_{ah}^2}} \left(
+\widehat{P}_{abh} s_{ah}^2 - \rho_{abh} s_{ah} s_{bh}
 \right).
 $$
+Bruk av Beales korreksjon som i @eq-beale reduserer eventuell systematisk feil ved små utvalg, og dette vil også gi en reduksjon i usikkerheten.
 
+Et konfidensintervall er da
 
-
-## R-pakken *survey*
-Ved bruk av pakken *survey* i R kan vi estimere konfidensintervallet til en forholdsestimator ved å ta hensyn til både etterstratifiseringsvekter og endelig populasjonsstørrelse.
-
+$$
+\widehat{P}_{ab} \pm 1,96 \sqrt{\text{MSE}(\widehat{P}_{ab})}.
+$$
 
 
 # Usikkerhet i trafikkmengdeindeks
@@ -982,7 +1018,7 @@ Kjeding kan over tid føre til avvik fra forventet resultat. Forutsetningene for
 - alle trafikkmengder er helt uten korrelasjon med trafikkarbeidsandelene i alle øvrige perioder: gjelder dersom indekspunktutvalget alltid er helt likt.
 - trafikkarbeidsandeler og logaritmen til trafikkmengdene har lineær utvikling: neppe realistisk.
 
-En annen ulempe som kommer med hyppig oppdatering av indekspunktutvalget, med påfølgende hyppig kjeding av indekser, er at usikkerheten akkumuleres for hvert ledd.
+Trafikkarbeidsindeksen, som er av Dutot-typen, er transitiv (se @sec-index_choice) og dermed kan trafikkregistreringspunkter/trafikklenker byttes ut, så lenge de utgjør et representativt utvalg.
 
 Fordeler med kjeding er at utvalget og dermed vektene kan oppdateres. Det må være en overlappende periode som knytter kjeden sammen. 
 
@@ -993,6 +1029,10 @@ P_{ac} = P_{ab} P_{bc}.
 $$ 
 
 Dette gjelder både for trafikkarbeidsindeks og trafikkmengdeindeks. 
+
+
+## Usikkerhet
+En ulempe som kommer med hyppig oppdatering av indekspunktutvalget, med påfølgende hyppig kjeding av indekser, er at usikkerheten akkumuleres for hvert ledd.
 
 Det kan være et vilkårlig antall ledd i kjeden, men variansen for hele kjeden bygges opp ved å se på to ledd om gangen. Variansen er gitt ved 
 
@@ -1044,6 +1084,7 @@ For et punkt skal først godkjent døgn benyttes til å beregne YDT og HDT. Diss
 day_type_weights
 ```
 
+{{< pagebreak >}} 
 
 Når enkeltperiodene skal vektes sammen til en indeks for "hittil i år" og "hele år", skal vektene gitt i tabell @tbl-periods benyttes. Legg merke til at påsken og pinsen er egne perioder her.
 
