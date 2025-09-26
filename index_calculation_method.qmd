@@ -930,7 +930,7 @@ med
 $$
 \begin{aligned}
 S_{dh}^2 &= \frac{1}{N-1} \sum_i (W_{bhi} - P_{abh} W_{ahi})^2 \\
-&= s_{bh}^2 + \widehat{P}_{abh}^2 s_{ah}^2 - 2 \rho_{abh} s_{ah} s_{bh}.
+&= s_{bh}^2 + \widehat{P}_{abh}^2 s_{ah}^2 - 2 \widehat{P}_{abh} \rho_{abh} s_{ah} s_{bh}.
 \end{aligned}
 $$
 
@@ -1117,6 +1117,10 @@ Pinsen, som utgjør en liten andel av året, kan mangle, men da skal den ikke ta
 
 ## Trafikkvariasjon som forklaringsvariabel
 Trafikklenkene kan kategoriseres ut fra trafikkmengdens relative variasjon over året, hvor spesielt den relative størrelsen til påsken, pinsen og juli er avgjørende. Denne kategoriseringen er antakelig nyttig som stratifiseringsvariabel i indekssammenheng. Dette er gjenstående arbeid, som eventuelt må prioriteres senere.
+
+
+# Glidende gjennomsnitt
+
 
 
 # Referanser
