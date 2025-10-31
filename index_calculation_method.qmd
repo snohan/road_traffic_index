@@ -1,5 +1,5 @@
 ---
-title: "Beregningsmetodikk for trafikkindekser"
+title: "Beregningsmetode for trafikkindeks"
 format: 
   pdf:
     toc: true
@@ -102,7 +102,7 @@ Liste over symboler brukt i dette dokumentet.
 :::
 
 # Forord {.unnumbered}
-Dette notatet oppsummerer arbeidet med å bestemme en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetodikken til selve indeksverdien, samt usikkerheten som hører til beregningene.
+Dette notatet beskriver en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetoden til selve indeksverdien, samt usikkerheten som hører til beregningene.
 
 | Statens vegvesen, 
 | Trondheim, `r today_string`.
