@@ -102,7 +102,9 @@ Liste over symboler brukt i dette dokumentet.
 :::
 
 # Forord {.unnumbered}
-Dette notatet beskriver en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetoden til selve indeksverdien, samt usikkerheten som hører til beregningene.
+Dette notatet beskriver en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetoden til selve indeksverdien, samt usikkerheten som hører til.
+
+\vspace{2cm}
 
 | Statens vegvesen, 
 | Trondheim, `r today_string`.
@@ -396,7 +398,7 @@ I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hver
 $$
 \text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}},
 $$ {#eq-w_indeks}
-hvor "tw" står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
+hvor "tw" her står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
 
 Hvis vi definerer trafikkarbeidet
 $$
@@ -428,11 +430,14 @@ $$
 \begin{aligned}
 P_{\text{tw},ab} 
 &= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} \\
-&= \sum_i w'_{ai} p_{bi}, \\
-w'_{ai} &= \frac{q_i}{\sum_i^n p_{ai}q_i}
+&= \sum_i w'_{ai} p_{bi},
 \end{aligned}
 $$ {#eq-w_indeks_3}
-altså en vektet sum av trafikkmengdene $p_{bi}$ i beregningsåret $a$.
+altså en vektet sum av trafikkmengdene $p_{bi}$ i beregningsåret $a$, med vektene definert som
+
+$$
+w'_{ai} = \frac{q_i}{\sum_i^n p_{ai}q_i}.
+$$ {#eq-w_weight_q}
 
 
 ### Stratifisering med funksjonsklasse
@@ -451,6 +456,20 @@ w_{ahi} &= \frac{W_{ai}}{\sum_i W_{ahi}}.
 \end{aligned}
 $$
 Det forutsettes her at trafikkarbeidet er kjent for hele populasjonen i et referanseår $a$.
+
+La $m$ være antall funksjonsklasser slik at funksjonsklassene kan betegnes som $h \in (h_1, h_m) \equiv (1, m)$. I hver funksjonsklasse er det $n_h$ lenker i utvalget. At en trafikklenke $i$ tilhører en gitt funksjonsklasse $h$ betegnes ved $i_h$. Vi har da at $i \in (1_1, 2_1, \ldots n_1, 1_2, 2_2, \ldots n_2, \ldots 1_m, \ldots n_m)$. Den totale indeksen kan ses på som en vektet sum av punktindeksene, og betegnes slik at
+
+$$
+\begin{aligned}
+P_{\text{tw},ab} 
+&= \sum_{h = h_1}^{h_m} w_{ah} P_{\text{tw},abh} \\
+&= w_{ah_1} P_{\text{tw},abh_1} + w_{ah_2} P_{\text{tw},abh_2} + \ldots + w_{ah_m} P_{\text{tw},abh_m} \\
+&= w_{ah_1} \sum_{i_1}^{n_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_m} \sum_{i_m}^{n_m} w_{ah_mi_m} P_{abi_m} \\
+&= w_{ah_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_1} w_{ah_1n_1} P_{abn_1} + \\
+& \hspace{1.5em} \ldots + w_{ah_m} w_{ah_mn_m} P_{abn_m}
+\end{aligned}
+$${#eq-w_index_as_sum}
+På denne måten kan bidraget fra hver lenke i utvalget isoleres og sammenlignes. Da lenkenes trafikkarbeid er forskjellig, vil de bidra ulikt til indeksen.
 
 
 ### Forholdsestimator
