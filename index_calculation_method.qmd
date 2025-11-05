@@ -6,7 +6,6 @@ format:
     number-sections: true
     df-print: kable
     toc-title: Innhold
-    mainfont: "Arial"
     include-in-header:
       text: |
         \newfontfamily\sectionfont[Color=ed9300]{Arial}
@@ -35,6 +34,8 @@ bibliography: references.bib
 #| label: setup
 #| include: false
 #| echo: false
+
+# mainfont: "Arial"
 
 # Packages ####
 base::Sys.setlocale(locale = "nb.utf8")
@@ -80,22 +81,25 @@ day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weight
 
 # Symboler {.unnumbered}
 ::: {#tbl-symbols}
-| Symbol          | Betydning                             |
-|-----------------|---------------------------------------|
-| $i$             | trafikklenke                          |
-| $h$             | funksjonsklasse                       |
-| $n$             | utvalgsstørrelse                      |
-| $N$             | populasjonsstørrelse                  |
-| $f$             | utvalgets andel av populasjonen       |
-| $t, T, a, b$    | tidsperiode                           |
-| $q$             | trafikklenkelengde                    |
-| $p$             | gjennomsnittlig trafikkmengde         |
-| $W$             | trafikkarbeid                         |
-| $w$             | andel trafikkarbeid                   |
-| $V$             | trafikkmengde                         |
-| $v$             | andel trafikkmengde                   |
-| $P$             | indeks                                |
-| $\sigma, s$     | standardavvik                         |
+| Symbol          | Betydning                       |
+|-----------------|---------------------------------|
+| $i$             | trafikklenke                    |
+| $h$             | funksjonsklasse                 |
+| $n$             | utvalgsstørrelse                |
+| $N$             | populasjonsstørrelse            |
+| $f$             | utvalgets andel av populasjonen |
+| $t, T, a, b$    | år                              |
+| $d$             | måned                           |
+| $\delta$        | tidsvindu opp til ett år        |
+| $\Delta$        | tidsvindu hele år (>1)          |
+| $q$             | trafikklenkelengde              |
+| $p$             | gjennomsnittlig trafikkmengde   |
+| $W$             | trafikkarbeid                   |
+| $w$             | andel trafikkarbeid             |
+| $V$             | trafikkmengde                   |
+| $v$             | andel trafikkmengde             |
+| $P$             | indeks                          |
+| $\sigma, s$     | standardavvik                   |
 
 Liste over symboler brukt i dette dokumentet.
 
@@ -393,12 +397,14 @@ $$
 \widehat{\bar{W}}_a = \frac{1}{n} \sum_i^n W_{ai}.
 $$ {#eq-W_bar_hat}
 
-I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hvert indekspunkt. Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{ai} = q_{bi}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi har da en generell indeksformel gitt som
+Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{ai} = q_{bi}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi har da en generell indeksformel gitt som
 
 $$
 \text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}},
 $$ {#eq-w_indeks}
 hvor "tw" her står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
+
+I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hvert indekspunkt. Generelt  kan @eq-p_est gjelde for hele år, men for trafikkindekser benyttes månedsindekser. Hvilken måned $d$ en indeks gjelder for, kan da benevnes som $P_{ab,d}$. Hvordan månedsindekser settes sammen til indekser for lengre perioder, er omtalt i @sec-window_index. For enkelhets skyld vil månedsangivelsen i notasjonen utelates videre i dette kapittelet.
 
 Hvis vi definerer trafikkarbeidet
 $$
@@ -469,7 +475,24 @@ P_{\text{tw},ab}
 & \hspace{1.5em} \ldots + w_{ah_m} w_{ah_mn_m} P_{abn_m}
 \end{aligned}
 $${#eq-w_index_as_sum}
-På denne måten kan bidraget fra hver lenke i utvalget isoleres og sammenlignes. Da lenkenes trafikkarbeid er forskjellig, vil de bidra ulikt til indeksen.
+På denne måten kan bidraget fra hver lenke i utvalget isoleres og sammenlignes. Da lenkenes trafikkarbeid er forskjellig, vil de bidra ulikt til indeksen. Bidraget er produktet av tre faktorer:
+
+- andelen av populasjonens trafikkarbeid som gjøres på trafikklenker i den funksjonsklassen lenken tilhører,
+- andelen av utvalgets trafikkarbeid i lenkens funksjonsklasse som gjøres på lenken,
+- samt endringen i trafikkmengde på lenken.
+
+Disse faktorene skiller seg ut fra i hvilken grad de er avhengig av lenkens egenskaper og trafikk. Den første faktoren er ikke avhengig av dette i det hele tatt. Den andre faktoren er delvis avhengig av dette, mens den tredje faktoren er i sin helhet avhengig av dette. Hvor mye en gitt lenke i utvalget bidrar til totalindeksen er derfor avhengig av:
+
+- endringen i trafikkmengde på lenken,
+- hvilke andre lenker som er med i utvalget, 
+- samt hvilke andre lenker som er med i populasjonen.
+
+Hvor mye hvert indekspunkt avviker fra en måneds byindeks kan da beregnes som
+
+$$
+\Pi_i = w_{ah} w_{ahi} (P_{abi} - P_{\text{tw},ab}),
+$$
+for et punkt $i$ i funksjonsklasse $h$.
 
 
 ### Forholdsestimator
@@ -599,6 +622,100 @@ $$
 Indekser som oppfyller både regelen om identitet og transitivitet, oppfyller også regelen om tidsreversibilitet.
 
 Når disse fordelene og ulempene veies opp mot hverandre er det den generelle trafikkarbeidsindeksen som peker seg ut som den best egnede. Likevel, som beskrevet tidligere, må en sykkelindeks bli en ren trafikkmengdeindeks.
+
+
+# Kalendereffekter og glidende gjennomsnitt
+Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT). Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
+
+Trafikken varierer naturlig gjennom døgnet, uka og året. Dersom det er bortfall av data, kan det være tilstrekkelig at de naturlig forekommende variasjonene gir opphav til en «påvist» endring i trafikk. For at indeksen i stedet skal detektere en generell trend, må tidsvariasjonene tas hensyn til.
+
+
+## Variasjon gjennom døgnet
+Variasjonen gjennom døgnet glattes ut ved at datagrunnlaget kun vil bestå av trafikkregistreringer for komplette døgn. Dersom hele døgnet er dekket med en fullstendig registrering av alle kjøretøy og datakvaliteten er godkjent, så har den 100 % dekningsgrad. Det kan oppstå bortfall av data, og da vil dekningsgraden bli lavere. Et døgn må minst ha 99 % dekningsgrad for å kunne inngå i indeksens datagrunnlag.
+
+Tilsvarende må et døgn ha minst 99 % kjøretøyklassifiseringsdekningsgrad for å kunne inngå i indeksens datagrunnlag.
+
+
+## Variasjon gjennom uka
+Mange steder er trafikkmengden ganske ulik i yrke- og helgedøgn. Når indeksen skal beregnes for kalendermåneder, vil det faktum at antall yrkedøgn kan variere mellom år gi et bidrag til indekstallet som kan være betydelig sammenlignet med den generelle trenden. Det er derfor nødvendig å ta hensyn til dette når datagrunnlaget beregnes.
+
+Helgedøgn defineres her som alle lørdager og søndager, samt alle øvrige røde dager i den norske kalenderen. I tillegg anses jul- og nyttårsaften som helgedøgn.
+Fordelingen av antall yrke- og helgedøgn i en måned påvirkes også av skuddårsdagen.
+
+Dagtypene kan ses på som strata. For hver trafikklenke observerer vi trafikkmengden hver dag, og datasettet består av døgntrafikk som har god nok datakvalitet. En kalenderjustert månedsdøgntrafikk (MDT) beregnes som en vektet sum av yrkedøgntrafikk (YDT) og helgedøgntrafikk (HDT). En slik justering av kalendereffekter med tanke på fordeling av yrke- og helgedøgn kan da ses på som en etterstratifisering på dagtyper.
+
+Vektene er gitt i tabell @tbl-day_type_weights. Disse vektene er beregnet ut fra det gjennomsnittlig antall yrke- og helgedøgn per måned i årene 2016-2100. For mars og april er påsken tatt ut, og fra mai og juni er pinsen tatt ut.
+
+```{r}
+#| label: tbl-day_type_weights
+#| tbl-cap: "Vekting av YDT og HDT per måned."
+
+day_type_weights
+```
+
+Når døgn så skal aggregeres opp til YDT og HDT, blir det beregnet en dekningsgrad også for disse. En januar som har 22 yrkedøgn, vil da få en YDT med 100 % dekningsgrad dersom det er godkjent døgntrafikk for alle disse dagene. Det må være minst 3 godkjente helgedøgn og minst 7 godkjente yrkedøgn for at en MDT skal være godkjent.
+
+
+## Variasjon gjennom året
+Mange steder er det i påsken og pinsen annerledes trafikk enn ellers. Begge disse høytidene bytter på sin plassering mellom to kalendermåneder, og dette vil derfor påvirke indekstallene når enkeltmåneder sammenlignes.
+
+I indekssammenheng er det derfor lurt å operere med en egen størrelse for gjennomsnittlig døgntrafikk i henholdsvis påsken og pinsen. Dette kan vi kalle for påskedøgntrafikk (EDT, fra engelsk "Easter") og pinsedøgntrafikk (PDT, fra engelsk "Pentecost"). Påsken defineres her som dagene fra og med fredag før palmesøndag til og med andre påskedag. Tilsvarende er pinsen fra og med fredag før pinseaften til og med andre pinsedag. Påsken må ha minst 6 av 11 dager med godkjent døgntrafikk, mens pinsen må være komplett.
+
+Kristi himmelfartsdag er alltid en torsdag og med påfølgende inneklemte fredag skaper dette en langhelg som mange benytter. Dermed er det noe annerledes trafikk i denne helgen også, men den forekommer nesten alltid i sin helhet i mai. Men hvis påsken er så sen som den kan få blitt, med første påskedag på 25. april, faller Kristi himmelfartsdag på 3. juni. Det er kun en gang i perioden 2021-2050 at dette skjer, og det er i 2038. Det er tre andre år hvor enten bare påfølgende søndag eller både lørdag og søndag faller i juni. Dette er så få ganger at vi velger å ikke ta hensyn til dette i indeksberegningene.
+
+Når månedsverdier skal settes sammen til en lengre periode, må de ulike månedenes lengde tas hensyn til. Da skal vektene gitt i tabell @tbl-periods benyttes. Legg merke til at påsken og pinsen er egne perioder her.
+
+```{r}
+#| label: tbl-periods
+#| tbl-cap: "Vekting av periodene i et år."
+
+period_weights
+```
+I stedet for å vekte med månedenes lengde i antall dager, kunne vektene være basert på fordeling av trafikkarbeid eller trafikkmengde gjennom året. Dette vil være aktuelt for en sykkelindeks, hvor trafikkmengdene er større på sommeren enn på vinteren.
+
+
+### Fra månedsindeks til årsindeks {#sec-window_index}
+Byindeksen beregnes først for hver kalendermåned. For en gitt kalendermåned sammenlignes godkjent MDT for de punktene som har verdi i begge årene. Deretter beregnes et vektet gjennomsnitt av disse, slik som angitt i @eq-w_indeks.
+
+For å beregne indeks for et år, "hittil i år" eller siste år kan vi velge blant to strategier:
+
+1. Først beregne tilsvarende gjennomsnittlig MDT per punkt, og så benytte indeksformelen for å finne byindeksen.
+2. Først beregne månedsindeks for byen, og deretter vekte disse sammen for den aktuelle perioden.
+
+Strategi nummer 1 har den ulempen at bortfall av måneder vil ha skjev innvirkning på et årsgjennomsnitt for et gitt punkt. Dette kan kompenseres for ved å sette minstekrav til hvilke og antall måneder som skal ha godkjent MDT for at punktet i det hele tatt skal bli med i beregningene. Altså kan vi ende opp med å forkaste måneder som har godkjent MDT dersom vi mener at perioden inneholder for få godkjente verdier. Et alternativ er å gjøre en form for imputering for å estimere verdiene til måneder som har bortfall. Dette vil introdusere en ekstra usikkerhet.
+
+Strategi nummer 2 er den  foretrukne og her vil vi kunne bruke alle tilgjengelige MDT-verdier for en gitt måned, uten å tenke på at et punkt har bortfall i andre måneder. Byindeksens månedsverdi vil da isolert sett være det beste estimatet vi kan få, gitt det datagrunnlaget som er tilgjengelig. En periodeindeks vil da bli et vektet gjennomsnitt av månedsindeksene, hvor vektene er gitt av tabell @tbl-periods. Ett års glidende gjennomsnitt kan oppdateres månedlig ved å forskyve tidsvinduet fram en måned. Tilsvarende vil tre års glidende gjennomsnitt være gjennomsnittet av de siste tre årenes glidende gjennomsnitt for ett år. 
+
+Bortfall av enkeltmåneder for punkt vil gi variasjon i byindeksens representativitet. Se notatet "Representativitet i byindeks" for mer om dette og et eksempel på hvordan dette kan formidles.
+
+La $a$ betegne sammenligningsåret og $\delta = d_1\text{--}d_2$ (med tankestrek) være perioden fra start- til sluttmåned i tidsvinduet som inngår i sammenligningen. Et tidsvindu kan for eksempel skrives som $d_1\text{--}d_2 = \text{24jan--24des}$. En ett års glidende indeks kan da skrives som $P_{a,\delta} = P_{a,d_1\text{--}d_2}$. 
+
+La $w_d$ være relativt antall dager i tidsvinduet for måned $d$ basert på antall dager i tabell @tbl-periods. Da er indeksen for et tidsvindu, som er opp til ett år langt, gitt av
+
+$$
+P_{a,\delta} = \sum_{d_1}^{d_2} w_d P_{a,d}
+$$
+Videre vil variansen da være
+$$
+\widehat{\text{Var}}(P_{a,\delta}) = \sum_{d_1}^{d_2} w_d^2 \widehat{\text{Var}}(P_{a,d}).
+$$
+Tidsvinduer lengre enn ett år må være hele multiplum av år. Dersom et tidsvindu oppgis som for eksempel $\Delta = d_1\text{--}d_2 = \text{22jan--24des}$ er det underforstått at dette er et tre års glidende snitt som er gjennomsnittet av de tre ett års glidende snittene $\delta_1 = \text{22jan--22des}$, $\delta_2 = \text{23jan--23des}$ og $\delta_3 = \text{24jan--24des}$. Et slikt tre års glidende snitt glir da framover en måned om gangen i takt med tidsvinduene for ett-års-periodene. 
+
+La $D \in \mathbb{Z}_{>1}$ være antall år i et tidsvindu større enn ett år. Generelt blir et gjennomsnitt av $D$ ett-års glidende snitt beregnet slik:
+
+$$
+P_{a,\Delta} = \frac{1}{D} \sum_{\delta} P_{a,\delta},
+$$
+med variansen
+
+$$
+\widehat{\text{Var}}(P_{a,\Delta}) = \frac{1}{D^2} \sum_{\delta} \widehat{\text{Var}}(P_{a,\delta}).
+$$
+Det antas uavhengighet internt mellom henholdsvis månedsindekser og årsindekser, slik at variansen ikke har noe kovariansledd.
+
+
+## Trafikkvariasjon som forklaringsvariabel
+Trafikklenkene kan kategoriseres ut fra trafikkmengdens relative variasjon over året, hvor spesielt den relative størrelsen til påsken, pinsen og juli er avgjørende. Denne kategoriseringen er antakelig nyttig som stratifiseringsvariabel i indekssammenheng. Dette er gjenstående arbeid, som eventuelt må prioriteres senere.
 
 
 # Usikkerhet {#sec-uncertainty}
@@ -1066,80 +1183,6 @@ $$
 En kjedet indeks er en multiplikasjon av indekser på forholdsform. Indekser på forholdsform vil ha verdier nær 1 med relativt små standardavvik, og dermed kan det antas at den kjedete indeksen har tilnærmet normalfordeling. Dermed kan produktet av to indekser få et 95 % konfidensintervall gitt av 
 
 $$P_{ac} \pm 1,96 \cdot \hat{\sigma}_{ac,P}^2.$$
-
-
-# Kalendereffekter
-Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT). Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
-
-Trafikken varierer naturlig gjennom døgnet, uka og året. Dersom det er bortfall av data, kan det være tilstrekkelig at de naturlig forekommende variasjonene gir opphav til en «påvist» endring i trafikk. For at indeksen i stedet skal detektere en generell trend, må tidsvariasjonene tas hensyn til.
-
-
-## Variasjon gjennom døgnet
-Variasjonen gjennom døgnet glattes ut ved at datagrunnlaget kun vil bestå av trafikkregistreringer for komplette døgn. Dersom hele døgnet er dekket med en fullstendig registrering av alle kjøretøy og datakvaliteten er godkjent, så har den 100 % dekningsgrad. Det kan oppstå bortfall av data, og da vil dekningsgraden bli lavere. Et døgn må minst ha 99 % dekningsgrad for å kunne inngå i indeksens datagrunnlag.
-
-Tilsvarende må et døgn ha minst 99 % kjøretøyklassifiseringsdekningsgrad for å kunne inngå i indeksens datagrunnlag.
-
-
-## Variasjon gjennom uka
-Mange steder er trafikkmengden ganske ulik i yrke- og helgedøgn. Når indeksen skal beregnes for kalendermåneder, vil det faktum at antall yrkedøgn kan variere mellom år gi et bidrag til indekstallet som kan være betydelig sammenlignet med den generelle trenden. Det er derfor nødvendig å ta hensyn til dette når datagrunnlaget beregnes.
-
-Helgedøgn defineres her som alle lørdager og søndager, samt alle øvrige røde dager i den norske kalenderen. I tillegg anses jul- og nyttårsaften som helgedøgn.
-Fordelingen av antall yrke- og helgedøgn i en måned påvirkes også av skuddårsdagen.
-
-Dagtypene kan ses på som strata. For hver trafikklenke observerer vi trafikkmengden hver dag, og datasettet består av døgntrafikk som har god nok datakvalitet. En kalenderjustert månedsdøgntrafikk (MDT) beregnes som en vektet sum av yrkedøgntrafikk (YDT) og helgedøgntrafikk (HDT). En slik justering av kalendereffekter med tanke på fordeling av yrke- og helgedøgn kan da ses på som en etterstratifisering på dagtyper.
-
-Vektene er gitt i tabell @tbl-day_type_weights. Disse vektene er beregnet ut fra det gjennomsnittlig antall yrke- og helgedøgn per måned i årene 2016-2100. For mars og april er påsken tatt ut, og fra mai og juni er pinsen tatt ut.
-
-```{r}
-#| label: tbl-day_type_weights
-#| tbl-cap: "Vekting av YDT og HDT per måned."
-
-day_type_weights
-```
-
-Når døgn så skal aggregeres opp til YDT og HDT, blir det beregnet en dekningsgrad også for disse. En januar som har 22 yrkedøgn, vil da få en YDT med 100 % dekningsgrad dersom det er godkjent døgntrafikk for alle disse dagene. Det må være minst 3 godkjente helgedøgn og minst 7 godkjente yrkedøgn for at en MDT skal være godkjent.
-
-
-## Variasjon gjennom året
-Mange steder er det i påsken og pinsen annerledes trafikk enn ellers. Begge disse høytidene bytter på sin plassering mellom to kalendermåneder, og dette vil derfor påvirke indekstallene når enkeltmåneder sammenlignes.
-
-I indekssammenheng er det derfor lurt å operere med en egen størrelse for gjennomsnittlig døgntrafikk i henholdsvis påsken og pinsen. Dette kan vi kalle for påskedøgntrafikk (EDT, fra engelsk "Easter") og pinsedøgntrafikk (PDT, fra engelsk "Pentecost"). Påsken defineres her som dagene fra og med fredag før palmesøndag til og med andre påskedag. Tilsvarende er pinsen fra og med fredag før pinseaften til og med andre pinsedag. Påsken må ha minst 6 av 11 dager med godkjent døgntrafikk, mens pinsen må være komplett.
-
-Kristi himmelfartsdag er alltid en torsdag og med påfølgende inneklemte fredag skaper dette en langhelg som mange benytter. Dermed er det noe annerledes trafikk i denne helgen også, men den forekommer nesten alltid i sin helhet i mai. Men hvis påsken er så sen som den kan få blitt, med første påskedag på 25. april, faller Kristi himmelfartsdag på 3. juni. Det er kun en gang i perioden 2021-2050 at dette skjer, og det er i 2038. Det er tre andre år hvor enten bare påfølgende søndag eller både lørdag og søndag faller i juni. Dette er så få ganger at vi velger å ikke ta hensyn til dette i indeksberegningene.
-
-Når enkeltperiodene skal vektes sammen til en indeks for "hittil i år" og "hele år", skal vektene gitt i tabell @tbl-periods benyttes. Legg merke til at påsken og pinsen er egne perioder her.
-
-```{r}
-#| label: tbl-periods
-#| tbl-cap: "Vekting av periodene i et år."
-
-period_weights
-```
-
-Indeksen kan sammenligne MDT for en gitt kalendermåned mellom to år, men vi kan benytte samme formel for å sammenlign gjennomsnittlig MDT for vilkårlige perioder. For å sammenligne siste tre år med et gitt referanseår, vil gjennomsnittlig MDT for siste 36 måneder sammenlignes med gjennomsnittlig MDT for de 12 månedene i referanseåret. 
-
-Bortfall av måneder vil ha skjev påvirkning på et årsgjennomsnitt. Dersom eksempelvis februar mangler, men de øvrige månedene blir vektet sammen slik at summen av vektene også utelater februar, blir resultatet det samme som om februar hadde fått tilordnet en verdi lik gjennomsnittet av de øvrige månedene. Dersom det settes krav til at minst en av månedene januar og februar skal være med, slik at dersom februar mangler så vektes januar med summen av vektene til både januar og februar, så vil februar få tilordnet en verdi lik januar og feilen blir sannsynligvis mindre. For å tillate litt bortfall uten at det påvirker for skjevt, må vi ha følgende:
-
-- minst en av januar og februar
-- minst en av mars og april
-- påsken
-- mai
-- pinsen*
-- juni
-- juli
-- august
-- minst en av september, oktober, november
-- desember
-
-Pinsen, som utgjør en liten andel av året, kan mangle, men da skal den ikke tas med i verken sammenlignings- eller beregningsperiode for den aktuelle trafikklenken.
-
-
-## Trafikkvariasjon som forklaringsvariabel
-Trafikklenkene kan kategoriseres ut fra trafikkmengdens relative variasjon over året, hvor spesielt den relative størrelsen til påsken, pinsen og juli er avgjørende. Denne kategoriseringen er antakelig nyttig som stratifiseringsvariabel i indekssammenheng. Dette er gjenstående arbeid, som eventuelt må prioriteres senere.
-
-
-# Glidende gjennomsnitt
-
 
 
 # Referanser
