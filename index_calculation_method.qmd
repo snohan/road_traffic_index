@@ -41,8 +41,6 @@ bibliography: references.bib
 base::Sys.setlocale(locale = "nb.utf8")
 library(tidyverse)
 library(knitr)
-library(flextable)
-library(officer) # fp_border color in flextable
 
 # knitr options ####
 knitr::opts_chunk$set(
