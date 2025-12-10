@@ -444,7 +444,7 @@ w'_{ai} = \frac{q_i}{\sum_i^n p_{ai}q_i}.
 $$ {#eq-w_weight_q}
 
 
-### Stratifisering med funksjonsklasse
+### Stratifisering med funksjonsklasse {#sec-strat_tw}
 Hver trafikklenke tilhører en funksjonsklasse $h$, og en trafikkarbeidsindeks $P_{\text{tw},abh}$ kan beregnes for hver funksjonsklasse. Da vil en samlet indeks over alle funksjonsklasser være
 
 $$
@@ -560,6 +560,8 @@ c_{aah} &= \frac{s_{ah}^2}{\widehat{\bar{W}}_{ah}^2}
 \end{aligned}
 $$
 der $\rho$ er korrelasjonskoeffisienten og $s$ er observert standardavvik i utvalget. Det er denne indeksformelen Danmark benytter i sin Vejtrafikindeks.
+
+Regneeksempler viser at denne metoden med forholdsestimator ikke gir noen gevinster kontra metoden med stratifisert trafikkarbeidsindeks som omtalt i @sec-strat_tw.
 
 
 ## Trafikkmengdeindeks
@@ -891,7 +893,7 @@ Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta ut
 
 
 # Usikkerhet i trafikkarbeidsindeks
-Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkarbeidsindeksen.
+Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkarbeidsindeksen. Det er den robuste variansestimatoren omtalt i @sec-robvar som er valgt.
 
 
 ## Utvalgsdesign
@@ -1000,7 +1002,7 @@ $$ {#eq-var_P_w_model}
 Her er altså vektene $w'$ som gitt i @eq-w_indeks_3.
 
 
-## Robust variansestimator
+## Robust variansestimator {#sec-robvar}
 En tilnærmet forventningsrett robust estimator for variansen til en Dutot-type indeks er vist i [@zhang_2010]. La $W_{hi} = p_{hi} q_{hi}$ være trafikkarbeidet observert på trafikklenke $i$ i funksjonsklasse $h$. Da er
 
 $$
