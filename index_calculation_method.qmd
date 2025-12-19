@@ -74,6 +74,9 @@ today_string <-
 # Calendar weights
 period_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/periods.rds")
 day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/day_type_weights.rds")
+
+# Index chain visualisations
+source("chain.R")
 ```
 
 
@@ -1158,13 +1161,41 @@ Trafikkarbeidsindeksen, som er av Dutot-typen, er transitiv (se @sec-index_choic
 
 Fordeler med kjeding er at utvalget og dermed vektene kan oppdateres. Det må være en overlappende periode som knytter kjeden sammen. 
 
-Indeks mellom periodene $a$ og $c$ kan beregnes ved å multiplisere to indeksverdier via en mellomperiode:
+Indeks mellom periodene $a$ og $c$ kan beregnes ved å multiplisere to indeksverdier via en mellomperiode $b$:
 
 $$
 P_{ac} = P_{ab} P_{bc}.
 $$ 
 
 Dette gjelder både for trafikkarbeidsindeks og trafikkmengdeindeks. 
+
+Vegtrafikkindeksen bytter ut mange indekspunkter hvert år, slik at hver årsindeks blir kjedet sammen. Det kan illustreres som i figur @fig-chain_vti.
+
+```{r}
+#| label: fig-chain_vti
+#| fig-cap: "Årlig kjeding i Vegtrafikkindeksen."
+
+plot_index_chain_graph(graph_vti)
+```
+
+Tromsøs byindeks starter med et begrenset utvalg indekspunkter i perioden 2019–2022. Deretter øker antall punkter som følge av at nye ble etablert i 2021. Den kjedete indeksen kan da illustreres som i figur @fig-chain_tromso. For årene etter 2022 må det først beregnes en indeks som sammenligner direkte med 2022, og deretter vil denne indeksverdien multipliseres med indeksen for 2019–2022. 
+
+```{r}
+#| label: fig-chain_tromso
+#| fig-cap: "Kjedet byindeks for Tromsø."
+
+plot_index_chain_graph(graph_tromso)
+```
+
+For Nord-Jæren bør utvalget av byindekspunkter økes to ganger. Den første økningen skyldes at nye punkter ble etablert i 2017 og 2018. Den andre økningen skyldes delvis at noen flere punkter ble etablert i 2019, og at vegnetten ble endret i 2021 og 2022 med åpning av nye veganlegg. Det blir da tre perioder som skal kjedes sammen, som vist i figur @fig-chain_nj.
+
+```{r}
+#| label: fig-chain_nj
+#| fig-cap: "Kjedet byindeks for Nord-Jæren. De buede linjene viser hvilke år som sammenlignes direkte. Eksempelvis vil trafikken i 2026 sammenlignes med 2023. En indeks for perioden 2017–2026 vil da bestå av tre ledd som kjedes sammen: 2017–2019, 2019–2023 og 2023–2026."
+
+plot_index_chain_graph(graph_nj)
+```
+
 
 
 ## Usikkerhet
