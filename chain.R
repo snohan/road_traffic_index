@@ -98,7 +98,7 @@ plot_index_chain_graph <- function(graph_object) {
 
   graph_object |> 
     ggraph::ggraph(layout = "linear", sort.by = name)  +
-    geom_edge_arc(aes(label = label), label_size = 6) +
+    geom_edge_arc(aes(label = label), label_size = 6, color = "#ed9300") +
     geom_node_point() +
     geom_node_label(aes(label = name))
 
