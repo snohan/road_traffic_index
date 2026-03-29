@@ -1,0 +1,286 @@
+# Et mål på endring i trafikk
+En trafikkindeks estimerer endringen i trafikkens omfang mellom to perioder for et gitt område. Formålet er å fange opp en generell trend i bruken av bil som transportmiddel. Det er ulike årsaker til at trafikkmengden endrer seg. For en trafikkindeks er legitime årsaker blant annet:
+
+- befolkningsøkning (eller nedgang)
+- generelle eller spesifikke restriksjoner på bilbruk i form av avgifter og lignende
+- tilgjengelighet på alternative transportformer (gange, sykling, kollektiv o.l.)
+- transportbehov (plassering av boligareal, arbeidsplasser, skole, handel-, service- og aktivitetstilbud etc.)
+
+Derimot skal ikke trafikkindeksen påvirkes av:
+
+- midlertidige endringer i vegnettet
+- manglende data
+- utvalgsskjevheter
+
+En permanent endring i vegnettet kan bidra til en generell utvikling, ved at den enten gjør det mer eller mindre attraktivt å kjøre bil. 
+
+Tilsvarende betraktninger gjelder for sykling og en sykkelindeks.
+
+
+## Ulike trafikkindekser
+Det lages egne trafikkindekser for de to trafikanttypene bil og sykkel. For biltrafikk lages det tre ulike indekser:
+
+- byindeks
+- riksgrenseindeks
+- vegtrafikkindeks
+
+Vegtrafikkindeksen estimerer endringen i trafikk for fylke, landsdel og landet som helhet.
+
+Trafikkmengden registreres i et punkt der hvor sensorene fanger opp passerende kjøretøy. Trafikkmengden vil være den samme for hele vegstrekningen til nærmeste kryss i begge retninger fra punktet. Disse vegstrekningene kalles trafikklenker. Alle trafikklenker er generert opp til et dataobjekt basert på NVDBs digitale vegnett. For bilvegene er hele riks- og fylkesvegnettet inndelt i et sammenhengede nett av trafikklenker. For sykkeltrafikk er det ikke tilgjengelig egne trafikklenker som dataobjekter.
+
+En trafikkindeks beregnes som et estimat for den sanne endringen i trafikk, og baseres på registrert trafikkmengde fra et utvalg trafikkregistreringspunkt. For en trafikkindeks for bil vil utvalget bestå av et antall trafikklenker fra en populasjon bestående av alle trafikklenker i området. Populasjonsstørrelsen er således kjent. For en sykkelindeks vil utvalget bestå av trafikkregistreringspunkt, men hvor størrelsen på populasjonen av trafikklenker for et området er ukjent.
+
+Hvordan en trafikkindeks beregnes er avhengig av om trafikkarbeidet kan tas hensyn til eller ikke. Vi får derfor to hovedvarianter av ineksmetodikk - en for trafikkarbeidsindeks, og en for en ren trafikkmengdeindeks.
+
+
+## Trafikkarbeidsindeks
+Den totale trafikkendringen i et område består av summen av alle endringer som finner sted på hver av trafikklenkene. Endringen mellom trafikklenkene kan variere ganske mye.
+
+For et byområde kan det totale trafikkarbeidet i periode $t$ benevnes med $W_t$, som da er summen av trafikkarbeidet $W_{ti}$ på alle trafikklenker $i \in \{1, N\}$,
+
+$$
+W_t = \sum_i^N W_{ti}.
+$$
+Den relative endringen i trafikkarbeid mellom to perioder er da
+
+$$
+P_{t = a,t = b} = \frac{W_{b}}{W_a} = \frac{1/N \cdot W_{b}}{1/N \cdot W_a} = \frac{\bar{W}_{b}}{\bar{W}_a}.
+$$
+Siden vi ikke kjenner trafikkarbeidet på alle trafikklenker, må størrelsen $P$ estimeres:
+
+$$
+\widehat{P}_{ab} = \frac{\widehat{W}_{b}}{\widehat{W}_a} = \frac{\widehat{\bar{W}}_{b}}{\widehat{\bar{W}}_a}.
+$$ {#eq-p_est}
+Gjennomsnittlig trafikkarbeid per trafikklenke kan estimeres ved hjelp av et utvalg av $n$ trafikklenker:
+
+$$
+\widehat{\bar{W}}_a = \frac{1}{n} \sum_i^n W_{ai}.
+$$ {#eq-W_bar_hat}
+
+Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{ai} = q_{bi}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi har da en generell indeksformel gitt som
+
+$$
+\text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}},
+$$ {#eq-w_indeks}
+hvor "tw" her står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
+
+I en trafikkindeks er $p$ gjennomsnittlig døgntrafikk per måned (MDT) for hvert indekspunkt. Generelt  kan @eq-p_est gjelde for hele år, men for trafikkindekser benyttes månedsindekser. Hvilken måned $d$ en indeks gjelder for, kan da benevnes som $P_{ab,d}$. Hvordan månedsindekser settes sammen til indekser for lengre perioder, er omtalt i @sec-window_index. For enkelhets skyld vil månedsangivelsen i notasjonen utelates videre i dette kapittelet.
+
+Hvis vi definerer trafikkarbeidet
+$$
+W_{ti} = p_{ti}q_{i},
+$$
+har vi at 
+$$
+\frac{W_{ti}}{p_{ti}} = q_{i}.
+$$
+Definerer vi videre den normaliserte andelen trafikkarbeid som
+$$
+w_{ti} = \frac{W_{ti}}{\sum_i^n W_{ti}} = \frac{p_{ti}q_i}{\sum_i^n p_{ti}q_i},
+$$
+som er analogt med @eq-st. Videre har vi, med utgangspunkt i @eq-w_indeks, at
+$$
+\begin{aligned}
+P_{\text{tw},ab} &= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}}
+= \frac{\sum_i p_{bi} \frac{W_{ai}}{p_{ai}}}{\sum_i W_{ai}} =
+\frac{\sum_i \frac{p_{bi}}{p_{ai}} W_{ai}}{\sum_i W_{ai}} \\
+&= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} = \sum_i w_{ai} P_{abi}.
+\end{aligned}
+$$ {#eq-w_indeks_2}
+Altså kan denne indeksen også ses på som et vektet gjennomsnitt av de elementære trafikkmengdeindeksene $P_{abi} = p_{bi} / p_{ai}$ med trafikkarbeidsvekter fra perioden $t = a$. 
+
+Vi ser at @eq-w_indeks_2 ligner veldig på den vektede Carli-indeksen i @eq-carli_w, men forskjellen er at sistnevntes vekter er symmetriske i tid. Denne symmetrien kan synes som en god egenskap, men det gjør at @eq-carli_w ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i @eq-w_indeks.
+
+Alternativt kan områdeindeksen uttrykkes som 
+$$
+\begin{aligned}
+P_{\text{tw},ab} 
+&= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} \\
+&= \sum_i w'_{ai} p_{bi},
+\end{aligned}
+$$ {#eq-w_indeks_3}
+altså en vektet sum av trafikkmengdene $p_{bi}$ i beregningsåret $a$, med vektene definert som
+
+$$
+w'_{ai} = \frac{q_i}{\sum_i^n p_{ai}q_i}.
+$$ {#eq-w_weight_q}
+
+
+### Stratifisering med funksjonsklasse {#sec-strat_tw}
+Hver trafikklenke tilhører en funksjonsklasse $h$, og en trafikkarbeidsindeks $P_{\text{tw},abh}$ kan beregnes for hver funksjonsklasse. Da vil en samlet indeks over alle funksjonsklasser være
+
+$$
+P_{\text{tw},ab} = \sum_{h} w_{ah} P_{\text{tw},abh},
+$$
+hvor
+
+$$
+\begin{aligned}
+w_{ah} &= \frac{W_{ah}}{\sum_h W_{ah}} \\
+P_{abh} &= \sum_i w_{ahi} P_{abi} \\
+w_{ahi} &= \frac{W_{ai}}{\sum_i W_{ahi}}.
+\end{aligned}
+$$
+Det forutsettes her at trafikkarbeidet er kjent for hele populasjonen i et referanseår $a$.
+
+La $m$ være antall funksjonsklasser slik at funksjonsklassene kan betegnes som $h \in (h_1, h_m) \equiv (1, m)$. I hver funksjonsklasse er det $n_h$ lenker i utvalget. At en trafikklenke $i$ tilhører en gitt funksjonsklasse $h$ betegnes ved $i_h$. Vi har da at $i \in (1_1, 2_1, \ldots n_1, 1_2, 2_2, \ldots n_2, \ldots 1_m, \ldots n_m)$. Den totale indeksen kan ses på som en vektet sum av punktindeksene, og betegnes slik at
+
+$$
+\begin{aligned}
+P_{\text{tw},ab} 
+&= \sum_{h = h_1}^{h_m} w_{ah} P_{\text{tw},abh} \\
+&= w_{ah_1} P_{\text{tw},abh_1} + w_{ah_2} P_{\text{tw},abh_2} + \ldots + w_{ah_m} P_{\text{tw},abh_m} \\
+&= w_{ah_1} \sum_{i_1}^{n_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_m} \sum_{i_m}^{n_m} w_{ah_mi_m} P_{abi_m} \\
+&= w_{ah_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_1} w_{ah_1n_1} P_{abn_1} + \\
+& \hspace{1.5em} \ldots + w_{ah_m} w_{ah_mn_m} P_{abn_m}
+\end{aligned}
+$${#eq-w_index_as_sum}
+På denne måten kan bidraget fra hver lenke i utvalget isoleres og sammenlignes. Da lenkenes trafikkarbeid er forskjellig, vil de bidra ulikt til indeksen. Bidraget er produktet av tre faktorer:
+
+- andelen av populasjonens trafikkarbeid som gjøres på trafikklenker i den funksjonsklassen lenken tilhører,
+- andelen av utvalgets trafikkarbeid i lenkens funksjonsklasse som gjøres på lenken,
+- samt endringen i trafikkmengde på lenken.
+
+Disse faktorene skiller seg ut fra i hvilken grad de er avhengig av lenkens egenskaper og trafikk. Den første faktoren er ikke avhengig av dette i det hele tatt. Den andre faktoren er delvis avhengig av dette, mens den tredje faktoren er i sin helhet avhengig av dette. Hvor mye en gitt lenke i utvalget bidrar til totalindeksen er derfor avhengig av:
+
+- endringen i trafikkmengde på lenken,
+- hvilke andre lenker som er med i utvalget, 
+- samt hvilke andre lenker som er med i populasjonen.
+
+Hvor mye hvert indekspunkt avviker fra en måneds byindeks kan da beregnes som
+
+$$
+\Pi_i = w_{ah} w_{ahi} (P_{abi} - P_{\text{tw},ab}),
+$$
+for et punkt $i$ i funksjonsklasse $h$.
+
+
+### Forholdsestimator
+Ved å multiplisere både teller og nevner i @eq-w_indeks med $1/n$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er samme form som i @eq-p_est. Størrelsen har da formen til en forholdsestimator. Indeksen i stratum $h$ er dermed
+
+$$
+P_{abh} = \frac{ \bar{W}_{bh} } { \bar{W}_{ah} }. 
+$$
+Dersom trafikkarbeidet i referanseåret $W_{ah} \forall h$ antas kjent for hele populasjonen, så kan det totale trafikkarbeidet estimeres ved
+
+$$
+\widehat{W}_b = \sum_h \widehat{P}_{abh} W_{ah}.
+$$
+Indeksen blir da
+
+$$
+\widehat{P}_{ab} = \frac{\widehat{W}_b}{W_{a}} 
+= \frac{1}{W_{a}} \sum_h \widehat{P}_{abh} W_{ah}
+= \frac{1}{W_{a}} \sum_h \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } W_{ah}
+$$ {#eq-ratio_index}
+hvor
+
+$$
+W_a = \sum_h W_{ah}.
+$$
+Gjennomsnittlig trafikkarbeid per lenke estimeres da som i @eq-W_bar_hat.
+
+Med 
+
+$$
+w_{ah} = \frac{W_{ah}}{W_a}
+$$
+kan @eq-ratio_index skrives som 
+
+$$
+\begin{aligned}
+\widehat{P}_{ab} &= \sum_h w_{ah} \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } \\
+&= \sum_h w_{ah} \widehat{P}_{abh} \\
+&= \sum_{h}^H w_{ah} \sum_i^{n_h} w_{ahi} P_{abi} \\
+&= \sum_{h}^H \sum_i^{n_h} w_{ah} w_{ahi} P_{abi},
+\end{aligned}
+$$
+hvor den kombinerte vekten er
+
+$$
+\begin{aligned}
+w_{ah} w_{ahi} 
+&= \frac{W_{ah}}{\sum_h^H W_{ah}} \frac{W_{ai}}{\sum_i^{n_h} W_{ahi}} \\
+&= \frac{W_{ah}}{W_a} \frac{W_{ai}}{W_{ahi,n_h}} \\
+&= \frac{W_{ai}}{W_a} \frac{W_{ah}}{W_{ahi,n_h}},
+\end{aligned}
+$$
+hvor den første faktoren er andelen trafikkarbeid på trafikklenke $i$ i populasjonen, og den andre faktoren er forholdet mellom populasjonens og utvalgets trafikkarbeid i stratum $h$. Sistnevnte forhold blir veldig stort dersom utvalget er lite. At små utvalg i ett eller flere strata gir store bidrag til en forholdsestimator er et kjent problem, og kan gi estimatoren betydelig skjevhet. Det er derfor foreslått ulike måter å korrigere en forholdsestimator på for å redusere skjevhet. Beales estimator er god i så måte (se for eksempel [@srivastva_1983]), og er mye brukt.
+
+Per stratum er en indeks med Beales korreksjon gitt som
+
+$$
+\widehat{P}_{abh,\text{Beale}} = 
+\widehat{P}_{abh} \frac{1 + \left( \frac{1 - f_h}{n_h} \right) c_{abh} } { 1 + \left( \frac{1 - f_h}{n_h} \right) c_{aah} },
+$$ {#eq-beale}
+hvor
+
+$$
+\begin{aligned}
+c_{abh} &= \frac{\rho_{abh} s_{ah} s_{bh}}{\widehat{\bar{W}}_{ah} \widehat{\bar{W}}_{bh}} \\
+c_{aah} &= \frac{s_{ah}^2}{\widehat{\bar{W}}_{ah}^2}
+\end{aligned}
+$$
+der $\rho$ er korrelasjonskoeffisienten og $s$ er observert standardavvik i utvalget. Det er denne indeksformelen Danmark benytter i sin Vejtrafikindeks.
+
+Regneeksempler viser at denne metoden med forholdsestimator ikke gir noen gevinster kontra metoden med stratifisert trafikkarbeidsindeks som omtalt i @sec-strat_tw.
+
+
+## Trafikkmengdeindeks
+For sykkeltrafikk har vi ikke et sammenhengende vegnett inndelt i trafikklenker. Da kan vi ikke si noe om det sykkeltrafikkarbeidet som et indekspunkt representerer. I dette tilfellet kan ikke $q$ inngå i formelen, og vi får en ren
+$$
+\text{trafikkmengdeindeks} = P_{\text{tv}}(p^a,p^b) = P_{\text{tv},ab} = \frac{\sum_i p_{bi}}{\sum_i p_{ai}},
+$$ {#eq-v_indeks}
+som er det samme som Dutot-indeksen gitt i @eq-dutot. Her står tv for "traffic volume". Det er denne indeksformelen som er benyttet i dagens trafikkindekser.
+
+På samme vis kan en trafikkmengdeindeks ses på som et vektet gjennomsnitt av elementære trafikkmengdeindekser hvor vektene er trafikkmengdene i basisperioden:
+
+$$
+\begin{aligned}
+P_{\text{tv},ab} &= \frac{\sum_i p_{bi}}{\sum_i p_{ai}} \\
+&= \frac{1}{\sum_i p_{ai}} \sum_i p_{bi} \frac{p_{ai}}{p_{ai}} \\
+&= \sum_i \frac{p_{ai}}{\sum_i p_{ai}} \frac{p_{bi}}{p_{ai}} = \sum_i v_{ai} P_{abi},
+\end{aligned}
+$$ {#eq-v_indeks_2}
+hvor trafikkmengdevektene er definert som
+
+$$
+v_{ai} = \frac{p_{ai}}{\sum_i^n p_{ai}}.
+$$
+
+
+## Valg av byindeksmetode {#sec-index_choice}
+Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er sånn sett ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det representerer på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
+
+- trafikkarbeidsindeks
+- vektet Carli-indeks
+- Törnqvist-indeks
+
+Av disse er nok Törnqvist-indeksen, som er et geometrisk gjennomsnitt, litt vanskeligere å forklare enn de to øvrige, som begge er artimetiske gjennomsnitt. Generelt er det slik at et aritmetisk gjennomsnitt alltid er større enn eller lik det geometriske gjennomsnittet, og forskjellen blir større jo større variasjon det er i verdiene det skal beregnes gjennomsnitt av. Indekspunktene kan oppvise stor variasjon, som da er et argument i favør Törnqvist-indeksen.
+
+Både Törnqvist- og vektet Carli-indeks har begge den ulempen at de ikke takler å dele på null. Altså kan de ikke eksplisitt ta inn i beregningene et punkt som var stengt eller ikke-eksisterende i sammenligningsåret. Dette er uansett bare aktuelt i de tilfellene hvor indekspunktene i sin helhet fanger opp endringene i rutevalgene på en balansert måte, noe som uansett vil forekomme veldig sjelden.
+
+Til hjelp i utvelgelsen av den best egnede metoden, kan vi se på hvilke indekstester som vi mener bør oppfylles. Det er ønskelig at indeksene oppfyller en eller flere av disse kravene:
+
+- **Identitet**: dersom trafikkmengden i hvert indekspunkt er nøyaktig den samme som i basisåret må indeksen vise null endring.
+- **Transitivitet**: en indeks som går indirekte fra $a$ til $b$ via en periode $c$, skal vise det samme som en direkte indeks fra $a$ til $b$.
+- **Tidsreversibilitet**: indeksen fra periode $a$ til $b$ må være lik den resiproke indeksen fra $b$ til $a$.
+
+Alle de tre foreslåtte indeksene oppfyller regelen om identitet.
+
+En indeks som er definert som forholdet mellom gjennomsnittsverdier vil oppfylle kravet om transitivitet, det vil si at vi får samme resultat om indeksen beregnes som en kjedet indeks eller en direkte indeks. Dette forutsetter riktignok at utvalget holdes fast i alle perioder som inngår i kjedingen, noe som sjelden kommer til å være tilfelle. Transitivitet er likevel en ettertraktet egenskap. Den vektede Carli-indeksen oppfyller uansett ikke denne regelen.
+
+At trafikkarbeidsindeksen er transitiv ved fast utvalg kan enkelt vises ved at
+
+$$
+\begin{aligned}
+P_{\text{tw},acb} &= P_{\text{tw},ac} P_{\text{tw},cb}\\
+&= \frac{\sum_i p_{ci} q_{i}}{\sum_i p_{ai} q_{i}} \cdot \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ci} q_{i}} \\
+&= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}} \\
+&= P_{\text{tw},ab}.
+\end{aligned}
+$$
+
+Indekser som oppfyller både regelen om identitet og transitivitet, oppfyller også regelen om tidsreversibilitet.
+
+Når disse fordelene og ulempene veies opp mot hverandre er det den generelle trafikkarbeidsindeksen som peker seg ut som den best egnede. Likevel, som beskrevet tidligere, må en sykkelindeks bli en ren trafikkmengdeindeks.

@@ -2,6 +2,7 @@
 title: "Beregningsmetode for trafikkindeks"
 format: 
   pdf:
+    pdf-engine: xelatex
     toc: true
     number-sections: true
     df-print: kable
@@ -151,6 +152,7 @@ Vegtrafikkindeksen estimerer endringen i trafikk for fylke, landsdel og landet s
 Trafikkmengden registreres i et punkt der hvor sensorene fanger opp passerende kjøretøy. Trafikkmengden vil være den samme for hele vegstrekningen til nærmeste kryss i begge retninger fra punktet. Disse vegstrekningene kalles trafikklenker. Alle trafikklenker er generert opp til et dataobjekt basert på NVDBs digitale vegnett. For bilvegene er hele riks- og fylkesvegnettet inndelt i et sammenhengede nett av trafikklenker. For sykkeltrafikk er det ikke tilgjengelig egne trafikklenker som dataobjekter.
 
 En trafikkindeks beregnes som et estimat for den sanne endringen i trafikk, og baseres på registrert trafikkmengde fra et utvalg trafikkregistreringspunkt. For en trafikkindeks for bil vil utvalget bestå av et antall trafikklenker fra en populasjon bestående av alle trafikklenker i området. Populasjonsstørrelsen er således kjent. For en sykkelindeks vil utvalget bestå av trafikkregistreringspunkt, men hvor størrelsen på populasjonen av trafikklenker for et området er ukjent.
+
 
 
 ## Indeksteori

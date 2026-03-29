@@ -1,0 +1,28 @@
+
+
+# Symboler {.unnumbered}
+::: {#tbl-symbols}
+| Symbol          | Betydning                       |
+|-----------------|---------------------------------|
+| $i$             | trafikklenke                    |
+| $h$             | funksjonsklasse                 |
+| $n$             | utvalgsstørrelse                |
+| $N$             | populasjonsstørrelse            |
+| $f$             | utvalgets andel av populasjonen |
+| $t, T, a, b$    | år                              |
+| $d$             | måned                           |
+| $\delta$        | tidsvindu opp til ett år        |
+| $\Delta$        | tidsvindu hele år (>1)          |
+| $q$             | trafikklenkelengde              |
+| $p$             | gjennomsnittlig trafikkmengde   |
+| $W$             | trafikkarbeid                   |
+| $w$             | andel trafikkarbeid             |
+| $V$             | trafikkmengde                   |
+| $v$             | andel trafikkmengde             |
+| $P$             | indeks                          |
+| $\sigma, s$     | standardavvik                   |
+
+Liste over symboler brukt i dette dokumentet.
+
+:::
+

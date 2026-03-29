@@ -1,0 +1,59 @@
+project:
+  type: book
+
+lang: nb
+
+book:
+  title: "Trafikkindeks metodebeskrivelse"
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - traffic_index.qmd
+    - data.qmd
+    - uncertainty.qmd
+    - chained.qmd
+    - references.qmd
+  appendices:
+    - cpi_theory.qmd
+
+bibliography: references.bib
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+  pdf:
+    pdf-engine: xelatex
+    mainfont: Arial
+    documentclass: scrbook
+    papersize: A4
+    toc: true
+    number-sections: true
+    df-print: kable
+    toc-title: Innhold
+    include-in-header:
+      text:
+        \newfontfamily\sectionfont[Color=ed9300]{Arial}
+        \newfontfamily\subsectionfont[Color=444f55]{Arial}
+        \newfontfamily\subsubsectionfont[Color=ed9300]{Arial}
+        \addtokomafont{section}{\sectionfont}
+        \addtokomafont{subsection}{\subsectionfont}
+        \addtokomafont{subsubsection}{\subsubsectionfont}
+        \usepackage[font=small,textfont=it,labelsep=period]{caption}
+
+crossref: 
+  tbl-title: "Tabell"
+  lot-title: "Tabeller"
+  tbl-prefix: ""
+  fig-title: "Figur"
+  lof-title: "Figurer"
+  fig-prefix: ""
+  title-delim: "."
+  eq-prefix: "ligning"
+  sec-prefix: "kapittel"
+
+language:
+  crossref-apx-prefix: "Vedlegg"
+  section-title-appendices: "Vedlegg"
+

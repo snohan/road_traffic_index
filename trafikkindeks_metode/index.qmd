@@ -1,0 +1,59 @@
+```{r}
+#| label: setup
+#| include: false
+#| echo: false
+
+# Packages ####
+base::Sys.setlocale(locale = "nb.utf8")
+library(tidyverse)
+library(knitr)
+
+# knitr options ####
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  error = FALSE,
+  cache = FALSE,
+  dpi = 150,
+  dev = "ragg_png",
+  tab.topcaption = TRUE
+  )
+
+today_date <- lubridate::today()
+
+today_day_number <- lubridate::day(today_date)
+today_day_name <- lubridate::wday(today_date, label = TRUE, abbr = FALSE)
+today_month_name <- lubridate::month(today_date, label = TRUE, abbr = FALSE)
+today_year <- lubridate::year(today_date)
+today_string <- 
+  paste0(
+    today_day_name,
+    " ",
+    today_day_number,
+    ". ",
+    today_month_name,
+    " ",
+    today_year
+  )
+
+# Calendar weights
+period_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/periods.rds")
+day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/day_type_weights.rds")
+
+# Index chain visualisations
+source("chain.R")
+```
+
+# Forord {.unnumbered}
+Dette notatet beskriver en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetoden til selve indeksverdien, samt usikkerheten som hører til.
+
+\vspace{2cm}
+
+| Statens vegvesen, 
+| Trondheim, `r today_string`.
+
+| Snorre Hansen,
+| Veg- og transportteknologi,
+| Transportutvikling,
+| Transport og samfunn

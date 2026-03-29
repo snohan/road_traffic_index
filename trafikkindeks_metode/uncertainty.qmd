@@ -1,0 +1,422 @@
+# Usikkerhet {#sec-uncertainty}
+En indeks har flere feilkilder som i ulik grad bidrar til en samlet usikkerhet. Hverken indeksverdien eller dens sanne usikkerhet er kjent, og begge størrelsene må derfor estimeres.
+
+Den totale nøyaktigheten til estimatet er summen av estimatorens varians og kvadratet av utvalgsskjevheten, og kalles gjennomsnittlig kvadratfeil [@cochran_1977]. Hvis vi har en populasjon hvor $\mu$ er det sanne, ukjente gjennomsnittet, og vi har en estimator $\hat{\mu}$ som er normalfordelt med et gjennomsnitt $\mathbb{E}(\hat{\mu}) = m$, vil et gjennomsnittlig kvadratavvik være
+
+$$
+\begin{aligned}
+\text{MSE}(\hat{\mu}) = \mathbb{E}(\hat{\mu} - \mu)^2 
+&= \mathbb{E}\left[ (\hat{\mu} - m) + (m - \mu) \right]^2 \\
+&= \mathbb{E}(\hat{\mu} - m)^2 + 2(m - \mu)\mathbb{E}(\hat{\mu} - m) + (m - \mu)^2 \\
+&= \mathbb{E}(\hat{\mu} - m)^2 + (m - \mu)^2 \\
+&= (\text{variansen til } \hat{\mu}) + (\text{skjevhet})^2,
+\end{aligned}
+$$
+da $\mathbb{E}(\hat{\mu} - m) = 0$.
+
+Med skjevhet menes hvor mye estimatet i gjennomsnitt vil avvike fra den sanne verdien dersom tilfeldige utvalg trekkes ut gjentatte ganger. Skjevhet er med andre ord et mål på hvor mye utvalget "ligner" på populasjonen. Et representativt utvalg vil ha liten utvalgsskjevhet. I praksis vil det gjerne være noe skjevhet i et utvalg. Så lenge denne er liten, vil ikke feilen i estimatoren bli nevneverdig stor.
+
+De mest relevante feilkildene for en trafikkindeks er:
+
+- feil i datagrunnlag
+  - kjøretøy blir ikke registrert
+  - spøkelseskjøretøy blir registrert
+  - kjøretøy blir feilklassifisert
+- skjevhet i utvalget av trafikklenker
+  - utvalget fanger ikke opp den sanne endringen for området
+  - endring i trafikkmengde forårsakes av andre prosesser enn en generell trend
+- skjevhet i tidsaggregeringen av grunnlagsdata
+  - data mangler for deler av året
+
+Data med målefeil må lukes ut, men dette vil potensielt føre til enda større utvalgsskjevhet. Det samme gjelder trafikklenker som er påvirket av endringer i vegnettet. Komplett bortfall av trafikklenker fra utvalget vil også kunne bidra til utvalgsskjevhet.
+
+En mer detaljert gjennomgang av ulike feilkilder i en konsumprisindeks er gitt i [@smith_2021].
+
+For en indeks som er et vektet gjennomsnitt av elementære indekser, slik som tilfellet er i @eq-w_indeks_2 og @eq-v_indeks_2, er variansen estimert ved 
+
+$$
+\widehat{\text{Var}}(P_{ab}) = \sum_i w_{ai}^2 \widehat{\text{Var}}(P_{abi}),
+$$
+når vi ser bort fra bidrag fra skjevhet. Utvalgsvariansen $\widehat{\text{Var}}(P_{abi})$ må altså bestemmes først. Det fins ulike metoder å estimere denne på. En oppsummering er gitt i [@smith_2021]. Noe forenklet tar disse tilnærmingene utgangspunkt i:
+
+- utvalgsmetode
+- modellbasert indeks
+- utvalgsgjentaking
+
+Det er ulike måter å gjøre utvalgsgjentaking på, men her vil vi fokusere på noen varianter av bootstrapping. Andre varianter av utvalgsgjentaking enn bootstrap er i lang tid brukt i USA for å estimere usikkerheten i konsumprisindeksen [@smith_2021].
+
+
+## Feil i datagrunnlag
+En av forutsetningene for å kunne beregne en trafikkindeks er at det finnes et kvalitetssikret datagrunnlag fra et representativt utvalg indekspunkt.
+
+
+### Kjøretøyklassifisering
+En trafikkindeks kan beregnes for kjøretøyklasser dersom datagrunnlaget har gode nok data for en slik klassifisering. Det vil være tilfeller hvor det er gode data om trafikken, men at klassifiseringen mangler. 
+
+
+### Manglende data
+Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgraden angir hvor mye data av god nok kvalitet det er i et tidsintervall, sammenlignet med hva det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
+
+Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad. Dekningsgraden beregnes basert på registreringspunktets operasjonelle status og eventuelle manuelle merkinger av avvik i data. Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
+
+Med 100 % dekningsgrad er standardfeilen lik null, mens den er større enn null ved lavere dekningsgrad.
+
+
+### Endringer i vegnettet
+Byindekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
+
+Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Det er da tre ulike scenarioer:
+
+1. Det totale trafikkarbeidet i området er fortsatt det samme. Omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, og de nye rutevalgene medfører ikke økt kjørelengde eller kostnad slik at turetterspørselen er den samme.
+2. Det totale trafikkarbeidet i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og har økt kostnad som gjør turetterspørselen lavere.
+3. Det totale trafikkarbeidet i området går opp som følge av at omkjøringsruter blir lengre uten at turetterspørselen synker tilsvarende.
+
+Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2 og 3. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
+
+Er det et byindekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre byindekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av byindekspunktene der. Trafikknedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
+
+Når en stengt veg blir gjenåpnet, vil det bli en ny omfordeling av trafikken. Situasjonen kan da være tilbake til slik den var opprinnelig, eller den kan ha blitt endret permanent som følge av endringer i vegens egenskaper.
+
+Et annet eksempel er når helt nye veganlegg åpnes og avlaster eksisterende veger. Dette er gjerne med på å øke turetterspørselen. Da indeksen sammenligner trafikken for hvert punkt, vil ikke nye veger kunne tas inn i datagrunnlaget det første året. Punkt på omkringliggende vegnett som blir avlastet må tas ut av datagrunnlaget for et år etter åpning.
+
+Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Indekspunkt som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+
+
+## Utvalgsmetode
+For en byindeks, som skal estimere endringen i trafikkarbeid for et begrenset og kjent byområde, består målpopulasjonen av alle trafikklenker på riks- og fylkesvegnettet, eventuelt supplert med enkelte kommunale trafikklenker. Fra disse skal det velges et sett med lenker som har trafikkregistreringer knyttet til seg.
+
+Hvis vi hadde kunnet måle all trafikk på alle trafikklenker til enhver tid, hadde vi kjent det fulle trafikkarbeidet i hele det aktuelle området, med andre ord for hele populasjonen av trafikklenker. For å finne endringen i trafikkarbeid, ville vi da ha regnet ut forholdet mellom det totale trafikkarbeidet i de to periodene. Da hadde vi fått et resultat helt uten utvalgsusikkerhet. 
+
+Men vi måler ikke trafikken på alle trafikklenker, og kjenner dermed ikke den sanne endringen i trafikkarbeid i populasjonen. Indeksverdien må i stedet beregnes ut fra et utvalg og er et estimat for den sanne, ukjente populasjonsverdien. Hvor mye feil dette estimatet er kan beskrives ved hjelp av skjevheten og variansen i utvalget. 
+
+Utvelgelsen av trafikklenker kan ses på som en to-stegsprosess. I utgangspunktet velges et sett med trafikklenker som er representativt for området, hvor representativiteten vurderes opp mot fordeling av trafikkarbeid i funksjonsklasse og geografisk fordeling. På forhånd vet vi lite om den faktiske trafikkendringen på trafikklenkene, så hvorvidt utvalget er representativt med hensyn på dette er ukjent. 
+
+Neste steg i utvelgelsen skjer når de faktiske data er tilgjengelig for beregning av en indeks. Da kan det være enkelte trafikklenker som likevel ikke har gode nok data, og dermed får vi et utvalg fra det opprinnelige, planlagte utvalget. Hvilke punkter som faller bort, er en ganske tilfeldig prosess, men kan føre til skjevheter i representativiteten. Det må fortløpende vurderes om utvalget fortsatt er representativt.
+
+I et enkelt tilfeldig utvalg vil hver trafikklenke i populasjonen ha lik og uavhengig sannsynlighet for å bli trukket ut. I prinsippet kunne hvilken som helst av trafikklenkene ha en kontinuerlig trafikkregistrering, iallfall hvis vi kunne velge fritt en sensorteknologi som passer med trafikkens, vegens og omgivelsenes egenskaper. Likevel er det av praktiske grunner ikke alle trafikklenker som gir enkel tilgang på strømkilde, plassering av vegkantutstyr og fysisk tilgang for installasjons- og vedlikeholdspersonell. Det vil også i praksis ikke  være tilgjengelig en sensorteknologi som passer til trafikkens egenskaper og som gir gode data i alle ulike trafikksituasjoner. Disse trafikklenkene vil da i praksis ikke være en del av populasjonen som et tilfeldig utvalg kan komme fra. Det kan med rimelighet antas at disse begrensningene ikke har noen sammenheng med endringen i trafikk som finner sted på trafikklenkene. Likevel er det ingen garanti for at det ikke skaper skjevheter i utvalget.
+
+Kontinuerlige trafikkregistreringspunkter er plassert ut med ulike formål. Det gir ikke nødvendigvis et representativt utvalg ved å inkludere alle trafikklenker som har trafikkregistrering i en indeksberegning. Det kan skyldes at punktene ikke er tilstrekkelig spredt rundt i byområdet slik at de vil føre til en skjevhet i geografisk representativitet, og det må derfor gjøres en vurdering av hvilke punkter som kan inngå.
+
+Utvelgelsen skal ikke være direkte påvirket av hva som er den reelle trafikkendringen i punktet, da denne i prinsippet er ukjent ved utvelgelsen. Likevel kan det være at enkelte punkter velges ut med tanke på hvor trafikkøkningen er eller kommer til å bli et reelt problem, eller der hvor spesifikke tiltak er planlagt. Hva som blir de sanne effektene av ulike tiltak er vanskelig å forutsi, og det vil være ringvirkninger som er enda vanskeligere å tallfeste. Det kan også forekomme ulike tiltak til samme tid som får overlappende effekter av ulik grad på ulike steder i vegnettet.
+
+Uten å måtte argumentere for at utvalget er tilfeldig, kan vi i stedet ganske enkelt anta at utvalget ikke er tilfeldig, altså at det er basert på et beleilighets- og ekspertutvalg uten at det resulterende utvalget framstår som tilfeldig. Dette har noe å si for hvordan utvalgsusikkerheten bestemmes.
+
+
+## Utvalgsdesign
+En utvalgsbasert metode, gjerne kalt design-basert, antar at populasjonen har bestemte, faste verdier. Det er selve utvalgsprosessen som er gjenstand for tilfeldigheter, og som tilordner hvert utvalg en viss sannsynlighet for å bli valgt ut. Selv om den underliggende sannsylighetsfordelingen til populasjonen er ukjent kan utvalgsgjennomsnitt ofte tilnærmes med normalfordeling. Ordinære konfidensintervall kan dermed beregnes ut fra en estimert varians.
+
+En varians kan utledes med utgangspunkt i indeksformelens form og uttrykkene kan bli ganske kompliserte. Det er derfor vanlig å forenkle disse ved bruk av Taylor-utvikling. En utfordring med denne metoden er at den ikke eksplisitt tar hensyn til betydningen av eventuelle  manglende data eller imputeringen av disse. 
+
+
+## Kvasirandomisering
+De fleste utvalg vil i praksis ikke være resultatet av en tilfeldig uttrekning. Det kan skyldes en eller flere ting, men typisk vil enkelte enheter i populasjonen være vanskeligere tilgjengelig enn andre, eller så kan datakvaliteten være dårlig eller data mangle helt.
+
+Når vi har et ikke-tilfeldig utvalg kjenner vi ikke trekksannsynlighetene. Med en kvasirandomisering vil pseudo-trekksannsynligheten bli estimert. Dette skal kompensere for utvalgsskjevheter.
+
+Utvalgsskjevheten i et ikke-tilfeldig utvalg kan ikke korrigeres ved hjelp av utvalget alene. Målvariabelen er kun tilgjengelig i det ikke-tilfeldige utvalget, men en mulig måte å korrigere for skjevheter på er beregne "inverse propensity score" for hver enhet i utvalget, som bestemmes ved hjelp av en observert tilleggsvariabel.
+
+Et uavhengig tilfeldig utvalg fra den samme populasjonen kan benyttes til å korrigere resultatene fra det ikke-tilfeldige utvalget. Tanken er at disse to utvalgene deler en eller flere variabler, som ikke er målvariabelen. Kvasirandomisering vil da innebære å estimere trekksannsynligheten til enhetene i populasjonen. De inverse trekksannsynligheten brukes så som vekter. Det blir problematisk dersom noen trekksannsynligheter er veldig små, med følgelig store og dominerende vekter.
+
+En tilleggsvariabel er god dersom den i stor grad forklarer variasjonen i både trekksannsynligheten og målvariabelen. Et representativt utvalg kan beskrives ved at det er liten eller ingen korrelasjon mellom trekksannsynligheten og målvariabelen. Dette er kjent som “data defect correlation” (DDC). Slutninger fra ikke-sannsynlighetsutvalg baserer seg på antakelsen om at trekksannsynligheten er uavhengig av målvariabelen, som også betyr at enheter i populasjonen som ikke blir trukket ut da mangler fra utvalget helt tilfeldig.
+
+En kan spørre seg om hvilke trafikklenker det er mer sannsynlig at vi har punkt på? Finnes det en variabel som forklarer en variasjon i denne trekksannsynligheten? Kan den også forklare variasjonen i trafikkendring?
+
+Selv om slutninger kan justeres til å bli bedre, vil det alltid være litt skjevheter igjen. Dette bør beskrives i tilknytning til resultatene.
+
+
+## Masseimputering
+Om vi har et tilfeldig utvalg kan dette ses på som det primære utvalget, hvor alle verdier for målvariabelen mangler. I tillegg har vi et, muligens større, ikke-tilfeldig utvalg med verdier for målvariabelen, som da kan benyttes til å fylle inn de manglende verdiene for målvariabelen i det tilfeldige utvalget.
+
+
+## Populasjonsmodellering
+Vi kan sette opp en modell for å predikere målvariabelen på alle lenker som ikke er med i utvalget. I motsetning til den design-baserte tilnærmingen, vil den modellbaserte se på populasjonen som et tilfeldig utfall av en stokastisk prosess. En gitt realisasjon av en populasjon er sånn sett et tilfeldig utfall fra en større, tenkt superpopulasjon. Utvalget trenger ikke være basert på tilfeldige prosesser. Modellen skal predikere den ønskede populasjonsstørrelsen, for eksempel et gjennomsnitt. Det kan beregnes prediksjonsintervall.
+
+[@zhang_2010] beskriver en metode for å estimere variansen til en indeks med utgangspunkt i en modellert konsumprisindeks. Denne modellen estimerer indeksen basert på de observerte prisene. Variansen er da estimert ut fra hvordan den modellerte målvariabelen varierer som følge av variasjonen i prisene. En viktig forutsetning her er at variansen er den samme for alle produkttypenes priser. 
+
+Fordelen med denne tilnærmingen er at den tar implisitt hensyn til at prisene for en produkttype varierer i både tid og rom, noe som er vanskelig å få bakt inn i en design-basert variansestimering.
+
+For å ta hensyn til at populasjonen er av endelig størrelse, er det viktig å velge en modell for variansestimatoren som vil gå mot null når utvalgsstørrelsen øker og nærmer seg populasjonsstørrelsen.
+
+
+## Robust, modellbasert varians
+En robust variansestimator til en Dutot-type indeks er gitt i [@zhang_2010]. Fordelen med denne er at den ikke forutsetter at variansen er konstant for alle trafikklenker.
+
+
+## Ikke-parametrisk bootstrap
+Usikkerheten kan estimeres ved å gjenta stikkprøver fra det opprinnelige utvalget. I en ikke-parametrisk bootstrapping tas det ikke utgangspunkt i en gitt fordelingsfunksjon beskrevet av estimerte parametre, slik eksempelvis en normalfordeling vil være beskrevet av et gjennomsnitt og en varians. Stikkprøvegjentaking gjøres ved å trekke ut et tilfeldig utvalg fra det opprinnelige utvalget. Gjentakelsesutvalget gjøres med tilbakelegging og har samme størrelse som det opprinnelige utvalget.  En ulempe er at små og heterogene utvalg kan gi store varianser, og det bør derfor være minst ti verdier i det opprinnelige utvalget for at dette skal fungere godt.
+
+En annen fordel med bootstrap-metodikk er at fordelingen til variansen fra gjentatte utvalg kan avsløre stabiliteten i variansestimeringen og hvor mye denne kan være påvirket av avvikende verdier i datasettet.
+
+Bootstrapping kan brukes til å estimere gjennomsnitt, varians eller et konfidensintervall direkte. Begrepet konfidensintervall baseres dog på antakelsen om at verdiene er normalfordelte, og dermed symmetrisk. Dersom dette ikke er tilfelle, vil metoden implisitt anta at verdiene er transformert på en måte slik at de er tilnærmet normalfordelte. Metoden forutsetter derfor at fordelingen er jevn og symmetrisk, samt at variansen er den samme over hele utfallsrommet til den statistiske størrelsen. Den statistiske størrelsen må også være forventningsrett.
+
+Et estimat for konfidensintervallet rundt den aktuelle statistiske størrelsen kan beregnes på tre måter:
+
+- Antar at størrelsen er normalfordelt, estimere variansen med bootstrapping, så beregne konfidensintervallet med persentiler gitt av normalfordelingen
+- Antar at størrelsen er $t$-fordelt, estimere variansen med bootstrapping, så beregne konfidensintervallet med persentiler gitt av $t$-fordelingen
+- Bruke persentilene til bootstrap-verdiene direkte
+
+Dette kan medføre at konfidensintervallet blir for stort [@mashreghi_2016]. Uten å måtte ha antagelser om utvalgsmetode med tilhørende behov for å lage pseudopopulasjoner, kan direkte bootstrapmetoder benyttes i stedet [@mashreghi_2016]. For å kunne reflektere variasjonen i det opprinnelige utvalget, må det gjøres en form for modifisering av verdiene. En reskalert bootstrap-metode går ut på at verdiene reskaleres slik at bootstrap-variansen er på samme form som variansestimatoren for populasjonen. Reskaleringsfaktoren vil være en funksjon av størrelsen til det opprinnelige utvalget, samt dens andel av populasjonen. Konfidensintervall basert på denne metoden vil være avhengig av vilkårlig valgte parametre, og er altså ikke asymptotiske. Under spesielle forutsetninger kan likevel et konfidensintervall estimeres som $t$-fordelte, men disse vilkårene er ikke relevante i indekssammenheng.
+
+Hvis vi kan anta at gjennomsnittet er tilnærmet normalfordelt, vil vi kunne bygge et asymptotisk konfidensintervall rundt den estimerte forventningsverdien ved hjelp av en estimert varians.
+
+Dersom det er skjevheter i det opprinnelige utvalget, vil stikkprøvegjentakingen reprodusere disse. Det finnes metoder for å kompensere for skjevheter i bootstraputvalg.
+
+
+### Bootstrap for endelig populasjon
+Bootstrapping antar implisitt at populasjonens størrelse er veldig stor sammenlignet med utvalget, slik at utvelgelsen tilnærmet er med tilbakelegging. Dersom denne metoden benyttes i tilfeller hvor utvalgsandelen er stor, vil det resulterende konfidensintervallet bli for stort [@mashreghi_2016].
+
+Fra et reelt utvalg som er trukket tilfeldig uten tilbakelegging fra en endelig populasjon, kan vi trekke et sett med bootstrap-utvalg som også er trukket tilfeldig uten tilbakelegging. Ideelt burde bootstrap-utvalget utgjøre en lik andel av utvalget som utvalget er fra populasjonen. Dette kan føre til ganske små bootstrap-utvalg [@shao_2003]. En mulig måte å omgå dette problemet på er å først lage en pseudopopulasjon basert på det opprinnelige utvalget. Pseudopopulasjonen skal ha samme størrelse som den opprinnelige populasjonen, og bootstrap-utvalgene skal ha samme størrelse som det opprinnelige utvalget. En begrensning her er at det antas at utvalgsmetoden er et tilfeldig utvalg uten tilbakelegging.
+
+
+## Parametrisk bootstrap
+Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta utgangspunkt i en angitt fordelingsfunksjon for populasjonen. Denne fordelingen blir beskrevet av estimerte parameterverdier basert på det opprinnelige utvalget. Det vil så være mulig å bygge et konfidensintervall ved å simulere gjentatte stikkprøver fra denne fordelingen.
+
+
+# Usikkerhet i trafikkarbeidsindeks
+Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkarbeidsindeksen. Det er den robuste variansestimatoren omtalt i @sec-robvar som er valgt.
+
+
+## Utvalgsdesign
+For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i @eq-w_indeks_2. Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
+
+En estimator for variansen $\sigma_{\text{tw}}^2$ til et utvalg elementære trafikkarbeidsindekser $\{P_{abi}\} = \{i\}$ er da [@bevington_2003]
+
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tw},ab\{i\}}^2 &= \widehat{\text{Var}}(P_{ab\{i\}}) \\
+&= \frac{1}{1 - \sum_i w_{ai}^2} \sum_i \left[ w_{ai} (P_{abi} - P_{\text{tw},ab})^2  \right].
+\end{aligned}
+$$ {#eq-tw_variance_p}
+
+Her opptrer vektene $w_{ai}$ som ikke-stokastiske "pålitelighetsvekter" og de reflekterer hvor viktige de enkelte punktindeksene er i beregningen.
+
+Dersom vi kan anta at utvalget er tilfeldig trukket ut, er en estimator for variansen til trafikkarbeidsindeksen som tar hensyn til endelig populasjonsstørrelse da [@cochran_1977]
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tw},ab}^2 &= \widehat{\text{Var}}(P_{\text{tw},ab}) \\
+&= \widehat{\text{Var}}\left(\sum_i^n w_{ai} P_{abi}\right) \frac{N-n}{N} \\
+&= \sum_i^n w_{ai}^2 \cdot \widehat{\text{Var}}(P_{ab\{i\}}) (1-n/N) \\
+&=  (1-f) \sum_i^n w_{ai}^2 \cdot \hat{\sigma}_{ab\{i\}}^2.
+\end{aligned}
+$$ {#eq-tw_variance_P}
+Her er $f = n/N$ utvalgsandelen.
+
+
+## Populasjonsmodellering
+I [@chambers_2012] finner vi en tilsvarende utledning av en modellbasert varians for en lineær populasjonsparameter på formen
+
+$$
+A = \sum_i^N \gamma_iy_i.
+$$
+Denne har samme form som en et vektet, aritmetisk gjennomsnitt. For en trafikkindeks kan $\gamma_i$ her spille rollen som trafikkarbeidsvekter. Hvis populasjonen kan antas å være homogen, det vil si at $y_i$ ikke kan stratifiseres ved hjelp andre variabler, så er den beste lineære, forventingsrette prediktoren for denne slik at 
+
+$$
+\hat{A} = \sum_k \gamma_iy_i + \bar{y}_k \sum_l \gamma_i,
+$$
+hvor den endelige populasjonen er oppdelt i den delen som er med i utvalget, $k$, og den delen som ikke er med i utvalget, $l$. Gjennomsnittet til den delen av populasjonen som ikke er med i utvalget er her estimert ved hjelp av utvalgsgjennomsnittet $\bar{y}_k$. Om vi skal kunne benytte denne tilnærmingen i en trafikkindeks, må vi kjenne trafikkarbeidsvektene til alle trafikklenker som ikke er med i utvalget. Dette er kjent gjennom ÅDT-beleggingen og oppdateres hvert år. Men ÅDT-beleggingen viser reell ÅDT, og ikke hva som er normale verdier for ÅDT slik de ville vært uten midlertidige vegnettsendringer. Som vekter er kanskje dette likevel ikke et stort problem.
+
+En forventingsrett estimator for variansen er da
+
+$$
+\widehat{\text{Var}}(\hat{A}) = \left[ \frac{1}{n} \left(\sum_l \gamma_i \right)^2 + \sum_l \gamma_i^2  \right] \hat{\sigma_k}^2.
+$$
+Dersom utvalget inkluderer hele populasjonen slik at $f = 1$, så vil $l = \emptyset$ og variansen blir null.
+
+I en populasjon hvor alle $\gamma_i = 1/N$, reduseres dette til
+
+$$
+\widehat{\text{Var}}(\hat{A}) = \hat{\sigma_k}^2 \frac{1-f}{n}.
+$$
+Denne har samme form som en uvektet utgave av @eq-tw_variance_P. 
+
+En alternativ tilnærming er å ta utgangspunkt i trafikkarbeidsindeksen på formen gitt av @eq-w_indeks_3, og så modellere trafikkmengden i år $b$ som en normalfordeling gitt som funksjon av trafikkmengden i år $a$, altså at
+$$
+p_{bi} \sim N(\beta p_{ai}, \sigma^2),
+$$
+med en ukjent, konstant parameter $\beta$. Variansen $\sigma^2$ er også ukjent. Her antar vi at $p_{ai}$ er kjent. En forventingsrett estimator for variansen er i dette tilfellet
+$$
+\hat{\sigma}^2 = \frac{1}{n-1} \sum_i (p_{bi} - \hat{\beta}p_{ai})^2.
+$$
+Vi må finne et uttrykk for $\hat{\beta}$. Vi benytter maximum likelihood estimation (MLE) for en normalfordeling, og har da at vi skal minimere uttrykket 
+$$
+\sum_i^n (p_{bi} - \beta p_{ai})^2.
+$$
+Deriverer med hensyn på $\beta$ og setter lik 0:
+
+$$
+\frac{d}{d\beta} \sum_i^n (p_{bi} - \beta p_{ai})^2 = -2 \sum_i^n p_{ai} (p_{bi} - \beta p_{ai}) = 0,
+$$
+$$
+\sum_i^n p_{ai}p_{bi} - \beta \sum_i^n p_{ai}^2 = 0,
+$$
+$$
+\beta = \frac{\sum_i p_{ai}p_{bi}}{\sum_i p_{ai}^2}.
+$$
+
+En estimator
+
+$$
+\hat{\beta} = \frac{\sum_i p_{ai}p_{bi}}{\sum_i p_{ai}^2},
+$$
+er forventningsrett fordi
+$$
+\begin{aligned}
+\mathbb{E}[\hat{\beta}] &= \frac{1}{\sum_i p_{ai}^2}\sum_i p_{ai} \mathbb{E}[p_{bi}] \\
+&= \frac{1}{\sum_i p_{ai}^2}\sum_i p_{ai} \beta p_{ai} \\
+&= \frac{1}{\sum_i p_{ai}^2}\sum_i p_{ai}^2 \beta = \beta.
+\end{aligned}
+$$
+
+Dette gir til slutt et uttrykk for en forventningsrett estimator for variansen til utvalget $\{p_{bi}\} = p^b$ gitt av
+
+$$
+\hat{\sigma}^2 = \widehat{\text{Var}}(p^b) = 
+\frac{1}{n-1} \sum_i \left(p_{bi} - \frac{\sum_j p_{aj} p_{bj}}{\sum_j p_{aj}^2} p_{ai}\right)^2.
+$$ {#eq-var_p_w_model}
+
+Videre vil en estimator for variansen til områdeindeksen da bli
+
+$$
+\widehat{\text{Var}}(P_{\text{tw},ab}) = \sum_i w_{ai}'^2 \cdot \widehat{\text{Var}}(p^b).
+$$ {#eq-var_P_w_model}
+Her er altså vektene $w'$ som gitt i @eq-w_indeks_3.
+
+
+## Robust variansestimator {#sec-robvar}
+En tilnærmet forventningsrett robust estimator for variansen til en Dutot-type indeks er vist i [@zhang_2010]. La $W_{hi} = p_{hi} q_{hi}$ være trafikkarbeidet observert på trafikklenke $i$ i funksjonsklasse $h$. Da er
+
+$$
+\widehat{\text{Var}}(P_{abh}) = 
+\frac{1}{W_{ah}^2} \sum_i \frac{1}{1 - \frac{W_{ahi} }{W_{ah} } }
+\left( W_{bhi} - \frac{\widehat{\bar{W}}_{bh} }{\widehat{\bar{W}}_{ah} } W_{ahi}  \right)^2.
+$$ {#eq-var_P_w_robust}
+
+Variansen for samlet indeks over alle funksjonsklasser er da
+
+$$
+\widehat{\text{Var}}(P_{ab}) = \sum_h w_{ah}^2 \cdot \widehat{\text{Var}}(P_{abh}).
+$$ {#eq-var_P_w_robust_total}
+
+
+## Ikke-parametrisk bootstrap
+En ikke-parametrisk bootstrap gjøres som følger:
+
+1. Vi har et opprinnelig utvalg $u$ av $n$ observasjoner.
+2. Fra dette har vi kun én observasjon $\hat{\theta}$ for den aktuelle statistiske størrelsen $\theta$.
+3. Trekk tilfeldig $n$ observasjoner fra $u$ med tilbakelegging. Da har vi et utvalg $u^*$.
+4. Beregn et estimat $\hat{\theta}^*$.
+5. Gjenta punkt 2-4 $B$ ganger.
+6. Da kan variansen til $\hat{\theta}$ estimeres ved
+
+$$
+\hat{V}_B^* = \frac{1}{B-1} \sum_{b=1}^B (\hat{\theta}_b^* - \hat{\bar{\theta^*}})^2,
+$$
+der
+$$
+\hat{\bar{\theta^*}} = \frac{1}{B} \sum_{b=1}^B \hat{\theta}_b^*.
+$$
+Et konfidensintervall kan da være
+
+$$
+[\hat{\theta} - z_{1-\alpha/2}\sqrt{\hat{V}_B^*}, \hat{\theta} - z_{\alpha/2}\sqrt{\hat{V}_B^*}]
+$$
+Alternativt kan et $t$-intervall estimeres ved å bytte ut standard normalfordelingens $z$-verdier med de tilsvarende $\tau$-verdiene for $t$-fordeling med det aktuelle antallet frihetsgrader.
+
+Når en har generert opp et anselig antall bootstrap-estimater for den aktuelle statistiske størrelsen, kan et konfidensintervall estimeres direkte ved å hente ut (97,5, 2,5)-persentilene i denne fordelingen.
+
+Dersom utvalget har skjevheter, vil bootstrapping gjenskape skjevhetene i stikkprøvegjentakingen. 
+
+Ved bruk av pakken *survey* i R kan vi estimere konfidensintervallet til en forholdsestimator ved å ta hensyn til både etterstratifiseringsvekter og endelig populasjonsstørrelse.
+
+
+## Forholdsestimator
+I @eq-beale har vi en skjevhetskorrigert indeks. Den samlede variansen til denne indeksen består av et bidrag fra variansen til ukorrigert form i @eq-ratio_index og et bidrag fra en systematisk feil fra små utvalg:
+
+$$
+\text{MSE}(\widehat{P}_{ab}) = 
+\frac{1}{W_a^2} \sum_h \left( \text{Var}(\widehat{W}_{bh}) + W_{ah}^2 (\mathbb{E}(\widehat{P}_{abh} - P_{abh}))^2 \right).
+$$
+Her er 
+
+$$
+\text{Var}(\widehat{W}_{bh}) = \frac{N_h^2(1 - f_h)}{n_h} S_{dh}^2
+$$
+med
+
+$$
+\begin{aligned}
+S_{dh}^2 &= \frac{1}{N-1} \sum_i (W_{bhi} - P_{abh} W_{ahi})^2 \\
+&= s_{bh}^2 + \widehat{P}_{abh}^2 s_{ah}^2 - 2 \widehat{P}_{abh} \rho_{abh} s_{ah} s_{bh}.
+\end{aligned}
+$$
+
+Den systematiske feilen kan tilnærmes med
+
+$$
+\mathbb{E}(\hat{P}_{abh} - P_{abh}) \approx
+\frac{1 - f_h}{n_h \bar{W_{ah}^2}} \left(
+\widehat{P}_{abh} s_{ah}^2 - \rho_{abh} s_{ah} s_{bh}
+\right).
+$$
+Bruk av Beales korreksjon som i @eq-beale reduserer eventuell systematisk feil ved små utvalg, og dette vil også gi en reduksjon i usikkerheten.
+
+Et konfidensintervall er da
+
+$$
+\widehat{P}_{ab} \pm 1,96 \sqrt{\text{MSE}(\widehat{P}_{ab})}.
+$$
+
+
+# Usikkerhet i trafikkmengdeindeks
+I dette tilfellet er populasjonen av "trafikklenker" uendelig stor, og vi trenger ikke tenke på at punktene i utvalget er avhengig av hverandre. En estimator for variansen $\sigma_{\text{tv}}^2$ til et utvalg elementære trafikkmengdeindekser er da 
+
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tv},ab\{i\}}^2 
+&= \widehat{\text{Var}}(P_{ab\{i\}}) \\
+&= \frac{1}{1 - \sum_i v_{ai}^2} \sum_i \left[ v_{ai} (P_{abi} - P_{\text{tv},ab})^2  \right].
+\end{aligned}
+$$ {#eq-tv_variance}
+Her er vektene $v_{an}$ ikke-stokastiske "pålitelighetsvekter" som reflekterer hvor viktige de enkelte punktindeksene er i beregningen. 
+
+En estimator for variansen til trafikkmengdeindeksen er 
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tv},ab}^2 
+&= \widehat{\text{Var}}(P_{\text{tv},ab}) =  \widehat{\text{Var}}\left(\sum_i^n v_{ai} P_{ab\{i\}}\right) \\
+&= \sum_i^n v_{ai}^2 \cdot \widehat{\text{Var}}(P_{ab\{i\}})  \\
+&= \sum_i^n v_{ai}^2 \cdot \hat{\sigma}_{\text{tv},ab\{i\}}^2.
+\end{aligned}
+$$
+
+Standardfeilen er da
+$$
+\begin{aligned}
+\hat{\sigma}_{\text{tv},ab} =
+\sqrt{ \sum_i^n v_{ai}^2 \hat{\sigma}_{\text{tv},ab\{i\}}^2} = \sqrt{ \sum_i^n v_{ai}^2} \cdot \hat{\sigma}_{\text{tv},ab\{i\}}.
+\end{aligned}
+$$ {#eq-tv_se}
+
+Da populasjonens standardavvik er ukjent og utvalgene gjerne er små (under 50), benyttes $t$-fordeling til å danne et konfidensintervall. Med konfidensfaktor $\tau$ gitt av $t$-fordelingen, er et 95 % konfidensintervall
+
+$$P_{\text{tv}} \pm \tau_{0.975, n-1} \hat{\sigma}_{\text{tv}}.$$
+
+## Effektiv utvalgsstørrelse
+Hvor mye bidrar hver enkelt punktindeks til byindeksen? Kan vi beregne en effektiv vekt? Denne er avhengig av punktets endring og trafikkarbeid. Hvor mye forskjellig er fordelingen av punktene etter trafikkarbeid fra fordelingen av bidrag til indeksen? Denne er avhengig av hvordan punktindeksen er regnet ut.
+
+Den effektive utvalgsstørrelsen er
+
+$$
+n_{\text{effektiv}} = \frac{1}{\sum_i^n v_{ai}^2}.
+$$
+
+Dersom alle punktene har lik trafikkmengde, slik at alle vektene $v_{ai} = 1/n$, vil vi få at
+
+$$
+n_{\text{effektiv}} = \frac{1}{\sum_i^n 1/n^2} = \frac{1}{n/n^2} = n.
+$$
+Men i praksis vil punktene ha ulik trafikkmengde, og dersom ett av punktene har mye større trafikkmengde enn alle andre, altså at $v_{ab} \approx 1$ og $v_{ai} \approx 0 \ \forall \ i \neq 1$ vil vi få at
+
+$$
+n_{\text{effektiv}} \approx \frac{1}{1/1^2} = 1.
+$$
