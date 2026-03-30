@@ -1,7 +1,6 @@
 ```{r}
 #| label: chain
 #| include: false
-#| echo: false
 
 base::Sys.setlocale(locale = "nb.utf8")
 library(tidyverse)
@@ -11,8 +10,6 @@ source("chain.R")
 ```
 
 # Kjedet indeks
-"Fast handlekurv" betyr det samme i økonomisk sammenheng som et fast utvalg indekspunkter i trafikksammenheng. Med "fast" menes her at det er det samme utvalget i begge periodene som inngår i den bilaterale indeksen. Utvalget kan endre seg til neste sammenligningsperiode, så lenge det kan sies å være representativt.
-
 Hvilke indekspunkter som er tilgjengelige vil endre seg over i tid i takt med endringer i vegnettet. Et fast basisår kan ikke være fast for lenge, men må byttes ut med et senere år når endringene i tilgjengelig indekspunktutvalg blir store. Det kan skje så hyppig som hvert år, men helst så sjelden som mulig. Når utvalget oppdateres, må indeksene kjedes sammen for å vise en samlet utvikling fra det opprinnelige basisåret.
 
 Kjeding kan over tid føre til avvik fra forventet resultat. Forutsetningene for at avvik ikke oppstår er:

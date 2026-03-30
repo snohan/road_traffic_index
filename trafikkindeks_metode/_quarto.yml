@@ -10,11 +10,11 @@ book:
     - intro.qmd
     - traffic_index.qmd
     - data.qmd
-    - uncertainty.qmd
     - chained.qmd
     - references.qmd
   appendices:
     - cpi_theory.qmd
+    - uncertainty.qmd
 
 bibliography: references.bib
 
@@ -42,6 +42,11 @@ format:
         \addtokomafont{subsubsection}{\subsubsectionfont}
         \usepackage[font=small,textfont=it,labelsep=period]{caption}
 
+execute:
+  echo: false
+  message: false
+  warning: false
+
 crossref: 
   tbl-title: "Tabell"
   lot-title: "Tabeller"
@@ -49,7 +54,7 @@ crossref:
   fig-title: "Figur"
   lof-title: "Figurer"
   fig-prefix: ""
-  title-delim: "."
+  title-delim: " "
   eq-prefix: "ligning"
   sec-prefix: "kapittel"
 

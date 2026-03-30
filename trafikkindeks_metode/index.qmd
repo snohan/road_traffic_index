@@ -3,25 +3,10 @@
 #| include: false
 #| echo: false
 
-# Packages ####
 base::Sys.setlocale(locale = "nb.utf8")
 library(tidyverse)
-library(knitr)
-
-# knitr options ####
-knitr::opts_chunk$set(
-  echo = FALSE,
-  warning = FALSE,
-  message = FALSE,
-  error = FALSE,
-  cache = FALSE,
-  dpi = 150,
-  dev = "ragg_png",
-  tab.topcaption = TRUE
-  )
 
 today_date <- lubridate::today()
-
 today_day_number <- lubridate::day(today_date)
 today_day_name <- lubridate::wday(today_date, label = TRUE, abbr = FALSE)
 today_month_name <- lubridate::month(today_date, label = TRUE, abbr = FALSE)
@@ -36,17 +21,10 @@ today_string <-
     " ",
     today_year
   )
-
-# Calendar weights
-period_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/periods.rds")
-day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/day_type_weights.rds")
-
-# Index chain visualisations
-source("chain.R")
 ```
 
 # Forord {.unnumbered}
-Dette notatet beskriver en forbedret metode for beregning av trafikkindeks. Det fokuseres her på teorien rundt beregningsmetoden til selve indeksverdien, samt usikkerheten som hører til.
+Dette dokumentet beskriver metoden for beregning av ulike typer trafikkindekser. Metoden som beskrives her skal i 2026 implementeres i Trafikkdatasystemet, og er en forbedring av tidligere metode. Metoden tas i bruk fra og med 2027.
 
 \vspace{2cm}
 

@@ -1,7 +1,7 @@
-# Konsumprisindeksteori
-Konsumprisindekser er blitt beregnet i mange år og det finnes mye god dokumentasjon på teorien bak. Det er nyttig å ta utgangspunkt i denne teorien og se den i sammenheng med hvordan en trafikkindeks best kan beregnes.
+# Indeksteori
+Dette kapittelet tar for seg relevant teori for konsumprisindekser og ser den i sammenheng med hvordan en trafikkindeks kan utformes.
 
-Formålet med en konsumprisindeks er å måle endringen i prisnivået på produktene (varer og tjenester) som husholdningene kjøper, mens formålet med en trafikkindeks er å måle endringen i trafikknivået for et geografisk område. En sammenligning av indeksteori for de to fagområdene tar utgangspunkt i hvordan sentrale størrelser blir definert. Disse er angitt i tabell @tbl-quantities.
+Konsumprisindekser er blitt beregnet i mange år og det finnes mye god dokumentasjon på teorien bak. Det er ulike metoder i bruk i forskjellige land, men formålet er å måle endringen i prisnivået på produktene (varer og tjenester) som husholdningene kjøper. Tilsvarende er formålet med en trafikkindeks å måle endringen i trafikknivået for et geografisk område. En sammenligning av indeksteori for de to fagområdene tar utgangspunkt i hvordan sentrale størrelser blir definert. Disse er angitt i tabell @tbl-quantities.
 
 ::: {#tbl-quantities}
 | Symbol          | Betydning i konsumprisindeks          | Betydning i trafikkindeks                     |
@@ -20,28 +20,32 @@ Sammenheng mellom størrelser i konsumpris- og trafikkindeks.
 
 :::
 
+Gjennomsnittsprisen $p_i$ for en produkttype er definert som en enhetspris ved å dividere den totale salgsverdien med det totale antallet solgte produkter i perioden.
+
 Et utvalg $p_{ti}$ hvor $i \in (0, n)$ kan skrives kompakt på vektorform $p^t = (p_0, p_1, \dots p_n)$, og tilsvarende for $q^t$.
 
-En konsumprisindeks er typisk beregnet ved å aggregere elementære indekser. En elementær indeks angir prisendringen for en gitt produkttype. En produkttype kan være en samling produktvarianter som har ganske like egenskaper. Over en periode på for eksempel en kalendermåned vil prisen for en produkttype variere noe. Den elementære indeksen sammenligner da gjennomsnittsprisene.
 
-Tilsvarende for en trafikkindeks vil en elementær indeks være endringen i trafikkmengde for en gitt trafikklenke. På en trafikklenke vil døgntrafikken variere i løpet av en kalendermåned. Den elementære indeksen sammenligner gjennomsnittstrafikken, som er månedsdøgntrafikken.
+## Konsumprisindeks
+Informasjon om konsumprisindeksteori er her i stor grad basert på [@ilo_cpi], [@diewert_cpi_theory] og [@diewert_ch7].
 
-Dette delkapittelet er i stor grad basert på teorien beskrevet i [@ilo_cpi], [@diewert_cpi_theory] og [@diewert_ch7].
 
+### Utleding av indeksformler
 Det er mange måter å beregne en indeks på. For konsumprisindeks er det i hovedsak fire ulike måter å utlede indeksformler på:
 
-- konseptet "fast handlekurv"
-- aksiomatisk
-- stokastisk
-- økonomisk
+- handlekurv-tilnærming
+- aksiomatisk tilnærming
+- stokastisk tilnærming
+- økonomisk tilnærming
 
 
-## Handlekurv-tilnærming {#sec-basket}
+#### Handlekurv-tilnærming {#sec-basket}
 For å sammenligne prisnivået i to perioder benyttes en fast og representativ "handlekurv", altså et utvalg produkter. En enkel indeks er da
 
 $$
-\text{Lowe-indeks} = \frac{\text{samlet pris for handlekurv nå}}{\text{samlet pris for handlekurv da}} = 
-P_{\text{L}}(p^0,p^1,q^0,q^1) = \frac{\sum_i p_{1i} q_{1i}}{\sum_i p_{0i} q_{0i}}.
+\begin{aligned}
+\text{Lowe-indeks} &= \frac{\text{samlet pris for handlekurv nå (år 1)}}{\text{samlet pris for handlekurv da (år 0)}} \\
+&= P_{\text{L}}(p^0,p^1,q^0,q^1) = \frac{\sum_i p_{1i} q_{1i}}{\sum_i p_{0i} q_{0i}}.
+\end{aligned}
 $$ {#eq-lowe}
 
 Det er i stedet mulig å benytte produktmengdene slik de var i en basisperiode $q^0$. Da har vi
@@ -71,13 +75,11 @@ $$ {#eq-walsh}
 En felles betegnelse for alle indeksene omtalt i dette avsnittet er *bilaterale* indekser, altså at de sammenligner data fra *to* perioder. Fisher-indeksen anses som den beste varianten for sammenligning av prisnivå på denne måten.
 
 
-## Aksiomatisk tilnærming
-En aksiomatisk tilnærming baseres på et sett med regler som indeksen skal oppfylle. Til å begynne med har vi en ukjent formel for en bilateral indeks, og prøver å finne funksjonens form ved at den må oppfylle reglene. En regel kan være en såkalt svak identitetstest, som sier at dersom det ikke er endring i hverken pris eller mengde, så skal indeksen være lik 1. En tilsvarende sterk identitetstest vil si at indeksen er lik 1 dersom kun prisen er uendret.
-
-Ytterligere regler kan formueleres. Også med aksiomatisk tilnærming anses Fisher-indeksen som den beste for sammenligning av prisnivå.
+#### Aksiomatisk tilnærming
+En aksiomatisk tilnærming baseres på et sett med regler som indeksen skal oppfylle. Til å begynne med har vi en ukjent formel for en bilateral indeks, og prøver å finne funksjonens form ved at den må oppfylle reglene. En regel kan være en såkalt svak identitetstest, som sier at dersom det ikke er endring i hverken pris eller mengde, så skal indeksen være lik 1. En tilsvarende sterk identitetstest vil si at indeksen er lik 1 dersom kun prisen er uendret. Ytterligere regler kan formuleres. Også med aksiomatisk tilnærming anses Fisher-indeksen som den beste for sammenligning av prisnivå.
 
 
-## Stokastisk tilnærming
+#### Stokastisk tilnærming
 Utgangspunktet for denne tilnærmingen er prisendringen $p_{1i}/p_{0i}$ for produkttype $i$. En statistisk modell kan da være
 
 $$
@@ -99,7 +101,7 @@ som er det geometriske gjennomsnittet av prisendringene per produkt.
 
 Både Carli- og Jevons-indeksene er uten vekter. Det er mulig å få inn vekting av produktene på en indirekte måte ved at indeksene beregnes på et utvalg produkter, gitt at utvalget er valgt ut proporsjonalt etter omsetningsandelen i markedet. Dette legger altså sterke føringer på hvordan utvalget er plukket ut fra populasjonen.
 
-For å kunne vektlegge ulike produkters viktighet kan man i stedet benytte en vektet minste kvadraters metode i utledningen. Et mål på hvor viktig et et produkt $i$ er, er dets andel av det totale forbruket av $n$ produkter:
+For å kunne vektlegge ulike produkters viktighet kan man i stedet benytte en vektet minste kvadraters metode i utledningen. Et mål på hvor viktig et produkt $i$ er, er dets andel av det totale forbruket av $n$ produkter:
 
 $$
 w_{ti} = \frac{p_{ti} q_{ti}}{\sum_i^n p_{ti} q_{ti}}.
@@ -123,7 +125,7 @@ $$
 $$ {#eq-carli_w}
 
 
-## Økonomisk tilnærming
+#### Økonomisk tilnærming
 Den økonomiske tilnærmingsmåten er den mest kompliserte av de fire hovedtilnærmingsmåtene. Det tas utgangspunkt i at forbrukerne velger sitt forbruk slik at det maksimerer velferd og nytte, gitt de økonomiske rammene de har til disposisjon. Denne tilnærmingsmåten tar hensyn til at når et produkt har relativt lav pris så vil det få større omsetning. Denne indeksmetoden vil ikke bare gi en indikasjon på endringen i prisnivået, men også endringen i selve forbruket. Den økonomiske tilnærmingsmåten er nødvendig for å måle effektene av kvalitetsendringer i produkter, samt velferdseffekten av nye og utgåtte produkter.
 
 En forbruker ønsker å oppnå et visst nivå av nytte $u = f(q)$ med en minst mulig kostnad $C(u,p) = pq$. Derfor vil forbrukeren velge ut et sett produkter $n$ med tilhørende priser $p$ og mengder $q$. Da får vi 
@@ -136,7 +138,11 @@ Her er det mulig å velge mellom nytten i periode 0 eller 1. Disse variantene vi
 Dersom vi finner en formel for en bilateral indeks som er eksakt for en enhetskostfunksjon som også har en andre ordens Taylorrekke-tilnærming til en vilkårlig, kontinuerlig og to ganger deriverbar kostfunksjon, kalles den for superlativ. Fisher-, Törnqvist- og Walsh-indeksene er superlative. Felles for disse er at de bruker vekting med produktmengden fra begge periodene, som da gir mindre utvalgsskjevhet ved at det bedre fanger opp endringer i forbruksmønster over tid. Som det ligger i betegnelsen superlativ, er disse indeksene ofte foretrukket framfor andre. En slik indeks forutsetter at vektene (forbruksandelene) for nåværende periode er kjent, men da dette ofte ikke er tilfelle, faller valget på for eksempel en Laspeyre-indeks.
 
 
-## Elementære indekser
+### Elementære og multilaterale indekser
+En konsumprisindeks er typisk beregnet ved å aggregere elementære indekser. En elementær indeks angir prisendringen for en gitt produkttype. En produkttype kan være en samling produktvarianter som har ganske like egenskaper. Over en periode på for eksempel en kalendermåned vil prisen for en produkttype variere noe. Den elementære indeksen sammenligner da gjennomsnittsprisene.
+
+Tilsvarende for en trafikkindeks vil en elementær indeks være endringen i trafikkmengde for en gitt trafikklenke. På en trafikklenke vil døgntrafikken variere i løpet av en kalendermåned. Den elementære indeksen sammenligner gjennomsnittstrafikken, som er månedsdøgntrafikken.
+
 En elementær indeks er en indeks uten informasjon om mengdene $q$. De uvektede Carli- og Jevons-indeksene er også elementære. I tillegg finnes 
 
 $$
@@ -148,7 +154,7 @@ som altså er forholdet mellom gjennomsnittsprisene i de to periodene.
 Jevons-indeksen er den beste elementære indeksen i en aksiomatisk tilnærming.
 
 
-## Multilaterale indekser
+#### Multilaterale indekser
 Når nye produkttyper introduseres i markedet, finnes det til å begynne med ingen pris å sammenligne med fra den forutgående perioden. En løsning er å ikke inkludere nye produktyper før de har eksistert i to perioder. Alternativt kan nye produkter få satt en "reservasjonspris" eller få imputert en fiktiv pris for perioden før introduksjonen.
 
 Bilaterale indekser som beregnes med en fast basisperiode vil over tid få dårligere representativitet. Gamle produkter utgår og nye produkter introduseres i markedet, og til slutt vil ikke indeksen lenger gjenspeile den økonomiske markedsstrukturen. Alternativet til en fast basisperiode er å kjede sammen indekser. Da kan produktutvalget oppdateres fortløpende. Men under visse forutsetninger kan kjeding av indekser føre til avvik fra det forventede resultatet, det vil si at dersom prisnivået senere kommer tilbake til samme nivå som i basisperioden, så vil likevel ikke indeksen vise det.
@@ -173,7 +179,7 @@ $$ {#eq-geks_level}
 
 En multilateral indeks kan også defineres med Törnqvist-indeksen som utgangspunkt. En GEKS[^longnote]-indeks er definert slik at indeksen for periode 1 er lik 1:
 
-[^longnote]: GEKS-indeksen er oppkalt etter fire personer som alle er kreditert med å ha foreslått den: Gini, Éltető, Köves og Szulc.
+[^longnote]: GEKS-indeksen er oppkalt etter fire personer: Gini, Éltető, Köves og Szulc.
 
 $$
 P_{\text{GEKS}}^t \equiv \frac{p_{\text{GEKS}}^t}{p_{\text{GEKS}}^1}.
@@ -185,29 +191,214 @@ En multilateral indeks beregner endringen fra en basisperiode til en annen målp
 
 Multilaterale indekser er mer kompliserte enn bilaterale, og er vanskeligere å forklare til brukerne. Det kan også være vanskeligere å tolke og validere resultatene.
 
-For mer informasjon om multilaterale indekser, se [@eurostat_multi].
+Mer informasjon om multilaterale indekser finnes i [@eurostat_multi].
 
 
-## Gjennomsnittspris
-Gjennomsnittsprisen $p_i$ for en produkttype er definert som en enhetspris ved å dividere den totale salgsverdien med det totale antallet solgte produkter i perioden.
+### Utvalg og representativitet
+Hvor god en konsumprisindeks er avhenger ikke bare av selve beregningsformelen, men også av hvordan datagrunnlaget er valgt ut.
 
 
-## Fast basisperiode
+#### Fast utvalg
+"Fast handlekurv" betyr det samme i økonomisk sammenheng som et fast utvalg indekspunkter i trafikksammenheng. Med "fast" menes her at det er det samme utvalget i begge periodene som inngår i den bilaterale indeksen. Utvalget kan endre seg til neste sammenligningsperiode, så lenge det kan sies å være representativt.
+
 For to perioder $0, t$ som skal sammenlignes, har vi tilgjengelig et utvalg $n_0, n_t$. Indeksen kan da kun nyttigjøre seg data fra de individene som finnes i begge periodene, altså i $n_0 \cap n_t$.
 
 
-## Endring i produktkvalitet
+#### Endring i produktkvalitet
 Dersom et produkt får bedre kvalitet enn før, vil dette ha noe si for etterspørselen og følgelig omsetningen. En indeks skal ikke være et mål på endringen i kvaliteten til produktene, og derfor må datagrunnlaget justeres for å kompensere for dette.
 
 
-
-## Representativt utvalg
+#### Representativt utvalg
 Det er umulig å samle inn data om alle priser på alle mulig produkter til enhver tid. Derfor må datagrunnlaget komme fra et utvalg. Utvalget må være representativt, primært med tanke på endring i prisnivå, men også selve prisnivået.
 
 Uansett må prisene kunne sammenlignes produkttype for produkttype i periodene som inngår i indeksen.
 
 
-## Midlertidig manglende produkter
+#### Midlertidig manglende produkter
 Dersom det delvis mangler data i en kortere periode for et gitt produkt, kan produktet enten tas ut av utvalget, eller de manglende data kan imputeres. Tas produktet ut av utvalget kan det føre til utvalgsskjevhet og en lavere representativitet. Imputering er statistisk sett den beste løsningen, men det forutsetter at en god imputeringsmetode er mulig å implementere.
 
-En mulig imputeringsteknikk er å sette den manglene prisen til den sist kjente prisen med en justering for gjennomsnittlig endring for lignende produkter. Dette forutsetter at utvalget er ganske homogent. Dette vil da være det samme som å utelate produktet fra utvalget.
+En mulig imputeringsteknikk er å sette den manglende prisen lik den sist kjente prisen med en justering for gjennomsnittlig endring for lignende produkter. Dette forutsetter at utvalget er ganske homogent. Dette vil da være det samme som å utelate produktet fra utvalget.
+
+
+## Trafikkindekser
+Her beskrives hvordan indeksformlene kan bestemmes.
+
+
+### Trafikkarbeidsindeks
+Slik $q$ er definert for trafikkindeks (se tabell @tbl-quantities), vil denne ikke være tidsavhengig og vi har at $q_{ai} = q_{bi}$ og det vil ikke være noen forskjell på noen av de nevnte indeksene i @sec-basket. Produktet $pq$ kan da tolkes som et gjennomsnittlig trafikkarbeid per døgn. Vi ser at @eq-w_indeks har form som en Dutot-indeks (@eq-dutot).
+
+Definerer vi den normaliserte andelen trafikkarbeid som
+$$
+w_{ti} = \frac{W_{ti}}{\sum_i^n W_{ti}} = \frac{p_{ti}q_i}{\sum_i^n p_{ti}q_i},
+$$
+som er analogt med @eq-st. Videre har vi, med utgangspunkt i @eq-w_indeks, at
+$$
+\begin{aligned}
+P_{\text{tw},ab} &= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}}
+= \frac{\sum_i p_{bi} \frac{W_{ai}}{p_{ai}}}{\sum_i W_{ai}} =
+\frac{\sum_i \frac{p_{bi}}{p_{ai}} W_{ai}}{\sum_i W_{ai}} \\
+&= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} = \sum_i w_{ai} P_{abi}.
+\end{aligned}
+$$ {#eq-w_indeks_2}
+Altså kan denne indeksen også ses på som et vektet gjennomsnitt av de elementære trafikkmengdeindeksene $P_{abi} = p_{bi} / p_{ai}$ med trafikkarbeidsvekter fra perioden $t = a$. 
+
+Vi ser at @eq-w_indeks_2 ligner veldig på den vektede Carli-indeksen i @eq-carli_w, men forskjellen er at sistnevntes vekter er symmetriske i tid. Denne symmetrien kan synes som en god egenskap, men det gjør at @eq-carli_w ikke kan skrives som en ren brøk mellom trafikkarbeidstall slik som i @eq-w_indeks.
+
+Alternativt kan områdeindeksen uttrykkes som 
+$$
+\begin{aligned}
+P_{\text{tw},ab} 
+&= \sum_i w_{ai} \frac{p_{bi}}{p_{ai}} \\
+&= \sum_i w'_{ai} p_{bi},
+\end{aligned}
+$$ {#eq-w_indeks_3}
+altså en vektet sum av trafikkmengdene $p_{bi}$ i beregningsåret $a$, med vektene definert som
+
+$$
+w'_{ai} = \frac{q_i}{\sum_i^n p_{ai}q_i}.
+$$ {#eq-w_weight_q}
+
+
+#### Stratifisering med funksjonsklasse {#sec-strat_tw}
+La $m$ være antall funksjonsklasser slik at funksjonsklassene kan betegnes som $h \in (h_1, h_m) \equiv (1, m)$. I hver funksjonsklasse er det $n_h$ lenker i utvalget. At en trafikklenke $i$ tilhører en gitt funksjonsklasse $h$ betegnes ved $i_h$. Vi har da at $i \in (1_1, 2_1, \ldots n_1, 1_2, 2_2, \ldots n_2, \ldots 1_m, \ldots n_m)$. Den totale indeksen kan ses på som en vektet sum av punktindeksene, og betegnes slik at
+
+$$
+\begin{aligned}
+P_{\text{tw},ab} 
+&= \sum_{h = h_1}^{h_m} w_{ah} P_{\text{tw},abh} \\
+&= w_{ah_1} P_{\text{tw},abh_1} + w_{ah_2} P_{\text{tw},abh_2} + \ldots + w_{ah_m} P_{\text{tw},abh_m} \\
+&= w_{ah_1} \sum_{i_1}^{n_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_m} \sum_{i_m}^{n_m} w_{ah_mi_m} P_{abi_m} \\
+&= w_{ah_1} w_{ah_1i_1} P_{abi_1} + \ldots + w_{ah_1} w_{ah_1n_1} P_{abn_1} + \\
+& \hspace{1.5em} \ldots + w_{ah_m} w_{ah_mn_m} P_{abn_m}
+\end{aligned}
+$${#eq-w_index_as_sum}
+På denne måten kan bidraget fra hver lenke i utvalget isoleres og sammenlignes. Da lenkenes trafikkarbeid er forskjellig, vil de bidra ulikt til indeksen. Bidraget er produktet av tre faktorer:
+
+- andelen av populasjonens trafikkarbeid som gjøres på trafikklenker i den funksjonsklassen lenken tilhører,
+- andelen av utvalgets trafikkarbeid i lenkens funksjonsklasse som gjøres på lenken,
+- samt endringen i trafikkmengde på lenken.
+
+Disse faktorene skiller seg ut fra i hvilken grad de er avhengig av lenkens egenskaper og trafikk. Den første faktoren er ikke avhengig av dette i det hele tatt. Den andre faktoren er delvis avhengig av dette, mens den tredje faktoren er i sin helhet avhengig av dette. Hvor mye en gitt lenke i utvalget bidrar til totalindeksen er derfor avhengig av:
+
+- endringen i trafikkmengde på lenken,
+- hvilke andre lenker som er med i utvalget, 
+- samt hvilke andre lenker som er med i populasjonen.
+
+Hvor mye hvert indekspunkt avviker fra en måneds byindeks kan da beregnes som
+
+$$
+\Pi_i = w_{ah} w_{ahi} (P_{abi} - P_{\text{tw},ab}),
+$$
+for et punkt $i$ i funksjonsklasse $h$.
+
+
+#### Trafikkvariasjon som forklaringsvariabel
+Trafikklenkene kan kategoriseres ut fra trafikkmengdens relative variasjon over året, hvor spesielt den relative størrelsen til påsken, pinsen og juli er avgjørende. Denne kategoriseringen er antakelig nyttig som stratifiseringsvariabel i indekssammenheng. Dette er gjenstående arbeid, som eventuelt må prioriteres senere.
+
+
+#### Forholdsestimator
+Ved å multiplisere både teller og nevner i @eq-w_indeks med $1/n$ kan indeksen også tolkes som forholdet mellom det gjennomsnittlige trafikkarbeidet i de to periodene. Det er samme form som i @eq-p_est. Størrelsen har da formen til en forholdsestimator. Indeksen i stratum $h$ er dermed
+
+$$
+P_{abh} = \frac{ \bar{W}_{bh} } { \bar{W}_{ah} }. 
+$$
+Dersom trafikkarbeidet i referanseåret $W_{ah} \forall h$ antas kjent for hele populasjonen, så kan det totale trafikkarbeidet estimeres ved
+
+$$
+\widehat{W}_b = \sum_h \widehat{P}_{abh} W_{ah}.
+$$
+Indeksen blir da
+
+$$
+\widehat{P}_{ab} = \frac{\widehat{W}_b}{W_{a}} 
+= \frac{1}{W_{a}} \sum_h \widehat{P}_{abh} W_{ah}
+= \frac{1}{W_{a}} \sum_h \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } W_{ah}
+$$ {#eq-ratio_index}
+hvor
+
+$$
+W_a = \sum_h W_{ah}.
+$$
+Gjennomsnittlig trafikkarbeid per lenke estimeres da som i @eq-W_bar_hat.
+
+Med 
+
+$$
+w_{ah} = \frac{W_{ah}}{W_a}
+$$
+kan @eq-ratio_index skrives som 
+
+$$
+\begin{aligned}
+\widehat{P}_{ab} &= \sum_h w_{ah} \frac{ \widehat{\bar{ W }}_{bh} } { \widehat{\bar{ W }}_{ah} } \\
+&= \sum_h w_{ah} \widehat{P}_{abh} \\
+&= \sum_{h}^H w_{ah} \sum_i^{n_h} w_{ahi} P_{abi} \\
+&= \sum_{h}^H \sum_i^{n_h} w_{ah} w_{ahi} P_{abi},
+\end{aligned}
+$$
+hvor den kombinerte vekten er
+
+$$
+\begin{aligned}
+w_{ah} w_{ahi} 
+&= \frac{W_{ah}}{\sum_h^H W_{ah}} \frac{W_{ai}}{\sum_i^{n_h} W_{ahi}} \\
+&= \frac{W_{ah}}{W_a} \frac{W_{ai}}{W_{ahi,n_h}} \\
+&= \frac{W_{ai}}{W_a} \frac{W_{ah}}{W_{ahi,n_h}},
+\end{aligned}
+$$
+hvor den første faktoren er andelen trafikkarbeid på trafikklenke $i$ i populasjonen, og den andre faktoren er forholdet mellom populasjonens og utvalgets trafikkarbeid i stratum $h$. Sistnevnte forhold blir veldig stort dersom utvalget er lite. At små utvalg i ett eller flere strata gir store bidrag til en forholdsestimator er et kjent problem, og kan gi estimatoren betydelig skjevhet. Det er derfor foreslått ulike måter å korrigere en forholdsestimator på for å redusere skjevhet. Beales estimator er god i så måte (se for eksempel [@srivastva_1983]), og er mye brukt.
+
+Per stratum er en indeks med Beales korreksjon gitt som
+
+$$
+\widehat{P}_{abh,\text{Beale}} = 
+\widehat{P}_{abh} \frac{1 + \left( \frac{1 - f_h}{n_h} \right) c_{abh} } { 1 + \left( \frac{1 - f_h}{n_h} \right) c_{aah} },
+$$ {#eq-beale}
+hvor
+
+$$
+\begin{aligned}
+c_{abh} &= \frac{\rho_{abh} s_{ah} s_{bh}}{\widehat{\bar{W}}_{ah} \widehat{\bar{W}}_{bh}} \\
+c_{aah} &= \frac{s_{ah}^2}{\widehat{\bar{W}}_{ah}^2}
+\end{aligned}
+$$
+der $\rho$ er korrelasjonskoeffisienten og $s$ er observert standardavvik i utvalget. Det er denne indeksformelen Danmark benytter i sin Vejtrafikindeks.
+
+Regneeksempler viser at denne metoden med forholdsestimator ikke gir noen gevinster kontra metoden med stratifisert trafikkarbeidsindeks som omtalt i @sec-strat_tw.
+
+
+### Valg av byindeksmetode {#sec-index_choice}
+Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er sånn sett ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det representerer på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
+
+- trafikkarbeidsindeks
+- vektet Carli-indeks
+- Törnqvist-indeks
+
+Av disse er nok Törnqvist-indeksen, som er et geometrisk gjennomsnitt, litt vanskeligere å forklare enn de to øvrige, som begge er artimetiske gjennomsnitt. Generelt er det slik at et aritmetisk gjennomsnitt alltid er større enn eller lik det geometriske gjennomsnittet, og forskjellen blir større jo større variasjon det er i verdiene det skal beregnes gjennomsnitt av. Indekspunktene kan oppvise stor variasjon, som da er et argument i favør Törnqvist-indeksen.
+
+Både Törnqvist- og vektet Carli-indeks har begge den ulempen at de ikke takler å dele på null. Altså kan de ikke eksplisitt ta inn i beregningene et punkt som var stengt eller ikke-eksisterende i sammenligningsåret. Dette er uansett bare aktuelt i de tilfellene hvor indekspunktene i sin helhet fanger opp endringene i rutevalgene på en balansert måte, noe som uansett vil forekomme veldig sjelden.
+
+Til hjelp i utvelgelsen av den best egnede metoden, kan vi se på hvilke indekstester som vi mener bør oppfylles. Det er ønskelig at indeksene oppfyller en eller flere av disse kravene:
+
+- **Identitet**: dersom trafikkmengden i hvert indekspunkt er nøyaktig den samme som i basisåret må indeksen vise null endring.
+- **Transitivitet**: en indeks som går indirekte fra $a$ til $b$ via en periode $c$, skal vise det samme som en direkte indeks fra $a$ til $b$.
+- **Tidsreversibilitet**: indeksen fra periode $a$ til $b$ må være lik den resiproke indeksen fra $b$ til $a$.
+
+Alle de tre foreslåtte indeksene oppfyller regelen om identitet.
+
+En indeks som er definert som forholdet mellom gjennomsnittsverdier vil oppfylle kravet om transitivitet, det vil si at vi får samme resultat om indeksen beregnes som en kjedet indeks eller en direkte indeks. Dette forutsetter riktignok at utvalget holdes fast i alle perioder som inngår i kjedingen, noe som sjelden kommer til å være tilfelle. Transitivitet er likevel en ettertraktet egenskap. Den vektede Carli-indeksen oppfyller uansett ikke denne regelen.
+
+At trafikkarbeidsindeksen er transitiv ved fast utvalg kan enkelt vises ved at
+
+$$
+\begin{aligned}
+P_{\text{tw},acb} &= P_{\text{tw},ac} P_{\text{tw},cb}\\
+&= \frac{\sum_i p_{ci} q_{i}}{\sum_i p_{ai} q_{i}} \cdot \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ci} q_{i}} \\
+&= \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}} \\
+&= P_{\text{tw},ab}.
+\end{aligned}
+$$
+
+Indekser som oppfyller både regelen om identitet og transitivitet, oppfyller også regelen om tidsreversibilitet.
+
+Når disse fordelene og ulempene veies opp mot hverandre er det den generelle trafikkarbeidsindeksen som peker seg ut som den best egnede. Likevel, som beskrevet tidligere, må en sykkelindeks bli en ren trafikkmengdeindeks.

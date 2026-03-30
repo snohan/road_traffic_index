@@ -1,0 +1,35 @@
+Den totale trafikkendringen i et område er summen av endringen på hver trafikklenke. Det totale trafikkarbeidet i periode $t$ benevnes med $W_t$, som da er summen av trafikkarbeidet $W_{ti}$ på alle trafikklenker $i \in \{1, N\}$ i populasjonen,
+
+$$
+W_t = \sum_i^N W_{ti}.
+$$
+Den relative endringen i trafikkarbeid mellom to perioder er da
+
+$$
+P_{t = a,t = b} = \frac{W_{b}}{W_a} = \frac{1/N \cdot W_{b}}{1/N \cdot W_a} = \frac{\bar{W}_{b}}{\bar{W}_a}.
+$$
+Siden vi ikke kjenner trafikkarbeidet på alle trafikklenker, må størrelsen $P$ estimeres:
+
+$$
+\widehat{P}_{ab} = \frac{\widehat{W}_{b}}{\widehat{W}_a} = \frac{\widehat{\bar{W}}_{b}}{\widehat{\bar{W}}_a}.
+$$ {#eq-p_est}
+Gjennomsnittlig trafikkarbeid per trafikklenke kan estimeres ved hjelp av et utvalg av $n$ trafikklenker:
+
+$$
+\widehat{\bar{W}}_a = \frac{1}{n} \sum_i^n W_{ai}.
+$$ {#eq-W_bar_hat}
+
+Hvis vi definerer trafikkarbeidet
+$$
+W_{ti} = p_{ti}q_{i},
+$$
+har vi at 
+$$
+\frac{W_{ti}}{p_{ti}} = q_{i},
+$$
+får vi en generell indeksformel gitt som
+
+$$
+\text{trafikkarbeidsindeks} = P_{\text{tw}}(p^a,p^b,q) = P_{\text{tw},ab} = \frac{\sum_i p_{bi} q_{i}}{\sum_i p_{ai} q_{i}},
+$$ {#eq-w_indeks}
+hvor "tw" her står for "traffic work". Denne kan tolkes som forholdet mellom summert trafikkarbeid i de to periodene.

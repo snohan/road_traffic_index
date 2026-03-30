@@ -1,19 +1,31 @@
 ```{r}
 #| label: data
 #| include: false
-#| echo: false
 
 base::Sys.setlocale(locale = "nb.utf8")
 library(tidyverse)
+library(knitr)
+options(OutDec = ",")
 
 # Calendar weights
 period_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/periods.rds")
 day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weights/day_type_weights.rds")
 ```
 
-# Kalendereffekter og glidende gjennomsnitt
+
+# Datagrunnlag
 Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT). Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
 
+
+## Dekningsgrad
+Data kan mangle i perioder på grunn av feil i registreringene eller at trafikken ikke er representativ for en trafikkindeks. Hvor stor andel av et tidsrom vi har gode data for, kalles dekningsgrad. For at datagrunnlaget skal være godt nok for en trafikkindeks, må den registrerte døgntrafikken over tid ha sammenlignbar dekningsgrad. Dette gjøres enklest ved å kreve at ethvert døgn som inngår i en gjennomsnittsberegning, skal ha tilnærmet full dekningsgrad. 
+
+
+## Dekningsgrad for kjøretøyklassifisering
+For indekser som benyttes til å estimere endring i trafikk inndelt i kjøretøyklasser, er det tilsvarende krav til høy dekningsgrad. Andelen kjøretøyregistreringer som har godkjent kjøretøyklassifisering kalles kvalitetsgrad.
+
+
+# Kalendereffekter og glidende gjennomsnitt
 Trafikken varierer naturlig gjennom døgnet, uka og året. Dersom det er bortfall av data, kan det være tilstrekkelig at de naturlig forekommende variasjonene gir opphav til en «påvist» endring i trafikk. For at indeksen i stedet skal detektere en generell trend, må tidsvariasjonene tas hensyn til.
 
 
@@ -35,9 +47,12 @@ Vektene er gitt i tabell @tbl-day_type_weights. Disse vektene er beregnet ut fra
 
 ```{r}
 #| label: tbl-day_type_weights
-#| tbl-cap: "Vekting av YDT og HDT per måned."
+#| tbl-cap: "Gjennomsnittlig antall yrke- og helgedøgn per måned."
 
-day_type_weights
+knitr::kable(
+    day_type_weights,
+    col.names = c("Måned", "Yrkedøgn", "Helgedøgn")
+)
 ```
 
 Når døgn så skal aggregeres opp til YDT og HDT, blir det beregnet en dekningsgrad også for disse. En januar som har 22 yrkedøgn, vil da få en YDT med 100 % dekningsgrad dersom det er godkjent døgntrafikk for alle disse dagene. Det må være minst 3 godkjente helgedøgn og minst 7 godkjente yrkedøgn for at en MDT skal være godkjent.
@@ -54,9 +69,14 @@ Når månedsverdier skal settes sammen til en lengre periode, må de ulike måne
 
 ```{r}
 #| label: tbl-periods
-#| tbl-cap: "Vekting av periodene i et år."
+#| tbl-cap: "Gjennomsnittlig antall dager per periode i et år."
 
-period_weights
+knitr::kable(
+    period_weights,
+    col.names = c("Periodenavn", "Antall dager"),
+    digits = 2
+)
+
 ```
 I stedet for å vekte med månedenes lengde i antall dager, kunne vektene være basert på fordeling av trafikkarbeid eller trafikkmengde gjennom året. Dette vil være aktuelt for en sykkelindeks, hvor trafikkmengdene er større på sommeren enn på vinteren.
 
@@ -100,6 +120,3 @@ $$
 $$
 Det antas uavhengighet internt mellom henholdsvis månedsindekser og årsindekser, slik at variansen ikke har noe kovariansledd.
 
-
-## Trafikkvariasjon som forklaringsvariabel
-Trafikklenkene kan kategoriseres ut fra trafikkmengdens relative variasjon over året, hvor spesielt den relative størrelsen til påsken, pinsen og juli er avgjørende. Denne kategoriseringen er antakelig nyttig som stratifiseringsvariabel i indekssammenheng. Dette er gjenstående arbeid, som eventuelt må prioriteres senere.

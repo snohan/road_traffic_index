@@ -62,6 +62,22 @@ Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjenn
 Med 100 % dekningsgrad er standardfeilen lik null, mens den er større enn null ved lavere dekningsgrad.
 
 
+### Manuell merking
+Manuell merking brukes av de målestasjonsansvarlige til å legge inn informasjon om hendelser på vegen eller med registreringsutstyret som påvirker trafikkregistreringene. Perioder kan merkes per kjørefelt med:
+
+ - unormal trafikkmengde (påvirker trafikkindekser)
+ - stengt veg (påvirker trafikkmengdestørrelser og trafikkindekser)
+ - feil på utstyr (påvirker alle størrelser)
+
+
+### Fulltallighet
+Registreringsutstyret legger på et løpenummer for hvert kjøretøy som registreres. Løpenummeret skal øke med 1 for hvert nye kjøretøy, og dersom noe går galt i lagring av registreringen, vil det oppdages at enkeltregistreringer mangler når det mangler løpenumre. «Fulltallighet» et mål på andel lagrede løpenumre, og beregner en prosentverdi for alle timer med data.
+
+
+### Stillestående kø
+Med dagens trafikkregistreringsutstyr er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i byindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt.
+
+
 ### Endringer i vegnettet
 Byindekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
 
@@ -172,11 +188,11 @@ Fra et reelt utvalg som er trukket tilfeldig uten tilbakelegging fra en endelig 
 Til forskjell fra en ikke-parametrisk metode, vil en parametrisk bootstrap ta utgangspunkt i en angitt fordelingsfunksjon for populasjonen. Denne fordelingen blir beskrevet av estimerte parameterverdier basert på det opprinnelige utvalget. Det vil så være mulig å bygge et konfidensintervall ved å simulere gjentatte stikkprøver fra denne fordelingen.
 
 
-# Usikkerhet i trafikkarbeidsindeks
+## Usikkerhet i trafikkarbeidsindeks
 Her utledes ulike alternativer for å estimere utvalgsusikkerheten til trafikkarbeidsindeksen. Det er den robuste variansestimatoren omtalt i @sec-robvar som er valgt.
 
 
-## Utvalgsdesign
+### Utvalgsdesign
 For å finne variansen til trafikkarbeidsindeksen, kan vi ta utgangspunkt i formen på siste linje i @eq-w_indeks_2. Dette er et vektet aritmetisk gjennomsnitt av punktindeksene. Når vi har en begrenset populasjon, og vi vet størrelsen til denne, må vi ta hensyn til at punktene i utvalget ikke er uavhengige. Vi må derfor tenke oss at vi trekker ut punkter uten tilbakelegging. Hadde populasjonsstørrelsen vært uendelig stor, ville vi kunne si at trekkingen er tilnærmet med tilbakelegging. 
 
 En estimator for variansen $\sigma_{\text{tw}}^2$ til et utvalg elementære trafikkarbeidsindekser $\{P_{abi}\} = \{i\}$ er da [@bevington_2003]
@@ -202,7 +218,7 @@ $$ {#eq-tw_variance_P}
 Her er $f = n/N$ utvalgsandelen.
 
 
-## Populasjonsmodellering
+### Populasjonsmodellering
 I [@chambers_2012] finner vi en tilsvarende utledning av en modellbasert varians for en lineær populasjonsparameter på formen
 
 $$
@@ -282,23 +298,7 @@ $$ {#eq-var_P_w_model}
 Her er altså vektene $w'$ som gitt i @eq-w_indeks_3.
 
 
-## Robust variansestimator {#sec-robvar}
-En tilnærmet forventningsrett robust estimator for variansen til en Dutot-type indeks er vist i [@zhang_2010]. La $W_{hi} = p_{hi} q_{hi}$ være trafikkarbeidet observert på trafikklenke $i$ i funksjonsklasse $h$. Da er
-
-$$
-\widehat{\text{Var}}(P_{abh}) = 
-\frac{1}{W_{ah}^2} \sum_i \frac{1}{1 - \frac{W_{ahi} }{W_{ah} } }
-\left( W_{bhi} - \frac{\widehat{\bar{W}}_{bh} }{\widehat{\bar{W}}_{ah} } W_{ahi}  \right)^2.
-$$ {#eq-var_P_w_robust}
-
-Variansen for samlet indeks over alle funksjonsklasser er da
-
-$$
-\widehat{\text{Var}}(P_{ab}) = \sum_h w_{ah}^2 \cdot \widehat{\text{Var}}(P_{abh}).
-$$ {#eq-var_P_w_robust_total}
-
-
-## Ikke-parametrisk bootstrap
+### Ikke-parametrisk bootstrap
 En ikke-parametrisk bootstrap gjøres som følger:
 
 1. Vi har et opprinnelig utvalg $u$ av $n$ observasjoner.
@@ -329,7 +329,7 @@ Dersom utvalget har skjevheter, vil bootstrapping gjenskape skjevhetene i stikkp
 Ved bruk av pakken *survey* i R kan vi estimere konfidensintervallet til en forholdsestimator ved å ta hensyn til både etterstratifiseringsvekter og endelig populasjonsstørrelse.
 
 
-## Forholdsestimator
+### Forholdsestimator
 I @eq-beale har vi en skjevhetskorrigert indeks. Den samlede variansen til denne indeksen består av et bidrag fra variansen til ukorrigert form i @eq-ratio_index og et bidrag fra en systematisk feil fra små utvalg:
 
 $$
@@ -366,40 +366,6 @@ $$
 \widehat{P}_{ab} \pm 1,96 \sqrt{\text{MSE}(\widehat{P}_{ab})}.
 $$
 
-
-# Usikkerhet i trafikkmengdeindeks
-I dette tilfellet er populasjonen av "trafikklenker" uendelig stor, og vi trenger ikke tenke på at punktene i utvalget er avhengig av hverandre. En estimator for variansen $\sigma_{\text{tv}}^2$ til et utvalg elementære trafikkmengdeindekser er da 
-
-$$
-\begin{aligned}
-\hat{\sigma}_{\text{tv},ab\{i\}}^2 
-&= \widehat{\text{Var}}(P_{ab\{i\}}) \\
-&= \frac{1}{1 - \sum_i v_{ai}^2} \sum_i \left[ v_{ai} (P_{abi} - P_{\text{tv},ab})^2  \right].
-\end{aligned}
-$$ {#eq-tv_variance}
-Her er vektene $v_{an}$ ikke-stokastiske "pålitelighetsvekter" som reflekterer hvor viktige de enkelte punktindeksene er i beregningen. 
-
-En estimator for variansen til trafikkmengdeindeksen er 
-$$
-\begin{aligned}
-\hat{\sigma}_{\text{tv},ab}^2 
-&= \widehat{\text{Var}}(P_{\text{tv},ab}) =  \widehat{\text{Var}}\left(\sum_i^n v_{ai} P_{ab\{i\}}\right) \\
-&= \sum_i^n v_{ai}^2 \cdot \widehat{\text{Var}}(P_{ab\{i\}})  \\
-&= \sum_i^n v_{ai}^2 \cdot \hat{\sigma}_{\text{tv},ab\{i\}}^2.
-\end{aligned}
-$$
-
-Standardfeilen er da
-$$
-\begin{aligned}
-\hat{\sigma}_{\text{tv},ab} =
-\sqrt{ \sum_i^n v_{ai}^2 \hat{\sigma}_{\text{tv},ab\{i\}}^2} = \sqrt{ \sum_i^n v_{ai}^2} \cdot \hat{\sigma}_{\text{tv},ab\{i\}}.
-\end{aligned}
-$$ {#eq-tv_se}
-
-Da populasjonens standardavvik er ukjent og utvalgene gjerne er små (under 50), benyttes $t$-fordeling til å danne et konfidensintervall. Med konfidensfaktor $\tau$ gitt av $t$-fordelingen, er et 95 % konfidensintervall
-
-$$P_{\text{tv}} \pm \tau_{0.975, n-1} \hat{\sigma}_{\text{tv}}.$$
 
 ## Effektiv utvalgsstørrelse
 Hvor mye bidrar hver enkelt punktindeks til byindeksen? Kan vi beregne en effektiv vekt? Denne er avhengig av punktets endring og trafikkarbeid. Hvor mye forskjellig er fordelingen av punktene etter trafikkarbeid fra fordelingen av bidrag til indeksen? Denne er avhengig av hvordan punktindeksen er regnet ut.
