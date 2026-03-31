@@ -47,55 +47,7 @@ Det er ulike måter å gjøre utvalgsgjentaking på, men her vil vi fokusere på
 
 
 ## Feil i datagrunnlag
-En av forutsetningene for å kunne beregne en trafikkindeks er at det finnes et kvalitetssikret datagrunnlag fra et representativt utvalg indekspunkt.
-
-
-### Kjøretøyklassifisering
-En trafikkindeks kan beregnes for kjøretøyklasser dersom datagrunnlaget har gode nok data for en slik klassifisering. Det vil være tilfeller hvor det er gode data om trafikken, men at klassifiseringen mangler. 
-
-
-### Manglende data
-Kjøretøy registreres og lagres enkeltvis. Deretter aggregeres trafikkmengden til timetrafikk og døgntrafikk. Alle slike aggregater har også en verdi for dekningsgrad. Dekningsgraden angir hvor mye data av god nok kvalitet det er i et tidsintervall, sammenlignet med hva det hadde vært uten bortfall. For aggregerte data per time og døgn vil en dekningsgrad på 50 % bety at det bare er gode nok data fra 50 % av perioden og at den reelle trafikkmengden derfor er større.
-
-Gjennomsnittstall som for eksempel månedsdøgntrafikk (MDT), beregnes som gjennomsnittlig trafikkmengde for dager med minst 95 % dekningsgrad. Dekningsgrad for gjennomsnittstrafikk er gjennomsnittet av dekningsgrad for dagene som inngår i gjennomsnittstrafikken, multiplisert med andelen dager som inngår. Som eksempel: Hvis halvparten av dagene i februar (14 dager) har dekningsgrad 60%, og halvparten (14 dager) har 96 %, vil bare dagene med dekningsgrad 96 % være inkludert, og dekningsgraden for februar vil bli 96 % * (14/28) = 48 %. En lav dekningsgrad for gjennomsnittstall indikerer derfor at gjennomsnittstallet er mindre representativt enn det ville vært med 100 % dekningsgrad. Dekningsgraden beregnes basert på registreringspunktets operasjonelle status og eventuelle manuelle merkinger av avvik i data. Størrelser som har dekningsgrad lik null, får ingen verdi for trafikkmengde.
-
-Med 100 % dekningsgrad er standardfeilen lik null, mens den er større enn null ved lavere dekningsgrad.
-
-
-### Manuell merking
-Manuell merking brukes av de målestasjonsansvarlige til å legge inn informasjon om hendelser på vegen eller med registreringsutstyret som påvirker trafikkregistreringene. Perioder kan merkes per kjørefelt med:
-
- - unormal trafikkmengde (påvirker trafikkindekser)
- - stengt veg (påvirker trafikkmengdestørrelser og trafikkindekser)
- - feil på utstyr (påvirker alle størrelser)
-
-
-### Fulltallighet
-Registreringsutstyret legger på et løpenummer for hvert kjøretøy som registreres. Løpenummeret skal øke med 1 for hvert nye kjøretøy, og dersom noe går galt i lagring av registreringen, vil det oppdages at enkeltregistreringer mangler når det mangler løpenumre. «Fulltallighet» et mål på andel lagrede løpenumre, og beregner en prosentverdi for alle timer med data.
-
-
-### Stillestående kø
-Med dagens trafikkregistreringsutstyr er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i byindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt.
-
-
-### Endringer i vegnettet
-Byindekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
-
-Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Det er da tre ulike scenarioer:
-
-1. Det totale trafikkarbeidet i området er fortsatt det samme. Omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, og de nye rutevalgene medfører ikke økt kjørelengde eller kostnad slik at turetterspørselen er den samme.
-2. Det totale trafikkarbeidet i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og har økt kostnad som gjør turetterspørselen lavere.
-3. Det totale trafikkarbeidet i området går opp som følge av at omkjøringsruter blir lengre uten at turetterspørselen synker tilsvarende.
-
-Formålet med en byindeks er å estimere en generell trend i trafikkutviklingen over tid. Byindeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2 og 3. Med full informasjon om trafikken på alle deler av vegnettet, ville byindeksen uten videre ha fanget opp dette. Men siden byindekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
-
-Er det et byindekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre byindekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av byindekspunktene der. Trafikknedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
-
-Når en stengt veg blir gjenåpnet, vil det bli en ny omfordeling av trafikken. Situasjonen kan da være tilbake til slik den var opprinnelig, eller den kan ha blitt endret permanent som følge av endringer i vegens egenskaper.
-
-Et annet eksempel er når helt nye veganlegg åpnes og avlaster eksisterende veger. Dette er gjerne med på å øke turetterspørselen. Da indeksen sammenligner trafikken for hvert punkt, vil ikke nye veger kunne tas inn i datagrunnlaget det første året. Punkt på omkringliggende vegnett som blir avlastet må tas ut av datagrunnlaget for et år etter åpning.
-
-Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Indekspunkt som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+En av forutsetningene for å kunne beregne en trafikkindeks er at det finnes et kvalitetssikret datagrunnlag fra et representativt utvalg indekspunkt. Begrepet dekningsgrad som mål på datakvalitet er beskrevet i @sec-coverage.
 
 
 ## Utvalgsmetode

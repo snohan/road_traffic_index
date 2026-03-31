@@ -70,48 +70,46 @@ Byindeks er en metode for å estimere endring i trafikkarbeid på vegnettet i et
 
 > I byområdene skal klimagassutslipp, kø, luftforurensning og støy reduseres gjennom effektiv arealbruk og ved at veksten i persontransporten tas med kollektivtransport, sykling og gange. 
 
-Trafikkutviklingen for persontransport med bil, målt med byindeks og reisevaneundersøkelser, ligger til grunn for vurderingen av måloppnåelsen i avtalene.
+Byindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkt og bomstasjoner. Disse omtales gjerne som "indekspunkt" og er geografisk fordelt på riks- og fylkesveger, samt på enkelte, viktige kommunale veger, slik at byindeksen gir et representativt bilde av trafikkutviklingen i byområdet. Byindeksen skal måle nullvekst i de mest sentrale delene i avtaleområdet og dette omfatter de største tettstedene og sentrale veger mellom disse.
 
-Nullvekstmålet skal måles ved at trafikkutviklingen vurderes på et treårs glidende gjennomsnitt, jf. brev fra Samferdselsdepartementet til de fire største byområdene datert 11.12.2019. Måloppnåelsen gjelder avtaleperioden sett under ett, som betyr at det er trafikknivået i referanseåret det skal sammenlignes med. Det skal være netto nullvekst i perioden.
-
-
-Byindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkt og bomstasjoner. Disse omtales gjerne som "indekspunkt" og er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen.
-
-Indekspunktene skal være fordelt på riks- og fylkesveger, samt på enkelte, viktige kommunale veger, slik at byindeksen gir et representativt bilde av trafikkutviklingen i byområdet. Byindeksen skal måle nullvekst i de mest sentrale delene i avtaleområdet og dette omfatter de største tettstedene og sentrale veger mellom disse.
-
-
-### Kjøretøyklassifisering
-Datagrunnlaget for byindeksen består av kjøretøy klassifisert som lette kjøretøy, det vil si kjøretøy med tillatt totalvekt under 3,5 tonn.
-
-Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre lette kjøretøy.
+Datagrunnlaget for byindeksen begrenses til kjøretøy klassifisert som lette kjøretøy, det vil si kjøretøy med tillatt totalvekt under 3,5 tonn. Motorsykler og lignende kjøretøy som moped og scooter registreres og inngår i datagrunnlaget på lik linje med andre lette kjøretøy.
 
 
 ### Næringstransport
-En del næringstransport foretas med lette kjøretøy og denne skal ikke omfattes av nullvekstmålet. I den registrerte trafikken er det ikke mulig å skille på reisens formål. Undersøkelser (REFERANSE TIL TØI-RAPPORT) viser at næringstransport utgjør omkring 12 % av trafikkarbeidet med lette kjøretøy i by. Dette er en relativt liten andel, og den antas å ha mindre enn eller lik vekst som den private trafikken. Byindeksen er derfor en god indikator på utviklingen i trafikkarbeid for privat trafikk med lette kjøretøy.
+En del næringstransport foretas med lette kjøretøy og denne skal ikke omfattes av nullvekstmålet. I den registrerte trafikken er det ikke mulig å skille på reisens formål. 
+
+Transportøkonomisk institutt har i rapporten "Varebiler og mobile tjenesteytere: Andel mobile tjenestereiser i de fire største norske byområdene" sett på fordeling av reiseformål for trafikk med lette kjøretøy: 
+
+*Personbilene står for den store majoriteten av trafikkarbeidet fra lette kjøretøy både i landet som helhet og i de fire største byområdene. Andel næringstrafikk som er unntatt nullvekstmålet utgjør en relativt liten andel av trafikkarbeidet fra lette kjøretøy i dagens situasjon. Analyser av historiske data fra kjørelengderegisteret og den nasjonale reisevaneundersøkelsen viser ingen klar indikasjon på at andelen næringstrafikk fra lette kjøretøy har økt siste tiår. Personbiltrafikken er i stor grad dimensjonerende for trafikkutviklingen for lette kjøretøy. Det er lite som tyder på at næringstrafikken alene kan forklare trafikkveksten man finner i enkelte byområder. Statistikken gir heller ikke grunn til å anta at næringstrafikkens andel av trafikkarbeidet vil øke vesentlig fremover.*
+
+Byindeksen er derfor en god indikator på utviklingen i trafikkarbeid for privat trafikk med lette kjøretøy.
 
 Trafikkarbeidet som innhentes ved hjelp av reisevaneundersøkelser vil kun gjelde reiser som er omfattet av nullvekstmålet (private personbilturer inkludert reiser til og fra møter). Dersom byindeksen gir en vekst i trafikken mens reisevanedataene gir nullvekst, kan det antas at vekst i byindeks skyldes trafikk med lette kjøretøy som ikke omfattes av nullvekstmålet.
 
 
 ### Gjennomgangstrafikk
-I trafikkregistreringene er det ikke mulig å skille ut gjennomgangstrafikk fra lokal trafikk. Hvilke veger byindekspunktene er plassert på er avgjørende for hvor mye gjennomgangstrafikk som blir med i datagrunnlaget. Basert på data fra TomTom er det gjort analyser på kjøreturer med opphav og destinasjon i og rundt de enkelte byområdene. Ut fra dette er det anslått en andel gjennomgangstrafikk for de ulike vegene. De vegene som har høy andel gjennomgangstrafikk bør ikke ha byindekspunkt. Likevel vil andelen gjennomgangstrafikk som er med i datagrunnlaget bli veldig lite dersom det kun er et fåtall punkt som fanger opp gjennomgangstrafikk når disse sammenstilles med all lokal trafikk som fanges opp av de øvrige byindekspunktene.
+I trafikkregistreringene er det ikke mulig å skille ut gjennomgangstrafikk fra lokal trafikk. Hvilke veger byindekspunktene er plassert på er avgjørende for hvor mye gjennomgangstrafikk som blir med i datagrunnlaget. Basert på data fra et utvalg kjøretøy er det gjort analyser på kjøreturer med opphav og destinasjon i og rundt de enkelte byområdene. Ut fra dette er det anslått en andel gjennomgangstrafikk for de ulike vegene. De vegene som har høy andel gjennomgangstrafikk bør ikke ha byindekspunkt. Likevel vil andelen gjennomgangstrafikk som er med i datagrunnlaget bli veldig lite dersom det kun er et fåtall punkt som fanger opp gjennomgangstrafikk når disse sammenstilles med all lokal trafikk som fanges opp av de øvrige byindekspunktene.
 
 
 ## Vegtrafikkindeks
-Vegtrafikkindeksen er en metode for å estimere endring i trafikkmengde på det norske riks- og fylkesvegnettet. Indeksen beregnes for  fylkene og lansdelene, samt for hele landet samlet. 
+Vegtrafikkindeksen er en metode for å estimere endring i trafikkmengde på det norske riks- og fylkesvegnettet. Indeksen beregnes for fylkene, lansdelene og for hele landet samlet. Indekspunktene skal være fordelt på riks- og fylkesvegnettet slik at indeksen gir et representativt bilde av trafikkutviklingen i hvert fylke.
 
-Vegtrafikkindeksen bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkter, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med Vegtrafikkindeksen omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
+Vegtrafikkindeksen beregnes først per vegkategori i hvert fylke. Ved hjelp av relativ fordeling av trafikkarbeid, kan disse indeksene vektes sammen til aggregerte indekser etter følgende sammenheng:
 
-Indekspunktene skal være fordelt på riks- og fylkesvegnettet slik at indeksen gir et representativt bilde av trafikkutviklingen i hvert fylke.
+- fylkesindeks per vegkategori aggregeres til landsdelsindeks per vegkategori
+- landsdelsindeks per vegkategori aggregeres til landsindeks per vegkategori
+- fylkesindeks per vegkategori aggregeres til fylkesindeks
+- fylkesindeks aggregeres til landsdelsindeks
+- landsdelsindeks aggregeres til landsindeks
 
-### Indeks per vegkategori
-
-### Aggregerte indekser
+Indeksen beregnes også for dagtyper (yrke- og helgedøgn) og kjøretøyklasser (lette og tunge). Her vil datagrunnlaget være inndelt i disse to kategoriseringene. For å lage en indeks for lette kjøretøy på yrkedøgn, vil tilsvarende MDT bli benyttet som datagrunnlag. For å beregne en indeks hvor kjøretøy ikke er inndelt i kjøretøyklasser, benyttes MDT for totaltrafikk, som er summen av MDT for kjøretøyklassene "lette" og "tunge". For å beregne indeks som ikke er fordelt på dagtype, må kalenderjustert MDT benyttes.
 
 
 ## Riksgrenseindeks
+Riksgrenseindeksen er en vegtrafikkindeks for vegene som krysser riksgrensen langs hele Norge. Trafikkregistreringspunktene som inngår i indeksen ligger spredt langs hele Fastlands-Norges riksgrense. For denne indeksen er det mest naturlig å estimere endringen i antall kjøretøy, og ikke trafikkarbeid. Derfor er riksgrenseindeksen en ren trafikkmengdeindeks. Teorien for dette er beskrevet i @sec-tv_index.
 
 
-## Trafikkmengdeindeks
+## Sykkelindeks {#sec-tv_index}
 For sykkeltrafikk har vi ikke et sammenhengende vegnett inndelt i trafikklenker. Da kan vi ikke si noe om det sykkeltrafikkarbeidet som et indekspunkt representerer. I dette tilfellet kan ikke $q$ inngå i formelen, og vi får en ren
 $$
 \text{trafikkmengdeindeks} = P_{\text{tv}}(p^a,p^b) = P_{\text{tv},ab} = \frac{\sum_i p_{bi}}{\sum_i p_{ai}},

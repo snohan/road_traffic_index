@@ -1,0 +1,170 @@
+## Dekningsgrad {#sec-coverage}
+Hvor stor andel av et tidsrom som det finnes gode data for, kalles for dekningsgrad. En dekningsgrad kan beregnes for enhver statistikk som beskriver trafikk i et tidsrom. Eksempler på dette er trafikkmengde og gjennomsnittsfart.
+
+Data kan mangle i perioder på grunn av feil i registreringene eller at trafikken ikke er representativ for statistikkens formål. Utregningen av dekningsgrad tar hensyn til:
+
+- perioder hvor trafikkregistreringsutstyret ikke har vært operasjonelt
+- dataoverføringskompletthet (fulltallighet)
+- gyldige verdier for fart, lengde og kjøretøyklasse
+- manuelle merkinger
+
+
+### Manuelle merkinger av data
+Manuelle merkinger er lagt inn av personer som har vurdert datakvaliteten på den aktuelle trafikkregistreringen. En merking gjelder for et angitt tidsintervall og kan enten synliggjøre bortfall av data eller være til opplysning om unormale trafikkforhold. Manuelle merkinger kan gjelde en eller flere av følgende forhold:
+
+- stengt veg
+- feil på utstyr (ingen data gyldige data)
+- feil lengdemålinger
+- feil fartsmålinger
+- feil kjøretøyklassifisering
+- unormal trafikkmengde
+- unormalt fartsnivå
+
+Med dagens trafikkregistreringsutstyr er det utfordrende å få god datakvalitet når trafikken er veldig saktegående og tidvis stillestående. Punkter med høy andel av denne typen trafikk bør ikke tas med i trafikkindeksen. I slik trafikk vil lengdemålingene til en viss grad bli feil og underkjent slik at datagrunnlaget for lette kjøretøy blir langt lavere enn normalt. Det samme gjelder for kjøretøyklassifisering. Perioder med slike problemer kan angis med manuell merking.
+
+
+### Endringer i vegnettet
+Indekspunktene dekker kun en andel av det aktuelle vegnettet. Derfor kan det oppstå omfordeling av trafikk som bare delvis fanges opp i datagrunnlaget. 
+
+Et typisk eksempel er en veg som stenges i en lengre periode i forbindelse med vegarbeid, og som fører til at all trafikken som normalt kjører der må benytte andre veger i området. Det er da tre ulike scenarioer:
+
+1. Det totale trafikkarbeidet i området er fortsatt det samme. Omkringliggende vegnett har kapasitet til å føre den omdirigerte trafikken, og de nye rutevalgene medfører ikke økt kjørelengde eller kostnad slik at turetterspørselen er den samme.
+2. Det totale trafikkarbeidet i området går ned som følge av manglende kapasitet i omkringliggende vegnett, eventuelt at omkjøringsruter blir for lange, og har økt kostnad som gjør turetterspørselen lavere.
+3. Det totale trafikkarbeidet i området går opp som følge av at omkjøringsruter blir lengre uten at turetterspørselen synker tilsvarende.
+
+Formålet med en trafikkindeks er å estimere en generell trend i trafikkutviklingen over tid. Indeksen skal derfor ikke få et endringsbidrag fra stengingen i scenario 1, mens den skal få det i scenario 2 og 3. Med full informasjon om trafikken på alle deler av vegnettet, ville indeksen uten videre ha fanget opp dette. Men siden indekspunktene bare har data fra deler av vegnettet, må det tas hensyn til det i utvalget av punkter som bidrar til indeksen til enhver tid.
+
+Er det et indekspunkt på en stengt veg, er det ikke alltid tilfelle at all den omfordelte trafikken fanges opp i andre indekspunkt. Dette er avhengig av vegnettets struktur omkring den stengte vegen og fordeling av indekspunktene der. Trafikknedgangen i punktet på stengt veg veies derfor ikke alltid opp av tilsvarende økning i andre punkter, og det er derfor punkt på stengt veg i noen tilfeller tas ut av datagrunnlaget. Da må eventuelle andre punkt som får økning som følge av stengingen også tas ut.
+
+Når en stengt veg blir gjenåpnet, vil det bli en ny omfordeling av trafikken. Situasjonen kan da være tilbake til slik den var opprinnelig, eller den kan ha blitt endret permanent som følge av endringer i vegens egenskaper.
+
+Et annet eksempel er når helt nye veganlegg åpnes og avlaster eksisterende veger. Dette er gjerne med på å øke turetterspørselen. Da indeksen sammenligner trafikken for hvert punkt, vil ikke nye veger kunne tas inn i datagrunnlaget det første året. Punkt på omkringliggende vegnett som blir avlastet må tas ut av datagrunnlaget for et år etter åpning.
+
+Ved innføring eller fjerning av bomring, tilføring eller fjerning av bomstasjoner, samt endring av bomtakster, vil trafikken påvirkes. Indekspunkt som påvirkes av dette blir ikke tatt ut av datagrunnlaget så lenge de fanger opp trafikkfordelingen på veger som både får økt og redusert trafikk som følge av dette.
+
+For de enkelte indekspunktene må det vurderes om det er perioder med trafikk som ikke blir representative i indeksammenheng. Disse kan angis med manuell merking eller utelates i sin helhet fra en indeksberegning.
+
+
+### Minstekrav
+Statistikker som bygges opp av mindre statistikker for kortere tidsrom, bør ha mininmumskrav til dekningsgraden på de statistiske enhetene som inngår i beregningene. For eksempel vil det være naturlig å sette høye krav til dekningsgraden for døgntrafikk som skal inngå i en beregning av gjennomsnittlig døgntrafikk, så som månedsdøgntrafikk. Slike krav sikrer at statistikken blir konsistent og sammenlignbar over tid. Dette oppnås ved å kreve at ethvert døgn som inngår i gjennomsnittsberegningen skal ha tilnærmet full dekningsgrad.
+
+Dersom det skal beregnes gjennomsnittstall for trafikkmengde per kjøretøyklasse, må også andelen av kjøretøy med gyldig kjøretøyklassifisering være høy. Andelen kjøretøyregistreringer som har godkjent kjøretøyklassifisering kalles kvalitetsgrad. For månedsdøgntrafikk og lignende kan døgn som har minst 99 % dekningsgrad benyttes som de er. Er dekningsgraden mellom 95 % og 99 % bør kjøretøy med manglende klassifisering få estimert klasse basert på en passende imputeringsmetode. Døgn med dekningsgrad under 95 % bør ikke benyttes.
+
+
+### Matematisk formulering
+Dekningsgraden er satt sammen av flere komponenter som hver kan beskrives som en funksjon av en parameter. Operasjonelltid kan modelleres som en enhetsstegfunksjon som er lik 1 når trafikkregistreringspunktet er operasjonelt og 0 ellers. Dataoverføringskomplettheten kan modelleres som en kontinuerlig funksjon med verdimengde mellom 0 og 1, der 1 angir at alle data er overført.
+
+Andel gyldige verdier for lengde, fart og kjøretøyklasse kan hver modelleres som en kontinuerlig funksjon med verdimengde mellom 0 og 1, der 1 angir at alle data har gyldig verdi for respektive målestørrelse. Disse andelene kalles gjerne kvalitetsgrader.
+
+Manuelle merkinger for stengt veg og feil i registrering kan hver modelleres som en enhetsstegfunksjon som er lik 1 når registreringen _ikke_ har feil ved seg, mens den er 0 når en merking er lagt inn for det aktuelle tidsintervallet.
+
+Dekningsgraden kan dermed enkelt regnes ut som produktet av de relevante funksjonene.
+
+
+```{r}
+#| label: functions
+#| include: false
+
+visualize_coverage_calculation <- function(coverage_values, relevant_parameters, coverage_title) {
+  
+  coverage_values |> 
+    dplyr::filter(
+      parameter %in% relevant_parameters
+    ) |> 
+    dplyr::mutate(
+      parameter = factor(parameter, levels = relevant_parameters)
+    ) |> 
+    ggplot() +
+    geom_step(aes(x = time_interval, y = value)) +
+    facet_grid(
+      rows = vars(parameter),
+      labeller = as_labeller(parameter_names)
+    ) +
+    scale_x_continuous(
+      limits = c(0, 10),
+      breaks = 0:10
+    ) +
+    scale_y_continuous(
+      limits = c(0, 1),
+      breaks = c(0, 0.5, 1)
+    ) +
+    theme_classic() +
+    theme(
+      axis.title.x = element_text(
+        margin = margin(t = 15, r = 0, b = 0, l = 0)),
+      strip.background =
+        element_rect(
+          colour = "#444f55",
+          fill = "#ed9300"
+        ),
+      strip.text =
+        element_text(
+          colour = "#444f55"
+        ),
+      strip.text.y = element_text(
+          angle = 0
+      )
+    ) +
+    labs(
+      x = "Tid",
+      y = NULL
+    ) +
+    ggtitle(coverage_title)
+  
+}
+```
+
+
+```{r}
+#| label: example
+
+coverage <-
+  tibble::tibble(
+    time_interval = c(base::seq(0, 10, 1)),
+    operational = c(0, 0, base::rep(1, 9)),
+    valid_classification_ratio = c(base::rep(1, 3), 0.5, base::rep(1, 7)),
+    manual_label_fail = c(base::rep(1, 5), 0, base::rep(1, 5))
+  ) |> 
+  dplyr::mutate(
+    coverage_volume_classification = operational * valid_classification_ratio * manual_label_fail
+  )
+
+coverage_long <-
+  coverage |> 
+  tidyr::pivot_longer(
+    cols = !c("time_interval"),
+    names_to = "parameter",
+    values_to = "value"
+  )
+
+parameter_names <- c(
+  "operational" = "Operasjonelltid",
+  "valid_classification_ratio" = "Kvalitetsgrad\nklassifisering",
+  "manual_label_fail" = "Manuell merking,\nfeil på utstyr",
+  "coverage_volume_classification" = "Dekningsgrad\nfor trafikkmengde\nper kjøretøyklasse"
+)
+```
+
+
+### Dekningsgrad for kjøretøyklassifisering
+Figur @fig-plot_volume viser et eksempel på hvordan dekningsgrad for trafikkmengde per kjøretøyklasse er produktet av flere faktorer. Hvis tidsenheten er dager, og vi ønsker å beregne gjennomsnittlig døgntrafikk for denne 10-dagersperioden, får vi her en dekningsgrad på 60 %.
+
+
+```{r}
+#| label: fig-plot_volume
+#| fig-cap: "Beregning av dekningsgrad for trafikkmengde per kjøretøyklasse."
+
+volume_coverage_parameters <- 
+  c("operational", "valid_classification_ratio", 
+    "manual_label_fail", "coverage_volume_classification")
+
+visualize_coverage_calculation(
+  coverage_long,
+  volume_coverage_parameters,
+  "Dekningsgrad for trafikkmengde per kjøretøyklasse"
+)
+```
+
+
+### Dekningsgrad og kjørefelt
+Trafikken er tilordnet fysiske kjørefelt, og trafikkdata registreres med tilhørighet til nummererte kjørefelt. Statistikker som samlet skal beskrive trafikk for mer enn ett kjørefelt, bygges opp av tilsvarende statsistikker per kjørefelt. For at en slik flerfeltsstatistikk kan sies å være gyldig for et tidsrom, må alle statistikkene for ethvert kjørefelt tilfredsstille minstekrav til dekningsgrad i det samme tidsrommet. Dekningsgraden til flerfeltsstatistikker angir derfor hvor stor andel av tiden som det finnes gode kjørefeltstatistikker for alle kjørefelt samtidig.

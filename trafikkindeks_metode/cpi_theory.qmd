@@ -367,7 +367,7 @@ der $\rho$ er korrelasjonskoeffisienten og $s$ er observert standardavvik i utva
 Regneeksempler viser at denne metoden med forholdsestimator ikke gir noen gevinster kontra metoden med stratifisert trafikkarbeidsindeks som omtalt i @sec-strat_tw.
 
 
-### Valg av byindeksmetode {#sec-index_choice}
+### Valg av indeksmetode {#sec-index_choice}
 Vi ønsker en indeksmetode som er enkel og intuitiv, og som samtidig gir et riktigst mulig bilde av den faktiske trafikkutviklingen. Multilaterale indekser er ikke de enkleste å forklare, og er sånn sett ikke det beste alternativet. En uvektet bilateral indeks kan i prinsippet være indirekte vektet ved at trafikklenkene er valgt ut proporsjonalt med størrelsen av trafikkarbeidet, men dette er imildertid vanskelig å få til i praksis. Det som gjenstår som aktuelle alternativer er da en form for vektet bilateral indeks. Vektingen må være basert på trafikkarbeidet slik at viktigheten til et indekspunkt blir vektlagt etter hvor mye trafikkarbeid det representerer på sin trafikklenke. Blant indeksene nevnt ovenfor, er det da tre mulige valg: 
 
 - trafikkarbeidsindeks

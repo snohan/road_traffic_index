@@ -14,28 +14,23 @@ day_type_weights <- readr::read_rds("H:/Programmering/R/byindeks/calendar_weight
 
 
 # Datagrunnlag
-Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT). Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
+Datagrunnlaget består av gjennomsnittlig døgntrafikk (DT) beregnet ut fra faktiske trafikkregistreringer. Hvert døgns samlede trafikkmengde er aggregert opp fra timetrafikk, som igjen er aggregert opp fra registrerte enkeltkjøretøy. 
+
+Trafikkindeksene bygger på datagrunnlaget som samles inn fra utvalgte trafikkregistreringspunkt, der utstyr kontinuerlig året rundt registrerer trafikkdata i hvert kjørefelt. Et trafikkregistreringspunkt er geografisk sett et punkt på vegens senterlinje, plassert der hvor det registreres trafikk som passerer gjennom en tenkt linje som dekker alle kjørefelt på den aktuelle vegen. I forbindelse med trafikkindeksene omtales trafikkregistreringspunkt gjerne også som "indekspunkt".
 
 
-## Dekningsgrad
-Data kan mangle i perioder på grunn av feil i registreringene eller at trafikken ikke er representativ for en trafikkindeks. Hvor stor andel av et tidsrom vi har gode data for, kalles dekningsgrad. For at datagrunnlaget skal være godt nok for en trafikkindeks, må den registrerte døgntrafikken over tid ha sammenlignbar dekningsgrad. Dette gjøres enklest ved å kreve at ethvert døgn som inngår i en gjennomsnittsberegning, skal ha tilnærmet full dekningsgrad. 
+{{< include coverage.qmd >}}
 
 
-## Dekningsgrad for kjøretøyklassifisering
-For indekser som benyttes til å estimere endring i trafikk inndelt i kjøretøyklasser, er det tilsvarende krav til høy dekningsgrad. Andelen kjøretøyregistreringer som har godkjent kjøretøyklassifisering kalles kvalitetsgrad.
-
-
-# Kalendereffekter og glidende gjennomsnitt
+## Kalendereffekter
 Trafikken varierer naturlig gjennom døgnet, uka og året. Dersom det er bortfall av data, kan det være tilstrekkelig at de naturlig forekommende variasjonene gir opphav til en «påvist» endring i trafikk. For at indeksen i stedet skal detektere en generell trend, må tidsvariasjonene tas hensyn til.
 
 
-## Variasjon gjennom døgnet
-Variasjonen gjennom døgnet glattes ut ved at datagrunnlaget kun vil bestå av trafikkregistreringer for komplette døgn. Dersom hele døgnet er dekket med en fullstendig registrering av alle kjøretøy og datakvaliteten er godkjent, så har den 100 % dekningsgrad. Det kan oppstå bortfall av data, og da vil dekningsgraden bli lavere. Et døgn må minst ha 99 % dekningsgrad for å kunne inngå i indeksens datagrunnlag.
-
-Tilsvarende må et døgn ha minst 99 % kjøretøyklassifiseringsdekningsgrad for å kunne inngå i indeksens datagrunnlag.
+### Variasjon gjennom døgnet
+Variasjonen gjennom døgnet glattes ut ved at datagrunnlaget kun vil bestå av trafikkregistreringer for komplette døgn. Dersom hele døgnet er dekket med en fullstendig registrering av alle kjøretøy og datakvaliteten er godkjent, så har den 100 % dekningsgrad. Det kan oppstå bortfall av data, og da vil dekningsgraden bli lavere. Et døgn må minst ha 99 % dekningsgrad for å kunne inngå i indeksens datagrunnlag. Tilsvarende må et døgn ha minst 99 % kjøretøyklassifiseringsdekningsgrad for å kunne inngå i indeksens datagrunnlag. Se @sec-coverage for mer detaljer om dekningsgrad.
 
 
-## Variasjon gjennom uka
+### Variasjon gjennom uka
 Mange steder er trafikkmengden ganske ulik i yrke- og helgedøgn. Når indeksen skal beregnes for kalendermåneder, vil det faktum at antall yrkedøgn kan variere mellom år gi et bidrag til indekstallet som kan være betydelig sammenlignet med den generelle trenden. Det er derfor nødvendig å ta hensyn til dette når datagrunnlaget beregnes.
 
 Helgedøgn defineres her som alle lørdager og søndager, samt alle øvrige røde dager i den norske kalenderen. I tillegg anses jul- og nyttårsaften som helgedøgn.
@@ -58,7 +53,7 @@ knitr::kable(
 Når døgn så skal aggregeres opp til YDT og HDT, blir det beregnet en dekningsgrad også for disse. En januar som har 22 yrkedøgn, vil da få en YDT med 100 % dekningsgrad dersom det er godkjent døgntrafikk for alle disse dagene. Det må være minst 3 godkjente helgedøgn og minst 7 godkjente yrkedøgn for at en MDT skal være godkjent.
 
 
-## Variasjon gjennom året
+### Variasjon gjennom året
 Mange steder er det i påsken og pinsen annerledes trafikk enn ellers. Begge disse høytidene bytter på sin plassering mellom to kalendermåneder, og dette vil derfor påvirke indekstallene når enkeltmåneder sammenlignes.
 
 I indekssammenheng er det derfor lurt å operere med en egen størrelse for gjennomsnittlig døgntrafikk i henholdsvis påsken og pinsen. Dette kan vi kalle for påskedøgntrafikk (EDT, fra engelsk "Easter") og pinsedøgntrafikk (PDT, fra engelsk "Pentecost"). Påsken defineres her som dagene fra og med fredag før palmesøndag til og med andre påskedag. Tilsvarende er pinsen fra og med fredag før pinseaften til og med andre pinsedag. Påsken må ha minst 6 av 11 dager med godkjent døgntrafikk, mens pinsen må være komplett.
@@ -81,19 +76,10 @@ knitr::kable(
 I stedet for å vekte med månedenes lengde i antall dager, kunne vektene være basert på fordeling av trafikkarbeid eller trafikkmengde gjennom året. Dette vil være aktuelt for en sykkelindeks, hvor trafikkmengdene er større på sommeren enn på vinteren.
 
 
-### Fra månedsindeks til årsindeks {#sec-window_index}
-Byindeksen beregnes først for hver kalendermåned. For en gitt kalendermåned sammenlignes godkjent MDT for de punktene som har verdi i begge årene. Deretter beregnes et vektet gjennomsnitt av disse, slik som angitt i @eq-w_indeks.
+# Glidende indeks {#sec-window_index}
+En trafikkindeks beregnes først for hver kalendermåned. For å beregne indeks for et år, "hittil i år" eller siste år blir månedsindeksene vektet sammen for den aktuelle perioden. Her vil vi kunne bruke alle tilgjengelige MDT-verdier for en gitt måned, uten å tenke på at et punkt har bortfall i andre måneder. Trafikkindeksens månedsverdi vil da isolert sett være det beste estimatet vi kan få, gitt det datagrunnlaget som er tilgjengelig. En periodeindeks vil da bli et vektet gjennomsnitt av månedsindeksene, hvor vektene er gitt av tabell @tbl-periods. Ett års glidende gjennomsnitt kan oppdateres månedlig ved å forskyve tidsvinduet fram en måned. Tilsvarende vil tre års glidende gjennomsnitt være gjennomsnittet av de siste tre årenes glidende gjennomsnitt for ett år. 
 
-For å beregne indeks for et år, "hittil i år" eller siste år kan vi velge blant to strategier:
-
-1. Først beregne tilsvarende gjennomsnittlig MDT per punkt, og så benytte indeksformelen for å finne byindeksen.
-2. Først beregne månedsindeks for byen, og deretter vekte disse sammen for den aktuelle perioden.
-
-Strategi nummer 1 har den ulempen at bortfall av måneder vil ha skjev innvirkning på et årsgjennomsnitt for et gitt punkt. Dette kan kompenseres for ved å sette minstekrav til hvilke og antall måneder som skal ha godkjent MDT for at punktet i det hele tatt skal bli med i beregningene. Altså kan vi ende opp med å forkaste måneder som har godkjent MDT dersom vi mener at perioden inneholder for få godkjente verdier. Et alternativ er å gjøre en form for imputering for å estimere verdiene til måneder som har bortfall. Dette vil introdusere en ekstra usikkerhet.
-
-Strategi nummer 2 er den  foretrukne og her vil vi kunne bruke alle tilgjengelige MDT-verdier for en gitt måned, uten å tenke på at et punkt har bortfall i andre måneder. Byindeksens månedsverdi vil da isolert sett være det beste estimatet vi kan få, gitt det datagrunnlaget som er tilgjengelig. En periodeindeks vil da bli et vektet gjennomsnitt av månedsindeksene, hvor vektene er gitt av tabell @tbl-periods. Ett års glidende gjennomsnitt kan oppdateres månedlig ved å forskyve tidsvinduet fram en måned. Tilsvarende vil tre års glidende gjennomsnitt være gjennomsnittet av de siste tre årenes glidende gjennomsnitt for ett år. 
-
-Bortfall av enkeltmåneder for punkt vil gi variasjon i byindeksens representativitet. Se notatet "Representativitet i byindeks" for mer om dette og et eksempel på hvordan dette kan formidles.
+Bortfall av enkeltmåneder for punkt vil gi variasjon i trafikkindeksens representativitet. Dette kan illustreres separat ved å angi antall punkter som er med i hver måned. For en trafikkarbeidsindeks kan det oppgis hvilken andel av fokusområdets trafikkarbeid som er representert i indekspunktene. Dette kan eventuelt gjøres per stratum.
 
 La $a$ betegne sammenligningsåret og $\delta = d_1\text{--}d_2$ (med tankestrek) være perioden fra start- til sluttmåned i tidsvinduet som inngår i sammenligningen. Et tidsvindu kan for eksempel skrives som $d_1\text{--}d_2 = \text{24jan--24des}$. En ett års glidende indeks kan da skrives som $P_{a,\delta} = P_{a,d_1\text{--}d_2}$. 
 
