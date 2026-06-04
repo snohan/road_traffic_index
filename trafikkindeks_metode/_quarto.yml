@@ -25,6 +25,7 @@ format:
       - brand
   pdf:
     pdf-engine: xelatex
+    cite-method: biblatex
     mainfont: Arial
     documentclass: scrbook
     papersize: A4

@@ -24,7 +24,7 @@ Trafikkmengden registreres i et punkt der hvor sensorene fanger opp passerende k
 
 En trafikkindeks beregnes som et estimat for den sanne endringen i trafikk, og baseres på registrert trafikkmengde fra et utvalg trafikkregistreringspunkt. For en trafikkindeks for bil vil utvalget bestå av et antall trafikklenker fra en populasjon bestående av alle trafikklenker i området. Populasjonsstørrelsen er således kjent. For en sykkelindeks vil utvalget bestå av trafikkregistreringspunkt, men hvor størrelsen på populasjonen av trafikklenker for et området er ukjent.
 
-Hvordan en trafikkindeks beregnes er avhengig av om trafikkarbeidet kan tas hensyn til eller ikke. Vi får derfor to hovedvarianter av ineksmetodikk - en for trafikkarbeidsindeks, og en for en ren trafikkmengdeindeks.
+Hvordan en trafikkindeks beregnes er avhengig av om trafikkarbeidet kan tas hensyn til eller ikke. Vi får derfor to hovedvarianter av indeksmetodikk - en for trafikkarbeidsindeks, og en for en ren trafikkmengdeindeks.
 
 
 ## Trafikkarbeidsindeks
